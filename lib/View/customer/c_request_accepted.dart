@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:home_well/customer/c_rating_bar.dart';
+
+import 'c_rating_bar.dart';
 
 class AcceptedRequest extends StatefulWidget {
 

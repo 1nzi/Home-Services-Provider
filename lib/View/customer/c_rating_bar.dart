@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:home_well/customer/c_home.dart';
+
+import 'c_home.dart';
 
 
 class RatingBar extends StatefulWidget {

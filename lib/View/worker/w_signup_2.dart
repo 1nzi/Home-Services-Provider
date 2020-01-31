@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:home_well/worker/w_signup_1.dart';
+import 'w_signup_1.dart';
 import 'w_signup_3.dart';
 
 class WorkerSignup2 extends StatefulWidget {

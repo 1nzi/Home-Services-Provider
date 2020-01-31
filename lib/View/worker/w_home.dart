@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:home_well/worker/w_drawer.dart';
-import 'package:home_well/worker/w_notification.dart';
+
+import 'w_drawer.dart';
+import 'w_notification.dart';
 
 
 class WorkerHome extends StatefulWidget {

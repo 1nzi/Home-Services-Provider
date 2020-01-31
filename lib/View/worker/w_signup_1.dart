@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:home_well/worker/w_login.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'w_login.dart';
 import 'w_signup_2.dart';
 
 class WorkerSignup1 extends StatefulWidget {

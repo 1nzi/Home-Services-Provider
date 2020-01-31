@@ -1,11 +1,11 @@
 
 import 'package:flutter/material.dart';
-import 'package:home_well/customer/c_gender.dart';
-import 'package:home_well/customer/c_mobile.dart';
-import 'package:home_well/customer/c_update_name.dart';
-import 'package:home_well/customer/c_update_email.dart';
-import 'package:home_well/customer/c_change_passward.dart';
+import 'c_change_passward.dart';
 import 'c_drawer.dart';
+import 'c_gender.dart';
+import 'c_mobile.dart';
+import 'c_update_email.dart';
+import 'c_update_name.dart';
 
 class Profile extends StatefulWidget {
   @override

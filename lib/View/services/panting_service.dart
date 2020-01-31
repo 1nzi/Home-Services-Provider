@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:home_well/customer/c_location_selection.dart';
-import 'package:home_well/customer/c_sub_category.dart';
+
+import '../customer/c_location_selection.dart';
+import '../customer/c_sub_category.dart';
 
 class PaintingService extends StatefulWidget {
   @override

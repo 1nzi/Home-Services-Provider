@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:home_well/services/panting_service.dart';
-import 'package:home_well/services/plumbing_services.dart';
+import '../services/panting_service.dart';
+import '../services/plumbing_services.dart';
 import 'c_drawer.dart';
 
 class SubJobs extends StatefulWidget {

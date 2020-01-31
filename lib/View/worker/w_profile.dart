@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:home_well/worker/w_change_passward.dart';
-import 'package:home_well/worker/w_update_address.dart';
-import 'package:home_well/worker/w_update_email.dart';
-import 'package:home_well/worker/w_update_mobile.dart';
-import 'package:home_well/worker/w_update_name.dart';
+
+import 'w_change_passward.dart';
+import 'w_update_address.dart';
+import 'w_update_email.dart';
+import 'w_update_mobile.dart';
+import 'w_update_name.dart';
 
 
 class WorkerProfile extends StatelessWidget {

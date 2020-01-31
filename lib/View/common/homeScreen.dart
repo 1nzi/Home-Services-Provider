@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:home_well/worker/w_login.dart';
 
 import '../customer/c_login.dart';
+import '../worker/w_login.dart';
 
 class HomeScreen extends StatelessWidget {
   // This widget is the root of your application.

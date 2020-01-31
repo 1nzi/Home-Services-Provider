@@ -1,7 +1,8 @@
 
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
-import 'package:home_well/common/splashScreen.dart';
+
+import 'splashScreen.dart';
 
 
 void main() async {

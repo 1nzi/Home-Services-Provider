@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:home_well/common/main.dart';
-import 'package:home_well/worker/w_profile.dart';
+
+import '../common/main.dart';
+import 'w_profile.dart';
 
 class WorkerMobile extends StatefulWidget {
   @override

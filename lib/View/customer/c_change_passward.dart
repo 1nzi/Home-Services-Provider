@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:home_well/customer/c_profile.dart';
+
+import 'c_profile.dart';
 
 class ChangePassword extends StatefulWidget {
   @override
