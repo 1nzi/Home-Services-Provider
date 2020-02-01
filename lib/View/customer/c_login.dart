@@ -96,7 +96,7 @@ class _CustomerLoginState extends State<CustomerLogin> {
                 SizedBox(
                   height: 10,
                 ),
-            Container(
+             Container(
               width: 200.0,
               height: 40.0,
               child: RaisedButton(

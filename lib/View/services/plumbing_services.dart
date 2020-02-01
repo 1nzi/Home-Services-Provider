@@ -20,8 +20,7 @@ class _PlumbingServicesState extends State<PlumbingServices> {
           title: Text("Plumbing Services"),
           backgroundColor: Colors.lightGreen,
         ),
-        body: ListView(
-          padding: EdgeInsets.all(24),
+        body: Column(
           children: <Widget>[
             Text('Tell us about the job',
                 textAlign: TextAlign.center,
