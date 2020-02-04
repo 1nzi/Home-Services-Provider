@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../common/main.dart';
+import '../../main.dart';
 import 'w_profile.dart';
 
 class WorkerMobile extends StatefulWidget {
