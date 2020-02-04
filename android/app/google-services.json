@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "97148300049",
+    "firebase_url": "https://well-home.firebaseio.com",
+    "project_id": "well-home",
+    "storage_bucket": "well-home.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:97148300049:android:28569ef8c594fb9bd1bab0",
+        "android_client_info": {
+          "package_name": "com.pucit.home_well"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "97148300049-avt91fvca7da329ta5mmvpqnbsr6pi2e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-luUOkt4ZdbdzENx2KzD0_pdC3vZIPfU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "97148300049-avt91fvca7da329ta5mmvpqnbsr6pi2e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
