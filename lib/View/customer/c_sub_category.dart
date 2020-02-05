@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import '../services/panting_service.dart';
 import '../services/plumbing_services.dart';
 import 'c_drawer.dart';
+import 'c_select_subCategory.dart';
 
 class SubJobs extends StatefulWidget {
   _MySubCategoryPageState createState() => _MySubCategoryPageState();
@@ -93,7 +94,7 @@ class SubCategoryCard extends StatelessWidget {
   const SubCategoryCard({this.subCategory});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext cxt) {
     return Container(
       margin: EdgeInsets.all(8.0),
       child: Card(
@@ -101,25 +102,25 @@ class SubCategoryCard extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(8.0))),
         child: InkWell(
           onTap: () {
-            Navigator.pop(context);
+            Navigator.pop(cxt);
             if (subCategory.id == '1') {
               Navigator.push(
-                  context,
+                  cxt,
                   new MaterialPageRoute(
-                      builder: (context) => new PlumbingServices()));
+                      builder: (context) => new SelectSubCategory()));
             } else if (subCategory.id == '2') {
               Navigator.push(
-                  context,
+                  cxt,
                   new MaterialPageRoute(
-                      builder: (context) => new PaintingService()));
+                      builder: (context) => new SelectSubCategory()));
             } else if (subCategory.id == '3') {
               Navigator.push(
-                  context,
+                  cxt,
                   new MaterialPageRoute(
                       builder: (context) => new PlumbingServices()));
             } else if (subCategory.id == '4') {
               Navigator.push(
-                  context,
+                  cxt,
                   new MaterialPageRoute(
                       builder: (context) => new PaintingService()));
             }

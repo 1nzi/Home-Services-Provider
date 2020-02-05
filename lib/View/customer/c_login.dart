@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../common/authentication.dart';
 import '../common/homeScreen.dart';
@@ -16,11 +17,13 @@ class CustomerLogin extends StatefulWidget {
 
 
 class _CustomerLoginState extends State<CustomerLogin> {
-  final _userKey = GlobalKey<FormState>();
-
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String _ph, _passw;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _scaffoldKey,
         resizeToAvoidBottomPadding: true,
         appBar: AppBar(
           title: Text("Customer Login",
@@ -34,14 +37,14 @@ class _CustomerLoginState extends State<CustomerLogin> {
               color: Colors.black54,
             ),
             onTap: () {
-              Navigator.pop(context, MaterialPageRoute(builder: (context)=> HomeScreen()));
+              Navigator.pop(context);
             },
           ),
           centerTitle: true,
         ),
         body: SingleChildScrollView(
           child: Form(
-            key: _userKey,
+            key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
@@ -74,6 +77,7 @@ class _CustomerLoginState extends State<CustomerLogin> {
                         }
                       return null;
                     },
+                    onSaved: (value)=> _ph = value,
                   ),
                 ),
                 Padding(
@@ -85,6 +89,8 @@ class _CustomerLoginState extends State<CustomerLogin> {
                       }
                       return null;
                     },
+                    onSaved: (value)=> _passw = value,
+
                     obscureText: true,
                     decoration: const InputDecoration(
                       labelText: 'Password',
@@ -114,14 +120,23 @@ class _CustomerLoginState extends State<CustomerLogin> {
                       fontStyle: FontStyle.italic,
                     ),
                   ),
-                  onPressed: () {
-                    if (_userKey.currentState.validate()) {
-                      Navigator.pop(context);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => CustomerHome()));
-                    }
+                  onPressed: () async {
+                    if(_formKey.currentState.validate()) {
+                      dynamic result = signin();
 
+                      if (result == null) {
+                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                          content: Text('Invalid User Credential'),
+                            duration: Duration(seconds: 3),
+                        ));
+                      } else {
+                        Navigator.pop(context);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CustomerHome()));
+                      }
+                    }
                   }
               ),
             ),
@@ -160,6 +175,7 @@ class _CustomerLoginState extends State<CustomerLogin> {
                 GmailLoginBuuton(),
                 new FlatButton(
                   onPressed: () {
+                    Navigator.pop(context);
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -173,14 +189,21 @@ class _CustomerLoginState extends State<CustomerLogin> {
           ),
         ));
   }
-}
 
-class LoginBuuton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return null;
-  }
-}
+  Future <void> signin() async{
+     try {
+        AuthResult authResult = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(email: _ph, password: _passw);
+        FirebaseUser user = authResult.user;
+        return user;
+      }catch(e) {
+        print(e.toString());
+        return null;
+      }
+    }
+    }
+
+
 
 class FbLoginBuuton extends StatelessWidget {
   @override
