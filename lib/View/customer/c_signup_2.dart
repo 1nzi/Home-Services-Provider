@@ -1,10 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:home_well/Controller/CustomerController/rigesterCustomer.dart';
+import 'package:home_well/View/customer/c_signup_1.dart';
 import 'c_login.dart';
 
 
 class CustomerSignup2 extends StatefulWidget {
+  final CustomerData data;
+
+  const CustomerSignup2({Key key, this.data}) : super(key: key);
 
   _MySignupPageState createState() => _MySignupPageState();
 }
@@ -16,6 +21,8 @@ final FocusNode _passwordFocus = FocusNode();
 class _MySignupPageState extends State<CustomerSignup2> {
   bool _obscureText = true;
   final _formKey = GlobalKey<FormState>();
+  String pass;
+
 
   void _toggle() {
     setState(() {
@@ -65,6 +72,7 @@ class _MySignupPageState extends State<CustomerSignup2> {
                     onChanged: (String newValue) {
                       setState(() {
                         City = newValue;
+                        data.city = City;
                       });
                     },
                     items: <String>[
@@ -98,6 +106,7 @@ class _MySignupPageState extends State<CustomerSignup2> {
                     onChanged: (String newValue) {
                       setState(() {
                         Area = newValue;
+                        data.area = newValue;
                       });
                     },
                     items: <String>[
@@ -117,14 +126,22 @@ class _MySignupPageState extends State<CustomerSignup2> {
                   )),
               Padding(
                 padding: EdgeInsets.all(8.0),
-                child: TextField(
+                child: TextFormField(
                   keyboardType: TextInputType.multiline,
                   textInputAction: TextInputAction.next,
                   controller: _clearStreetAdd,
                   focusNode: _addressFocus,
-                  onSubmitted: (term) {
+                  onFieldSubmitted: (term) {
                     _fieldFocusChange(context, _addressFocus, _passwordFocus);
                   },
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter Street Address';
+                    }
+                    return null;
+                  },
+                  onSaved: (value)=> data.address = value,
+
                   decoration: const InputDecoration(
                     labelText: 'Street Address',
                     prefixIcon: Icon(Icons.location_city),
@@ -150,6 +167,9 @@ class _MySignupPageState extends State<CustomerSignup2> {
                     }
                     return null;
                   },
+                  onSaved: (value)=>data.password = value,
+
+
                   decoration: InputDecoration(
                     labelText: 'Password',
                     prefixIcon: Icon(Icons.lock),
@@ -164,13 +184,13 @@ class _MySignupPageState extends State<CustomerSignup2> {
                 child: TextFormField(
                   obscureText: _obscureText,
                   validator: (value) {
-                    if (value.isEmpty && value.length < 5) {
-                      return 'Password should have atleast 5 digits';
+                    if (value != data.password) {
+                      return 'Password not match';
                     }
                     return null;
                   },
                   decoration: InputDecoration(
-                    labelText: 'Password',
+                    labelText: 'Confirm Password',
                     prefixIcon: Icon(Icons.lock),
                     suffixIcon: IconButton(
                         icon: Icon(Icons.remove_red_eye), onPressed: _toggle),
@@ -212,6 +232,7 @@ class SignupButton extends StatelessWidget {
           ),
         ),
         onPressed: () {
+          print(data.fname);
           Navigator.pop(context);
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => CustomerLogin()));

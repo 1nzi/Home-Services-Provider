@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'c_drawer.dart';
 import 'c_wait_for_response.dart';
 
 class AvailableWorker extends StatefulWidget {

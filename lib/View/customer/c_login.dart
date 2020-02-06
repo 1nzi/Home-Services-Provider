@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../common/authentication.dart';
-import '../common/homeScreen.dart';
 import 'c_drawer.dart';
 import 'c_home.dart';
 import 'c_signup_1.dart';
