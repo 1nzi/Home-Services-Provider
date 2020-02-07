@@ -298,7 +298,7 @@ void _showAlert(BuildContext context) {
                   context,
                   MaterialPageRoute(
                       builder: (context) => Otp(
-                            phone: 03004046580,
+                            phone: '03004046580',
                           )));
             },
           ),

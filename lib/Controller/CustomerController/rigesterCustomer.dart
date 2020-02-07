@@ -1,4 +1,6 @@
 
+
+
 class CustomerData {
   String fname;
   String lname;
@@ -9,6 +11,14 @@ class CustomerData {
   String address;
   String password;
 
-  CustomerData({this.fname,this.lname, this.ph, this.email, this.city, this.area, this.address, this.password});
-
+  CustomerData(
+      {this.fname,
+      this.lname,
+      this.ph,
+      this.email,
+      this.city,
+      this.area,
+      this.address,
+      this.password,
+      });
 }

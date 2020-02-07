@@ -1,26 +1,38 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:home_well/Controller/CustomerController/rigesterCustomer.dart';
+import 'package:home_well/Model/CustomerModel.dart';
 import 'package:home_well/View/customer/c_signup_1.dart';
 import 'c_login.dart';
 
 
 class CustomerSignup2 extends StatefulWidget {
-  final CustomerData data;
+  final CustomerData bundle;
 
-  const CustomerSignup2({Key key, this.data}) : super(key: key);
+  const CustomerSignup2({Key key, this.bundle}) : super(key: key);
 
   _MySignupPageState createState() => _MySignupPageState();
 }
 
-final TextEditingController _clearStreetAdd = new TextEditingController();
+final TextEditingController _streetAdd = new TextEditingController();
+final TextEditingController _password = new TextEditingController();
+final TextEditingController _confirmPassword = new TextEditingController();
 final FocusNode _addressFocus = FocusNode();
 final FocusNode _passwordFocus = FocusNode();
+final _formKey = GlobalKey<FormState>();
+final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+// ignore: non_constant_identifier_names
+String City = 'Lahore';
+
+// ignore: non_constant_identifier_names
+String Area = 'DHA';
 
 class _MySignupPageState extends State<CustomerSignup2> {
   bool _obscureText = true;
-  final _formKey = GlobalKey<FormState>();
   String pass;
 
 
@@ -30,11 +42,6 @@ class _MySignupPageState extends State<CustomerSignup2> {
     });
   }
 
-  // ignore: non_constant_identifier_names
-  String City = 'Lahore';
-
-  // ignore: non_constant_identifier_names
-  String Area = 'DHA';
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +79,6 @@ class _MySignupPageState extends State<CustomerSignup2> {
                     onChanged: (String newValue) {
                       setState(() {
                         City = newValue;
-                        data.city = City;
                       });
                     },
                     items: <String>[
@@ -106,7 +112,7 @@ class _MySignupPageState extends State<CustomerSignup2> {
                     onChanged: (String newValue) {
                       setState(() {
                         Area = newValue;
-                        data.area = newValue;
+                        bundle.area = newValue;
                       });
                     },
                     items: <String>[
@@ -129,7 +135,7 @@ class _MySignupPageState extends State<CustomerSignup2> {
                 child: TextFormField(
                   keyboardType: TextInputType.multiline,
                   textInputAction: TextInputAction.next,
-                  controller: _clearStreetAdd,
+                  controller: _streetAdd,
                   focusNode: _addressFocus,
                   onFieldSubmitted: (term) {
                     _fieldFocusChange(context, _addressFocus, _passwordFocus);
@@ -140,7 +146,7 @@ class _MySignupPageState extends State<CustomerSignup2> {
                     }
                     return null;
                   },
-                  onSaved: (value)=> data.address = value,
+                  onSaved: (value)=> bundle.address = value,
 
                   decoration: const InputDecoration(
                     labelText: 'Street Address',
@@ -161,13 +167,14 @@ class _MySignupPageState extends State<CustomerSignup2> {
                 padding: EdgeInsets.all(8.0),
                 child: TextFormField(
                   obscureText: _obscureText,
+                  controller: _password,
                   validator: (value) {
-                    if (value.isEmpty && value.length < 5) {
-                      return 'Password should have atleast 5 digits';
+                    if (value.isEmpty && value.length < 6) {
+                      return 'Password should have atleast 6 digits';
                     }
                     return null;
                   },
-                  onSaved: (value)=>data.password = value,
+                  onSaved: (value)=>bundle.password = value,
 
 
                   decoration: InputDecoration(
@@ -183,8 +190,9 @@ class _MySignupPageState extends State<CustomerSignup2> {
                 padding: EdgeInsets.all(8.0),
                 child: TextFormField(
                   obscureText: _obscureText,
+                  controller: _confirmPassword,
                   validator: (value) {
-                    if (value != data.password) {
+                    if (value != _password.text) {
                       return 'Password not match';
                     }
                     return null;
@@ -211,6 +219,7 @@ class _MySignupPageState extends State<CustomerSignup2> {
 }
 
 class SignupButton extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -231,11 +240,23 @@ class SignupButton extends StatelessWidget {
             fontStyle: FontStyle.italic,
           ),
         ),
-        onPressed: () {
-          print(data.fname);
-          Navigator.pop(context);
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => CustomerLogin()));
+        onPressed: () async {
+          if (_formKey.currentState.validate()) {
+            bundle.city = City;
+            bundle.area = Area;
+            bundle.address = _streetAdd.text;
+            bundle.password = _password.text;
+            String result =await registerUser(bundle);
+              Scaffold.of(context).showSnackBar(SnackBar(
+                content: Text(result),
+                duration: Duration(seconds: 3),
+              ));
+              if(result=='Signup Successfully'){
+            Navigator.pop(context);
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => CustomerLogin()));
+          }
+          }
         },
       ),
     );
@@ -243,7 +264,7 @@ class SignupButton extends StatelessWidget {
 }
 
 void clearAddress() {
-  _clearStreetAdd.clear();
+  _streetAdd.clear();
 }
 
 void _fieldFocusChange(
@@ -251,3 +272,19 @@ void _fieldFocusChange(
   currentFocus.unfocus();
   FocusScope.of(context).requestFocus(nextFocus);
 }
+
+Future registerUser(CustomerData bundle) async{
+  try {
+    AuthResult authResult = await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(email: bundle.email, password: bundle.password);
+    FirebaseUser user = authResult.user;
+   //create document for customer with customerId
+    DatabaseService(uid: user.uid).updateCustomerData(bundle);
+    return 'Signup Successfully';
+
+  }catch(signUpError) {
+    print(signUpError.toString());
+      return signUpError.code;
+    }
+}
+

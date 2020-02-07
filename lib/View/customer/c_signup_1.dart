@@ -9,25 +9,25 @@ import 'c_signup_2.dart';
 class CustomerSignup1 extends StatefulWidget {
   _MySignupPageState createState() => _MySignupPageState();
 }
-final data= CustomerData ();
 
-final TextEditingController _clearFirstName = new TextEditingController();
-final TextEditingController _clearLastName = new TextEditingController();
-final TextEditingController _clearPh = new TextEditingController();
-final TextEditingController _clearEmail = new TextEditingController();
+final bundle = CustomerData();
+
+final TextEditingController _FirstName = new TextEditingController();
+final TextEditingController _LastName = new TextEditingController();
+final TextEditingController _Ph = new TextEditingController();
+final TextEditingController _Email = new TextEditingController();
 
 final FocusNode _firstNameFocus = FocusNode();
 final FocusNode _lastNameFocus = FocusNode();
 final FocusNode _phFocus = FocusNode();
 final FocusNode _emailFocus = FocusNode();
 final FocusNode _nextFocus = FocusNode();
+final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-String name;
+
 class _MySignupPageState extends State<CustomerSignup1> {
   File _image;
   String profilePath;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -107,7 +107,7 @@ class _MySignupPageState extends State<CustomerSignup1> {
                 padding: EdgeInsets.all(8.0),
                 child: TextFormField(
                   textInputAction: TextInputAction.next,
-                  controller: _clearFirstName,
+                  controller: _FirstName,
                   focusNode: _firstNameFocus,
                   onFieldSubmitted: (term) {
                     _fieldFocusChange(context, _firstNameFocus, _lastNameFocus);
@@ -118,8 +118,6 @@ class _MySignupPageState extends State<CustomerSignup1> {
                     }
                     return null;
                   },
-                  onChanged: (value)=> print(value),
-
                   decoration: const InputDecoration(
                     labelText: 'First Name',
                     prefixIcon: Icon(Icons.person),
@@ -135,7 +133,7 @@ class _MySignupPageState extends State<CustomerSignup1> {
                 padding: EdgeInsets.all(8.0),
                 child: TextFormField(
                   textInputAction: TextInputAction.next,
-                  controller: _clearLastName,
+                  controller: _LastName,
                   focusNode: _lastNameFocus,
                   onFieldSubmitted: (term) {
                     _fieldFocusChange(context, _lastNameFocus, _phFocus);
@@ -146,8 +144,6 @@ class _MySignupPageState extends State<CustomerSignup1> {
                     }
                     return null;
                   },
-                  onSaved: (value)=> data.lname = value,
-
                   decoration: const InputDecoration(
                     labelText: 'Last Name',
                     prefixIcon: Icon(Icons.person),
@@ -165,19 +161,17 @@ class _MySignupPageState extends State<CustomerSignup1> {
                   maxLength: 11,
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.next,
-                  controller: _clearPh,
+                  controller: _Ph,
                   focusNode: _phFocus,
                   onFieldSubmitted: (term) {
                     _fieldFocusChange(context, _phFocus, _emailFocus);
                   },
                   validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter Phone#';
+                    if (value.length < 11) {
+                      return 'Please enter valid Phone#';
                     }
                     return null;
                   },
-                  onSaved: (value)=> data.ph = value,
-
                   decoration: const InputDecoration(
                     labelText: 'Phone#',
                     prefixIcon: Icon(Icons.phone),
@@ -194,19 +188,17 @@ class _MySignupPageState extends State<CustomerSignup1> {
                 child: TextFormField(
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
-                  controller: _clearEmail,
+                  controller: _Email,
                   focusNode: _emailFocus,
                   onFieldSubmitted: (term) {
                     _fieldFocusChange(context, _emailFocus, _nextFocus);
                   },
                   validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter Email';
+                    if (!value.contains('@') & !value.contains('.')) {
+                      return 'Please enter valid Email';
                     }
                     return null;
                   },
-                  onSaved: (value)=> data.email = value,
-
                   decoration: const InputDecoration(
                     labelText: 'Email',
                     prefixIcon: Icon(Icons.email),
@@ -228,26 +220,6 @@ class _MySignupPageState extends State<CustomerSignup1> {
       ),
     );
   }
-}
-
-void clearText(buildContext, TextEditingController txt) {
-  txt.clear();
-}
-
-void clearFirstName() {
-  _clearFirstName.clear();
-}
-
-void clearLastName() {
-  _clearLastName.clear();
-}
-
-void clearPh() {
-  _clearPh.clear();
-}
-
-void clearEmail() {
-  _clearEmail.clear();
 }
 
 class NextButton extends StatelessWidget {
@@ -272,10 +244,17 @@ class NextButton extends StatelessWidget {
             fontStyle: FontStyle.italic,
           ),
         ),
-        onPressed: () {
-          print(_clearFirstName.text);
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => CustomerSignup2(data: data)));
+        onPressed: () async {
+          if (_formKey.currentState.validate()) {
+            bundle.fname = _FirstName.text;
+            bundle.lname = _LastName.text;
+            bundle.ph = _Ph.text;
+            bundle.email = _Email.text;
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CustomerSignup2(bundle: bundle)));
+          }
         },
       ),
     );
@@ -286,4 +265,20 @@ void _fieldFocusChange(
     BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
   currentFocus.unfocus();
   FocusScope.of(context).requestFocus(nextFocus);
+}
+
+void clearFirstName() {
+  _FirstName.clear();
+}
+
+void clearLastName() {
+  _LastName.clear();
+}
+
+void clearPh() {
+  _Ph.clear();
+}
+
+void clearEmail() {
+  _Email.clear();
 }

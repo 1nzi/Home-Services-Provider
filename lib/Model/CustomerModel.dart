@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:home_well/Controller/CustomerController/rigesterCustomer.dart';
 
 class DatabaseService {
   final String uid;
@@ -9,17 +10,17 @@ class DatabaseService {
   final CollectionReference customerCollection =
       Firestore.instance.collection('Customer');
 
-  Future updateCustomerData(String fname, String lname, String ph, String email,
-      String city, String area, String address, String password) async {
+  Future <void> updateCustomerData(CustomerData bundle) async {
     return await customerCollection.document(uid).setData({
-      'First Name': fname,
-      'Last Name': lname,
-      'Phone': ph,
-      'Email': email,
-      'City': city,
-      'Area': area,
-      'Address': address,
-      'Password': password,
+      'First Name': bundle.fname,
+      'Last Name': bundle.lname,
+      'Phone': bundle.ph,
+      'Email': bundle.email,
+      'City': bundle.city,
+      'Area': bundle.area,
+      'Address': bundle.address,
+      'Password': bundle.password,
     });
   }
 }
+

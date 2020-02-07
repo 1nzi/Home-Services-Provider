@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:home_well/View/customer/c_login.dart';
 
 class Otp extends StatefulWidget {
-  final int phone;
+  final String phone;
   final String newEmail;
   final bool isGuestCheckOut;
 
@@ -251,11 +253,8 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
                         _setCurrentDigit(0);
                       }),
                   _otpKeyboardActionButton(
-                      label: new Icon(
-                        Icons.forward,
-                        color: Colors.lightGreen,
-                        size:40
-                      ),
+                      label: new Icon(Icons.forward,
+                          color: Colors.lightGreen, size: 40),
                       onPressed: () {})
                 ],
               ),
