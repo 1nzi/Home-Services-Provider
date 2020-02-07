@@ -23,7 +23,6 @@ final TextEditingController _confirmPassword = new TextEditingController();
 final FocusNode _addressFocus = FocusNode();
 final FocusNode _passwordFocus = FocusNode();
 final _formKey = GlobalKey<FormState>();
-final _scaffoldKey = GlobalKey<ScaffoldState>();
 
 // ignore: non_constant_identifier_names
 String City = 'Lahore';

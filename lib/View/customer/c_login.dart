@@ -13,12 +13,14 @@ class CustomerLogin extends StatefulWidget {
   @override
   _CustomerLoginState createState() => _CustomerLoginState();
 }
+final TextEditingController _email = new TextEditingController();
+final TextEditingController _password = new TextEditingController();
 
 
 class _CustomerLoginState extends State<CustomerLogin> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String _ph, _passw;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,41 +56,37 @@ class _CustomerLoginState extends State<CustomerLogin> {
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: TextFormField(
+                    controller: _email,
 
-                    maxLength: 11,
-                    keyboardType: TextInputType.number,
+                    keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
-                    inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
 
                     decoration: const InputDecoration(
-                      labelText: 'Phone No.',
-                      hintText: '03001234567',
+                      labelText: 'Email',
+                      hintText: 'abc@gmail.com',
                       prefixIcon: Icon(Icons.person),
                       border: OutlineInputBorder(),
                     ),
 
                     validator: (value) {
-                      if (value.isEmpty && value.length<11 ) {
-                        return 'Please enter valid Phone No.';
-                      }else if(!value.contains('03004046580'))
-                        {
-                          return 'This Phone No. is not Registered';
-                        }
+                      if (!value.contains('@') && !value.contains('.')   ) {
+                        return 'Please enter valid Email.';
+                      }
                       return null;
                     },
-                    onSaved: (value)=> _ph = value,
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: TextFormField(
+                    controller: _password,
+
                     validator: (value) {
                       if (value.isEmpty) {
                         return 'Please enter valid Password';
                       }
                       return null;
                     },
-                    onSaved: (value)=> _passw = value,
 
                     obscureText: true,
                     decoration: const InputDecoration(
@@ -121,20 +119,20 @@ class _CustomerLoginState extends State<CustomerLogin> {
                   ),
                   onPressed: () async {
                     if(_formKey.currentState.validate()) {
-                      dynamic result = signin();
+                      dynamic result =await signin();
 
-                      if (result == null) {
-                        _scaffoldKey.currentState.showSnackBar(SnackBar(
-                          content: Text('Invalid User Credential'),
-                            duration: Duration(seconds: 3),
-                        ));
-                      } else {
+                       if (result is FirebaseUser ) {
                         Navigator.pop(context);
                         Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => CustomerHome()));
-                      }
+                      } else {
+                         _scaffoldKey.currentState.showSnackBar(SnackBar(
+                           content: Text('Incorrect Email Address or Password'),
+                           duration: Duration(seconds: 5),
+                         ));
+                       }
                     }
                   }
               ),
@@ -189,14 +187,14 @@ class _CustomerLoginState extends State<CustomerLogin> {
         ));
   }
 
-  Future <void> signin() async{
+  Future  signin() async{
      try {
         AuthResult authResult = await FirebaseAuth.instance
-            .signInWithEmailAndPassword(email: _ph, password: _passw);
+            .signInWithEmailAndPassword(email: _email.text, password: _password.text);
         FirebaseUser user = authResult.user;
         return user;
-      }catch(e) {
-        print(e.toString());
+      }catch(signinError) {
+        print(signinError.toString());
         return null;
       }
     }
