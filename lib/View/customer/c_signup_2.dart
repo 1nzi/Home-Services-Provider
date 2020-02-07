@@ -168,12 +168,11 @@ class _MySignupPageState extends State<CustomerSignup2> {
                   obscureText: _obscureText,
                   controller: _password,
                   validator: (value) {
-                    if (value.isEmpty && value.length < 6) {
+                    if ( value.length < 6) {
                       return 'Password should have atleast 6 digits';
                     }
                     return null;
                   },
-                  onSaved: (value)=>bundle.password = value,
 
 
                   decoration: InputDecoration(
@@ -248,7 +247,7 @@ class SignupButton extends StatelessWidget {
             String result =await registerUser(bundle);
               Scaffold.of(context).showSnackBar(SnackBar(
                 content: Text(result),
-                duration: Duration(seconds: 3),
+                duration: Duration(seconds: 5),
               ));
               if(result=='Signup Successfully'){
             Navigator.pop(context);

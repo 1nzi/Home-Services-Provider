@@ -4,7 +4,9 @@ import 'package:flutter/widgets.dart';
 import 'package:home_well/Controller/CustomerController/rigesterCustomer.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'c_drawer.dart';
 import 'c_signup_2.dart';
+import 'package:path/path.dart';
 
 class CustomerSignup1 extends StatefulWidget {
   _MySignupPageState createState() => _MySignupPageState();
@@ -25,20 +27,26 @@ final FocusNode _nextFocus = FocusNode();
 final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
 
+String profilePath;
 class _MySignupPageState extends State<CustomerSignup1> {
-  File _image;
-  String profilePath;
+  File _image = null;
+
 
   @override
   void initState() {
     super.initState();
     downloadImage();
+    bundle.imagePath = null;
+    bundle.image = null;
+
   }
 
   Future getImage() async {
     File image = await ImagePicker.pickImage(source: ImageSource.gallery);
     setState(() {
       _image = image;
+      bundle.imagePath = basename(_image.path);
+      bundle.image = _image;
       print('Select image path' + _image.path.toString());
     });
   }
@@ -79,12 +87,8 @@ class _MySignupPageState extends State<CustomerSignup1> {
                     new Center(
                       child: _image == null
                           ? new CircleAvatar(
-                              child: Icon(
-                                Icons.person,
-                                color: Colors.black,
-                                size: 120,
-                              ),
-                              radius: 65.0,
+                              child: Image.network("https://previews.123rf.com/images/tuktukdesign/tuktukdesign1606/tuktukdesign160600105/59070189-user-icon-man-profile-businessman-avatar-person-icon-in-vector-illustration.jpg"),
+                        radius: 65.0,
                               backgroundColor: Colors.lightGreen[200],
                             )
                           : new CircleAvatar(
@@ -250,6 +254,8 @@ class NextButton extends StatelessWidget {
             bundle.lname = _LastName.text;
             bundle.ph = _Ph.text;
             bundle.email = _Email.text;
+            print(bundle.imagePath);
+            print(bundle.image);
             Navigator.push(
                 context,
                 MaterialPageRoute(

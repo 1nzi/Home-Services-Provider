@@ -1,6 +1,4 @@
 
-
-
 class CustomerData {
   String fname;
   String lname;
@@ -10,15 +8,18 @@ class CustomerData {
   String area;
   String address;
   String password;
+  String imagePath;
+  dynamic image;
 
-  CustomerData(
-      {this.fname,
-      this.lname,
-      this.ph,
-      this.email,
-      this.city,
-      this.area,
-      this.address,
-      this.password,
-      });
+  CustomerData({this.fname,
+    this.lname,
+    this.ph,
+    this.email,
+    this.city,
+    this.area,
+    this.address,
+    this.password,
+    this.imagePath,
+    this.image,
+  });
 }
