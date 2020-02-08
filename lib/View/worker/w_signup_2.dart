@@ -1,22 +1,31 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:home_well/Controller/WorkerController/rigesterWorker.dart';
+import 'package:home_well/View/customer/c_signup_2.dart';
 import 'w_signup_1.dart';
 import 'w_signup_3.dart';
 
 class WorkerSignup2 extends StatefulWidget {
+  final WorkerData bucket;
+
+  const WorkerSignup2({Key key, this.bucket}) : super(key: key);
+
   _MySignupPageState createState() => _MySignupPageState();
 }
 
+final _formKey = GlobalKey<FormState>();
+
 class _MySignupPageState extends State<WorkerSignup2> {
   // ignore: non_constant_identifier_names
-  String City = 'Lahore';
+  String City;
 
   // ignore: non_constant_identifier_names
-  String Area = 'DHA';
+  String Area;
 
   // ignore: non_constant_identifier_names
-  String Job = 'Electrician';
+  String Job ;
   final List<SubJobs> subjobs = ElectricianList.getSubJob();
 
   Widget _buildSubJobsList() {
@@ -54,131 +63,166 @@ class _MySignupPageState extends State<WorkerSignup2> {
             }),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              "Select City",
-            ),
-            Padding(
-                padding: EdgeInsets.fromLTRB(18, 0, 18, 10),
-                child: DropdownButton<String>(
-                  value: City,
-                  icon: Icon(
-                    Icons.location_city,
-                    color: Colors.lightGreen,
-                    size: 24,
-                  ),
-                  isExpanded: true,
-                  style: TextStyle(color: Colors.black, fontSize: 18.0),
-                  onChanged: (String newValue) {
-                    setState(() {
-                      City = newValue;
-                    });
-                  },
-                  items: <String>[
-                    'Lahore',
-                    'Krachi',
-                    'Multan',
-                    'Islamabad',
-                    'Faislabad',
-                  ].map<DropdownMenuItem<String>>((String city) {
-                    return DropdownMenuItem<String>(
-                      value: city,
-                      child: Text(city),
-                    );
-                  }).toList(),
-                )),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              "Select Area",
-            ),
-            Padding(
-                padding: EdgeInsets.fromLTRB(18, 0, 18, 10),
-                child: DropdownButton<String>(
-                  hint: Text('Select Area'),
-                  value: Area,
-                  icon: Icon(Icons.location_city,
-                      color: Colors.lightGreen, size: 24),
-                  isExpanded: true,
-                  style: TextStyle(color: Colors.black, fontSize: 18.0),
-                  onChanged: (String newValue) {
-                    setState(() {
-                      Area = newValue;
-                    });
-                  },
-                  items: <String>[
-                    'DHA',
-                    'Samnabad',
-                    'Shadman',
-                    'Johar Town',
-                    'Muslim Town',
-                    'Anarkali',
-                    'MughalPura'
-                  ].map<DropdownMenuItem<String>>((String area) {
-                    return DropdownMenuItem<String>(
-                      value: area,
-                      child: Text(area),
-                    );
-                  }).toList(),
-                )),
-            Divider(
-              color: Colors.black12,
-              height: 20,
-            ),
-            Text(
-              "Select Job",
-            ),
-            Padding(
-                padding: EdgeInsets.fromLTRB(18, 0, 18, 20),
-                child: DropdownButton<String>(
-                  hint: Text('Select Job'),
-                  value: Job,
-                  icon: Icon(
-                    Icons.school,
-                    color: Colors.lightGreen,
-                    size: 24,
-                  ),
-                  isExpanded: true,
-                  style: TextStyle(color: Colors.black, fontSize: 18.0),
-                  onChanged: (String newValue) {
-                    setState(() {
-                      Job = newValue;
-                    });
-                  },
-                  items: <String>[
-                    'Electrician',
-                    'Plumber',
-                    'Mechanic',
-                    'Painter',
-                    'Maid',
-                    'Carpainter',
-                  ].map<DropdownMenuItem<String>>((String job) {
-                    return DropdownMenuItem<String>(
-                      value: job,
-                      child: Text(job),
-                    );
-                  }).toList(),
-                )),
-            Text(
-              "Select Sub Jobs",
-            ),
-            Container(
-              height: 200,
-              width: media.width * 0.85,
-              color: Colors.lightGreen,
-              child: _buildSubJobsList(),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            NextButton()
-          ],
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(
+                height: 20,
+              ),
+              Text(
+                "Select City",
+              ),
+              StreamBuilder<QuerySnapshot>(
+                  stream: Firestore.instance.collection("City").snapshots(),
+                  builder: (context, snapshot) {
+                    List<DropdownMenuItem<String>> city = [];
+                    if (!snapshot.hasData) {
+                      Text("Loading...");
+                    } else {
+                      for (int i = 0; i < snapshot.data.documents.length; i++) {
+                        DocumentSnapshot snap = snapshot.data.documents[i];
+                        city.add(
+                          DropdownMenuItem(
+                            child: Text(snap.documentID),
+                            value: "${snap.documentID}",
+                          ),
+                        );
+                      }
+                    }
+                    return Padding(
+                        padding: EdgeInsets.fromLTRB(18, 0, 18, 10),
+                        child: DropdownButton<String>(
+                          icon: Icon(
+                            Icons.location_city,
+                            color: Colors.lightGreen,
+                            // ignore: missing_return
+                            size: 24,
+                          ),
+                          style: TextStyle(color: Colors.black, fontSize: 18.0),
+                          isExpanded: true,
+                          hint: new Text("Select City"),
+                          items: city,
+                          onChanged: (String newValue) {
+                            setState(() {
+                              City = newValue;
+                              bucket.city = newValue;
+                            });
+                          },
+                          value: City,
+                        ));
+                  }),
+              SizedBox(
+                height: 10,
+              ),
+              Text(
+                "Select Area",
+              ),
+
+              StreamBuilder<DocumentSnapshot>(
+                  stream: Firestore.instance
+                      .collection("City")
+                      .document('Karachi')
+                      .get()
+                      .asStream(),
+                  builder: (context, snapshot) {
+                    List<String> area = [];
+                    if (!snapshot.hasData) {
+                      Text("Loading...");
+                    } else {
+                      area = List.from(snapshot.data['Area']);
+                    }
+                    return Padding(
+                        padding: EdgeInsets.fromLTRB(18, 0, 18, 10),
+                        child: DropdownButton<String>(
+                          icon: Icon(
+                            Icons.location_city,
+                            color: Colors.lightGreen,
+                            // ignore: missing_return
+                            size: 24,
+                          ),
+                          style: TextStyle(color: Colors.black, fontSize: 18.0),
+                          isExpanded: true,
+
+                          hint: new Text("Select Area"),
+                          items: area.map<DropdownMenuItem<String>>((String area) {
+                            return DropdownMenuItem<String>(
+                              value: area,
+                              child: Text(area),
+                            );
+                          }).toList(),
+                          onChanged: (String newValue) {
+                            setState(() {
+                              Area = newValue;
+                              bucket.area = newValue;
+                            });
+                          },
+                          value: Area,
+                        ));
+                  }),
+              Divider(
+                color: Colors.black12,
+                height: 20,
+              ),
+              Text(
+                "Select Job",
+              ),
+              StreamBuilder<QuerySnapshot>(
+                  stream: Firestore.instance.collection("Jobs").snapshots(),
+                  builder: (context, snapshot) {
+                    List<DropdownMenuItem<String>> job = [];
+                    if (!snapshot.hasData) {
+                      Text("Loading...");
+                    } else {
+                      for (int i = 0; i < snapshot.data.documents.length; i++) {
+                        DocumentSnapshot snap = snapshot.data.documents[i];
+                        job.add(
+                          DropdownMenuItem(
+                            child: Text(snap.documentID),
+                            value: "${snap.documentID}",
+                          ),
+                        );
+                      }
+                    }
+                    return Padding(
+                        padding: EdgeInsets.fromLTRB(18, 0, 18, 10),
+                        child: DropdownButton<String>(
+                          icon: Icon(
+                            Icons.school,
+                            color: Colors.lightGreen,
+                            // ignore: missing_return
+                            size: 24,
+                          ),
+                          style: TextStyle(color: Colors.black, fontSize: 18.0),
+                          isExpanded: true,
+                          hint: new Text("Select Job"),
+                          items: job,
+                          onChanged: (String newValue) {
+                            setState(() {
+                              Job = newValue;
+                              bucket.job = newValue;
+                            });
+                          },
+                          value: Job,
+                        ));
+                  }),
+
+              Text(
+                "Select Sub Jobs",
+              ),
+              Container(
+                height: 200,
+                width: media.width * 0.85,
+                color: Colors.lightGreen,
+                child: _buildSubJobsList(),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              NextButton()
+            ],
+          ),
         ),
       ),
     );
@@ -207,9 +251,16 @@ class NextButton extends StatelessWidget {
               fontWeight: FontWeight.bold),
         ),
         onPressed: () {
-          Navigator.of(context).pop();
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => WorkerSignup3()));
+          if (bucket.city == null) {
+          } else if (bucket.area == null) {
+          } else if (bucket.job == null) {
+          } else {
+            Navigator.of(context).pop();
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => WorkerSignup3(bucket: bucket)));
+          }
         },
       ),
     );

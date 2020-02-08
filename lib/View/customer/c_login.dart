@@ -9,27 +9,28 @@ import 'c_home.dart';
 import 'c_signup_1.dart';
 
 class CustomerLogin extends StatefulWidget {
-
   @override
   _CustomerLoginState createState() => _CustomerLoginState();
 }
+
 final TextEditingController _email = new TextEditingController();
 final TextEditingController _password = new TextEditingController();
-
+final _scaffoldKey = GlobalKey<ScaffoldState>();
+final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
 class _CustomerLoginState extends State<CustomerLogin> {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
         resizeToAvoidBottomPadding: true,
         appBar: AppBar(
-          title: Text("Customer Login",
+          title: Text(
+            "Customer Login",
             style: new TextStyle(
-                fontSize: 20.0, color: Colors.black, fontWeight: FontWeight.bold),
+                fontSize: 20.0,
+                color: Colors.black,
+                fontWeight: FontWeight.bold),
           ),
           leading: new InkWell(
             borderRadius: BorderRadius.circular(30.0),
@@ -57,19 +58,16 @@ class _CustomerLoginState extends State<CustomerLogin> {
                   padding: EdgeInsets.all(8.0),
                   child: TextFormField(
                     controller: _email,
-
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
-
                     decoration: const InputDecoration(
                       labelText: 'Email',
                       hintText: 'abc@gmail.com',
                       prefixIcon: Icon(Icons.person),
                       border: OutlineInputBorder(),
                     ),
-
                     validator: (value) {
-                      if (!value.contains('@') && !value.contains('.')   ) {
+                      if (!value.contains('@') && !value.contains('.')) {
                         return 'Please enter valid Email.';
                       }
                       return null;
@@ -80,14 +78,12 @@ class _CustomerLoginState extends State<CustomerLogin> {
                   padding: EdgeInsets.all(8.0),
                   child: TextFormField(
                     controller: _password,
-
                     validator: (value) {
                       if (value.isEmpty) {
                         return 'Please enter valid Password';
                       }
                       return null;
                     },
-
                     obscureText: true,
                     decoration: const InputDecoration(
                       labelText: 'Password',
@@ -96,47 +92,10 @@ class _CustomerLoginState extends State<CustomerLogin> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 10,
-                ),
-             Container(
-              width: 200.0,
-              height: 40.0,
-              child: RaisedButton(
-                  elevation: 6.0,
-                  textColor: Colors.white,
-                  color: Colors.lightGreen,
-                  shape: new RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(30.0),
-                  ),
-                  child: Text(
-                    "Login",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                  onPressed: () async {
-                    if(_formKey.currentState.validate()) {
-                      dynamic result =await signin();
+                SizedBox(height: 10,),
 
-                       if (result is FirebaseUser ) {
-                        Navigator.pop(context);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CustomerHome()));
-                      } else {
-                         _scaffoldKey.currentState.showSnackBar(SnackBar(
-                           content: Text('Incorrect Email Address or Password'),
-                           duration: Duration(seconds: 5),
-                         ));
-                       }
-                    }
-                  }
-              ),
-            ),
+                LoginBuuton(),
+
                 new FlatButton(
                     child: Text(
                       'Forgot password?',
@@ -152,7 +111,9 @@ class _CustomerLoginState extends State<CustomerLogin> {
                           height: 50,
                         )),
                   ),
+
                   Text("OR"),
+
                   Expanded(
                     child: new Container(
                         margin: const EdgeInsets.only(left: 15.0, right: 10.0),
@@ -162,14 +123,14 @@ class _CustomerLoginState extends State<CustomerLogin> {
                         )),
                   ),
                 ]),
-                SizedBox(
-                  height: 10,
-                ),
+                SizedBox(height: 10,),
+
                 FbLoginBuuton(),
-                SizedBox(
-                  height: 10,
-                ),
+
+                SizedBox(height: 10,),
+
                 GmailLoginBuuton(),
+
                 new FlatButton(
                   onPressed: () {
                     Navigator.pop(context);
@@ -186,21 +147,49 @@ class _CustomerLoginState extends State<CustomerLogin> {
           ),
         ));
   }
+}
 
-  Future  signin() async{
-     try {
-        AuthResult authResult = await FirebaseAuth.instance
-            .signInWithEmailAndPassword(email: _email.text, password: _password.text);
-        FirebaseUser user = authResult.user;
-        return user;
-      }catch(signinError) {
-        print(signinError.toString());
-        return null;
-      }
-    }
-    }
+class LoginBuuton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 200.0,
+      height: 40.0,
+      child: RaisedButton(
+        elevation: 6.0,
+        textColor: Colors.white,
+        color: Colors.lightGreen,
+        shape: new RoundedRectangleBorder(
+          borderRadius: new BorderRadius.circular(30.0),
+        ),
+        child: Text(
+          "Login",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 16.0,
+            fontStyle: FontStyle.italic,
+          ),
+        ),
+        onPressed: () async {
+          if (_formKey.currentState.validate()) {
+            dynamic result = await signin();
 
-
+            if (result is FirebaseUser) {
+              Navigator.pop(context);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => CustomerHome()));
+            } else {
+              _scaffoldKey.currentState.showSnackBar(SnackBar(
+                content: Text('Incorrect Email Address or Password'),
+                duration: Duration(seconds: 5),
+              ));
+            }
+          }
+        },
+      ),
+    );
+  }
+}
 
 class FbLoginBuuton extends StatelessWidget {
   @override
@@ -304,4 +293,17 @@ void _showAlert(BuildContext context) {
       );
     },
   );
+}
+
+
+Future  signin() async{
+  try {
+    AuthResult authResult = await FirebaseAuth.instance
+        .signInWithEmailAndPassword(email: _email.text, password: _password.text);
+    FirebaseUser user = authResult.user;
+    return user;
+  }catch(signinError) {
+    print(signinError.toString());
+    return null;
+  }
 }

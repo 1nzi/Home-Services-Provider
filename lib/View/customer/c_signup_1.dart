@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 import 'package:home_well/Controller/CustomerController/rigesterCustomer.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'c_drawer.dart';
 import 'c_signup_2.dart';
 import 'package:path/path.dart';
 
@@ -27,9 +26,9 @@ final FocusNode _nextFocus = FocusNode();
 final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
 
-String profilePath;
 class _MySignupPageState extends State<CustomerSignup1> {
   File _image = null;
+  String profilePath;
 
 
   @override

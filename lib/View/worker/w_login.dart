@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -11,14 +12,20 @@ class WorkerLogin extends StatefulWidget {
   _WorkerLoginState createState() => _WorkerLoginState();
 }
 
+final TextEditingController _email = new TextEditingController();
+final TextEditingController _password = new TextEditingController();
+final _scaffoldKey = GlobalKey<ScaffoldState>();
+final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
 class _WorkerLoginState extends State<WorkerLogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       resizeToAvoidBottomPadding: true,
       appBar: AppBar(
         title: Text(
-          'Customer Login',
+          'Worker Login',
           style: new TextStyle(
               fontSize: 20.0, color: Colors.black, fontWeight: FontWeight.bold),
         ),
@@ -29,78 +36,102 @@ class _WorkerLoginState extends State<WorkerLogin> {
             }),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            ImageAsset(),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: TextField(
-                decoration: const InputDecoration(
-                  labelText: 'UserName',
-                  prefixIcon: Icon(Icons.person),
-                  border: OutlineInputBorder(),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              ImageAsset(),
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: TextFormField(
+                  controller: _email,
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                  decoration: const InputDecoration(
+                    labelText: 'Email',
+                    hintText: 'abc@gmail.com',
+                    prefixIcon: Icon(Icons.person),
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (!value.contains('@') && !value.contains('.')) {
+                      return 'Please enter valid Email.';
+                    }
+                    return null;
+                  },
                 ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: TextFormField(
-                obscureText: true,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                  prefixIcon: Icon(Icons.lock),
-                  border: OutlineInputBorder(),
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: TextFormField(
+                  controller: _password,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Password',
+                    prefixIcon: Icon(Icons.lock),
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter valid Password';
+                    }
+                    return null;
+                  },
                 ),
               ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            LoginBuuton(),
-            new FlatButton(
-                child: Text(
-                  'Forgot password?',
-                  style: TextStyle(color: Colors.lightBlueAccent),
+
+              SizedBox(height: 10,),
+
+              LoginBuuton(),
+
+              new FlatButton(
+                  child: Text(
+                    'Forgot password?',
+                    style: TextStyle(color: Colors.lightBlueAccent),
+                  ),
+                  onPressed: () => _showAlert(context)),
+              Row(children: <Widget>[
+                Expanded(
+                  child: new Container(
+                      margin: const EdgeInsets.only(left: 10.0, right: 15.0),
+                      child: Divider(
+                        color: Colors.black,
+                        height: 50,
+                      )),
                 ),
-                onPressed: () => _showAlert(context)),
-            Row(children: <Widget>[
-              Expanded(
-                child: new Container(
-                    margin: const EdgeInsets.only(left: 10.0, right: 15.0),
-                    child: Divider(
-                      color: Colors.black,
-                      height: 50,
-                    )),
+
+                Text("OR"),
+
+                Expanded(
+                  child: new Container(
+                      margin: const EdgeInsets.only(left: 15.0, right: 10.0),
+                      child: Divider(
+                        color: Colors.black,
+                        height: 50,
+                      )),
+                ),
+              ]),
+
+              SizedBox(height: 10,),
+
+              FbLoginBuuton(),
+
+              SizedBox(height: 10,),
+
+              GmailLoginBuuton(),
+
+              new FlatButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => WorkerSignup1()));
+                },
+                child: Text('Not a member? Sign up now',
+                    style: TextStyle(color: Colors.red)),
               ),
-              Text("OR"),
-              Expanded(
-                child: new Container(
-                    margin: const EdgeInsets.only(left: 15.0, right: 10.0),
-                    child: Divider(
-                      color: Colors.black,
-                      height: 50,
-                    )),
-              ),
-            ]),
-            SizedBox(
-              height: 10,
-            ),
-            FbLoginBuuton(),
-            SizedBox(
-              height: 10,
-            ),
-            GmailLoginBuuton(),
-            new FlatButton(
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => WorkerSignup1()));
-              },
-              child: Text('Not a member? Sign up now',
-                  style: TextStyle(color: Colors.red)),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -128,9 +159,21 @@ class LoginBuuton extends StatelessWidget {
             fontStyle: FontStyle.italic,
           ),
         ),
-        onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => WorkerHome()));
+        onPressed: () async {
+          if (_formKey.currentState.validate()) {
+            dynamic result = await signin();
+
+            if (result is FirebaseUser) {
+              Navigator.pop(context);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => WorkerHome()));
+            } else {
+              _scaffoldKey.currentState.showSnackBar(SnackBar(
+                content: Text('Incorrect Email Address or Password'),
+                duration: Duration(seconds: 5),
+              ));
+            }
+          }
         },
       ),
     );
@@ -239,4 +282,17 @@ void _showAlert(BuildContext context) {
       );
     },
   );
+}
+
+
+Future  signin() async{
+  try {
+    AuthResult authResult = await FirebaseAuth.instance
+        .signInWithEmailAndPassword(email: _email.text, password: _password.text);
+    FirebaseUser user = authResult.user;
+    return user;
+  }catch(signinError) {
+    print(signinError.toString());
+    return null;
+  }
 }

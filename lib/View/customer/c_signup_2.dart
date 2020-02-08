@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:home_well/Controller/CustomerController/rigesterCustomer.dart';
-import 'package:home_well/Model/CustomerModel.dart';
+import 'package:home_well/Model/RigesterCustomerModel.dart';
 import 'package:home_well/View/customer/c_signup_1.dart';
 import 'c_login.dart';
 
@@ -22,6 +22,8 @@ final TextEditingController _password = new TextEditingController();
 final TextEditingController _confirmPassword = new TextEditingController();
 final FocusNode _addressFocus = FocusNode();
 final FocusNode _passwordFocus = FocusNode();
+final FocusNode _confirmpasswordFocus = FocusNode();
+final FocusNode _SignupButtonFocus = FocusNode();
 final _formKey = GlobalKey<FormState>();
 
 // ignore: non_constant_identifier_names
@@ -167,13 +169,16 @@ class _MySignupPageState extends State<CustomerSignup2> {
                 child: TextFormField(
                   obscureText: _obscureText,
                   controller: _password,
+                  focusNode: _passwordFocus,
+                  onFieldSubmitted: (term) {
+                    _fieldFocusChange(context, _passwordFocus, _confirmpasswordFocus);
+                  },
                   validator: (value) {
                     if ( value.length < 6) {
                       return 'Password should have atleast 6 digits';
                     }
                     return null;
                   },
-
 
                   decoration: InputDecoration(
                     labelText: 'Password',
@@ -189,7 +194,10 @@ class _MySignupPageState extends State<CustomerSignup2> {
                 child: TextFormField(
                   obscureText: _obscureText,
                   controller: _confirmPassword,
-                  validator: (value) {
+                  focusNode: _confirmpasswordFocus,
+                  onFieldSubmitted: (term) {
+                    _fieldFocusChange(context, _confirmpasswordFocus, _SignupButtonFocus);
+                  },validator: (value) {
                     if (value != _password.text) {
                       return 'Password not match';
                     }
@@ -224,6 +232,8 @@ class SignupButton extends StatelessWidget {
       width: 200.0,
       height: 40.0,
       child: RaisedButton(
+        focusNode: _SignupButtonFocus,
+
         elevation: 6.0,
         textColor: Colors.white,
         color: Colors.lightGreen,

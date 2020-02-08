@@ -1,25 +1,31 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:home_well/Controller/WorkerController/rigesterWorker.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'w_login.dart';
 import 'w_signup_2.dart';
+import 'package:path/path.dart';
 
 class WorkerSignup1 extends StatefulWidget {
   _MySignupPageState createState() => _MySignupPageState();
 }
 
-final TextEditingController _clearFirstName = new TextEditingController();
-final TextEditingController _clearCnic = new TextEditingController();
-final TextEditingController _clearPh = new TextEditingController();
-final TextEditingController _clearEmail = new TextEditingController();
+final bucket = WorkerData();
+
+final TextEditingController _FirstName = new TextEditingController();
+final TextEditingController _Cnic = new TextEditingController();
+final TextEditingController _Ph = new TextEditingController();
+final TextEditingController _Email = new TextEditingController();
 
 final FocusNode _firstNameFocus = FocusNode();
 final FocusNode _cnicFocus = FocusNode();
 final FocusNode _phFocus = FocusNode();
 final FocusNode _emailFocus = FocusNode();
 final FocusNode _nextFocus = FocusNode();
+final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
 class _MySignupPageState extends State<WorkerSignup1> {
   File _image;
@@ -29,12 +35,17 @@ class _MySignupPageState extends State<WorkerSignup1> {
   void initState() {
     super.initState();
     downloadImage();
+    bucket.imagePath = null;
+    bucket.image = null;
   }
 
   Future getImage() async {
     File image = await ImagePicker.pickImage(source: ImageSource.gallery);
     setState(() {
       _image = image;
+
+      bucket.imagePath = basename(_image.path);
+      bucket.image = _image;
       print('Select image path' + _image.path.toString());
     });
   }
@@ -67,13 +78,14 @@ class _MySignupPageState extends State<WorkerSignup1> {
             }),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            SizedBox(
-              height: 20,
-            ),
-            Row(
+          child: Form(
+        key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+              SizedBox(height: 20),
+
+              Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -104,98 +116,125 @@ class _MySignupPageState extends State<WorkerSignup1> {
                     ),
                   ),
                 ]),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: TextField(
-                textInputAction: TextInputAction.next,
-                controller: _clearFirstName,
-                focusNode: _firstNameFocus,
-                onSubmitted: (term) {
-                  _fieldFocusChange(context, _firstNameFocus, _phFocus);
-                },
-                decoration: const InputDecoration(
-                  labelText: 'Full Name',
-                  prefixIcon: Icon(Icons.person),
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: clearFirstName,
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: TextFormField(
+                  textInputAction: TextInputAction.next,
+                  controller: _FirstName,
+                  focusNode: _firstNameFocus,
+                  onFieldSubmitted: (term) {
+                    _fieldFocusChange(context, _firstNameFocus, _phFocus);
+                  },
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter Full Name';
+                    }
+                    return null;
+                  },
+                  decoration: const InputDecoration(
+                    labelText: 'Full Name',
+                    prefixIcon: Icon(Icons.person),
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.close),
+                      onPressed: clearFirstName,
+                    ),
+                    border: OutlineInputBorder(),
                   ),
-                  border: OutlineInputBorder(),
                 ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: TextField(
-                maxLength: 13,
-                keyboardType: TextInputType.number,
-                textInputAction: TextInputAction.next,
-                controller: _clearCnic,
-                focusNode: _cnicFocus,
-                onSubmitted: (term) {
-                  _fieldFocusChange(context, _cnicFocus, _phFocus);
-                },
-                decoration: const InputDecoration(
-                  labelText: 'CNIC#',
-                  prefixIcon: Icon(Icons.person),
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: clearLastName,
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: TextFormField(
+                  maxLength: 13,
+                  keyboardType: TextInputType.number,
+                  textInputAction: TextInputAction.next,
+                  inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+                  controller: _Cnic,
+                  focusNode: _cnicFocus,
+                  onFieldSubmitted: (term) {
+                    _fieldFocusChange(context, _cnicFocus, _phFocus);
+                  },
+                  validator: (value) {
+                    if (value.length < 13 ) {
+                      return 'Please enter valid CNIC';
+                    }
+                    return null;
+                  },
+                  decoration: const InputDecoration(
+                    labelText: 'CNIC#',
+                    prefixIcon: Icon(Icons.person),
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.close),
+                      onPressed: clearCnic,
+                    ),
+
+                    border: OutlineInputBorder(),
                   ),
-                  border: OutlineInputBorder(),
                 ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: TextField(
-                maxLength: 11,
-                keyboardType: TextInputType.number,
-                textInputAction: TextInputAction.next,
-                controller: _clearPh,
-                focusNode: _phFocus,
-                onSubmitted: (term) {
-                  _fieldFocusChange(context, _phFocus, _emailFocus);
-                },
-                decoration: const InputDecoration(
-                  labelText: 'Phone#',
-                  prefixIcon: Icon(Icons.phone),
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: clearPh,
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: TextFormField(
+                  maxLength: 11,
+                  keyboardType: TextInputType.phone,
+                  textInputAction: TextInputAction.next,
+                  controller: _Ph,
+                  focusNode: _phFocus,
+                  onFieldSubmitted: (term) {
+                    _fieldFocusChange(context, _phFocus, _emailFocus);
+                  },
+                  validator: (value) {
+                    if (value.length < 11 ) {
+                      return 'Please enter valid Phone#';
+                    }
+                    return null;
+                  },
+                  decoration: const InputDecoration(
+                    labelText: 'Phone#',
+                    prefixIcon: Icon(Icons.phone),
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.close),
+                      onPressed: clearPh,
+                    ),
+                    border: OutlineInputBorder(),
                   ),
-                  border: OutlineInputBorder(),
                 ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: TextField(
-                keyboardType: TextInputType.emailAddress,
-                textInputAction: TextInputAction.next,
-                controller: _clearEmail,
-                focusNode: _emailFocus,
-                onSubmitted: (term) {
-                  _fieldFocusChange(context, _emailFocus, _nextFocus);
-                },
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  prefixIcon: Icon(Icons.email),
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: clearEmail,
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: TextFormField(
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                  controller: _Email,
+                  focusNode: _emailFocus,
+                  onFieldSubmitted: (term) {
+                    _fieldFocusChange(context, _emailFocus, _nextFocus);
+                  },
+                  validator: (value) {
+                    if (!value.contains('@') & !value.contains('.')) {
+                      return 'Please enter valid Email';
+                    }
+                    return null;
+                  },
+                  decoration: const InputDecoration(
+                    labelText: 'Email',
+                    prefixIcon: Icon(Icons.email),
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.close),
+                      onPressed: clearEmail,
+                    ),
+                    border: OutlineInputBorder(),
                   ),
-                  border: OutlineInputBorder(),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            NextButton()
-          ],
+              SizedBox(
+                height: 10,
+              ),
+
+              NextButton()
+            ],
         ),
-      ),
+      )),
     );
   }
 }
@@ -205,19 +244,19 @@ void clearText(buildContext, TextEditingController txt) {
 }
 
 void clearFirstName() {
-  _clearFirstName.clear();
+  _FirstName.clear();
 }
 
-void clearLastName() {
-  _clearCnic.clear();
+void clearCnic() {
+  _Cnic.clear();
 }
 
 void clearPh() {
-  _clearPh.clear();
+  _Ph.clear();
 }
 
 void clearEmail() {
-  _clearEmail.clear();
+  _Email.clear();
 }
 
 class NextButton extends StatelessWidget {
@@ -242,11 +281,25 @@ class NextButton extends StatelessWidget {
             fontStyle: FontStyle.italic,
           ),
         ),
-        onPressed: () {
-          Navigator.pop(context);
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => WorkerSignup2()));
-        },
+        onPressed: () async {
+          if (_formKey.currentState.validate()) {
+            if (bucket.imagePath != null) {
+              bucket.name = _FirstName.text;
+              bucket.cnic = _Cnic.text;
+              bucket.ph = _Ph.text;
+              bucket.email = _Email.text;
+               Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => WorkerSignup2(bucket: bucket)));
+            }else{
+              Scaffold.of(context).showSnackBar(SnackBar(
+                content: Text("Please Add Image"),
+                duration: Duration(seconds: 5),
+              ));
+            }
+          }
+        }
       ),
     );
   }
