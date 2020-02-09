@@ -9,28 +9,25 @@ import 'c_home.dart';
 import 'c_signup_1.dart';
 
 class CustomerLogin extends StatefulWidget {
+
   @override
   _CustomerLoginState createState() => _CustomerLoginState();
 }
 
-final TextEditingController _email = new TextEditingController();
-final TextEditingController _password = new TextEditingController();
-final _scaffoldKey = GlobalKey<ScaffoldState>();
-final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
 class _CustomerLoginState extends State<CustomerLogin> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String _ph, _passw;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
         resizeToAvoidBottomPadding: true,
         appBar: AppBar(
-          title: Text(
-            "Customer Login",
+          title: Text("Customer Login",
             style: new TextStyle(
-                fontSize: 20.0,
-                color: Colors.black,
-                fontWeight: FontWeight.bold),
+                fontSize: 20.0, color: Colors.black, fontWeight: FontWeight.bold),
           ),
           leading: new InkWell(
             borderRadius: BorderRadius.circular(30.0),
@@ -57,33 +54,42 @@ class _CustomerLoginState extends State<CustomerLogin> {
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: TextFormField(
-                    controller: _email,
-                    keyboardType: TextInputType.emailAddress,
+
+                    maxLength: 11,
+                    keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.next,
+                    inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+
                     decoration: const InputDecoration(
-                      labelText: 'Email',
-                      hintText: 'abc@gmail.com',
+                      labelText: 'Phone No.',
+                      hintText: '03001234567',
                       prefixIcon: Icon(Icons.person),
                       border: OutlineInputBorder(),
                     ),
+
                     validator: (value) {
-                      if (!value.contains('@') && !value.contains('.')) {
-                        return 'Please enter valid Email.';
-                      }
+                      if (value.isEmpty && value.length<11 ) {
+                        return 'Please enter valid Phone No.';
+                      }else if(!value.contains('03004046580'))
+                        {
+                          return 'This Phone No. is not Registered';
+                        }
                       return null;
                     },
+                    onSaved: (value)=> _ph = value,
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: TextFormField(
-                    controller: _password,
                     validator: (value) {
                       if (value.isEmpty) {
                         return 'Please enter valid Password';
                       }
                       return null;
                     },
+                    onSaved: (value)=> _passw = value,
+
                     obscureText: true,
                     decoration: const InputDecoration(
                       labelText: 'Password',
@@ -92,10 +98,47 @@ class _CustomerLoginState extends State<CustomerLogin> {
                     ),
                   ),
                 ),
-                SizedBox(height: 10,),
+                SizedBox(
+                  height: 10,
+                ),
+             Container(
+              width: 200.0,
+              height: 40.0,
+              child: RaisedButton(
+                  elevation: 6.0,
+                  textColor: Colors.white,
+                  color: Colors.lightGreen,
+                  shape: new RoundedRectangleBorder(
+                    borderRadius: new BorderRadius.circular(30.0),
+                  ),
+                  child: Text(
+                    "Login",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                  onPressed: () async {
+                    if(_formKey.currentState.validate()) {
+                      dynamic result = signin();
 
-                LoginBuuton(),
-
+                      if (result == null) {
+                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                          content: Text('Invalid User Credential'),
+                            duration: Duration(seconds: 3),
+                        ));
+                      } else {
+                        Navigator.pop(context);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CustomerHome()));
+                      }
+                    }
+                  }
+              ),
+            ),
                 new FlatButton(
                     child: Text(
                       'Forgot password?',
@@ -111,9 +154,7 @@ class _CustomerLoginState extends State<CustomerLogin> {
                           height: 50,
                         )),
                   ),
-
                   Text("OR"),
-
                   Expanded(
                     child: new Container(
                         margin: const EdgeInsets.only(left: 15.0, right: 10.0),
@@ -123,14 +164,14 @@ class _CustomerLoginState extends State<CustomerLogin> {
                         )),
                   ),
                 ]),
-                SizedBox(height: 10,),
-
+                SizedBox(
+                  height: 10,
+                ),
                 FbLoginBuuton(),
-
-                SizedBox(height: 10,),
-
+                SizedBox(
+                  height: 10,
+                ),
                 GmailLoginBuuton(),
-
                 new FlatButton(
                   onPressed: () {
                     Navigator.pop(context);
@@ -147,49 +188,21 @@ class _CustomerLoginState extends State<CustomerLogin> {
           ),
         ));
   }
-}
 
-class LoginBuuton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 200.0,
-      height: 40.0,
-      child: RaisedButton(
-        elevation: 6.0,
-        textColor: Colors.white,
-        color: Colors.lightGreen,
-        shape: new RoundedRectangleBorder(
-          borderRadius: new BorderRadius.circular(30.0),
-        ),
-        child: Text(
-          "Login",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 16.0,
-            fontStyle: FontStyle.italic,
-          ),
-        ),
-        onPressed: () async {
-          if (_formKey.currentState.validate()) {
-            dynamic result = await signin();
+  Future <void> signin() async{
+     try {
+        AuthResult authResult = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(email: _ph, password: _passw);
+        FirebaseUser user = authResult.user;
+        return user;
+      }catch(e) {
+        print(e.toString());
+        return null;
+      }
+    }
+    }
 
-            if (result is FirebaseUser) {
-              Navigator.pop(context);
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => CustomerHome()));
-            } else {
-              _scaffoldKey.currentState.showSnackBar(SnackBar(
-                content: Text('Incorrect Email Address or Password'),
-                duration: Duration(seconds: 5),
-              ));
-            }
-          }
-        },
-      ),
-    );
-  }
-}
+
 
 class FbLoginBuuton extends StatelessWidget {
   @override
@@ -285,7 +298,7 @@ void _showAlert(BuildContext context) {
                   context,
                   MaterialPageRoute(
                       builder: (context) => Otp(
-                            phone: '03004046580',
+                            phone: 03004046580,
                           )));
             },
           ),
@@ -293,17 +306,4 @@ void _showAlert(BuildContext context) {
       );
     },
   );
-}
-
-
-Future  signin() async{
-  try {
-    AuthResult authResult = await FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: _email.text, password: _password.text);
-    FirebaseUser user = authResult.user;
-    return user;
-  }catch(signinError) {
-    print(signinError.toString());
-    return null;
-  }
 }
