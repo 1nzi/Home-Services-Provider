@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../common/authentication.dart';
+import 'package:home_well/View/common/authentication.dart';
+import 'package:home_well/View/customer/c_facebook_login.dart';
+import 'package:home_well/View/customer/c_gmail_logIn.dart';
 import 'c_drawer.dart';
 import 'c_home.dart';
 import 'c_signup_1.dart';
@@ -144,7 +146,7 @@ class _CustomerLoginState extends State<CustomerLogin> {
                       'Forgot password?',
                       style: TextStyle(color: Colors.lightBlueAccent),
                     ),
-                    onPressed: () => _showAlert(context)),
+                    onPressed: () => showAlert(context)),
                 Row(children: <Widget>[
                   Expanded(
                     child: new Container(
@@ -200,110 +202,49 @@ class _CustomerLoginState extends State<CustomerLogin> {
         return null;
       }
     }
-    }
 
-
-
-class FbLoginBuuton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 200.0,
-      height: 40.0,
-      child: RaisedButton(
-        elevation: 6.0,
-        padding: EdgeInsets.all(8.0),
-        shape: new RoundedRectangleBorder(
-          borderRadius: new BorderRadius.circular(30.0),
-        ),
-        textColor: Colors.white,
-        color: Color.fromRGBO(57, 86, 148, 1.0),
-        child: Text(
-          "Login With Facebook",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 16.0,
-            fontStyle: FontStyle.italic,
-          ),
-        ),
-        onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => CustomerHome()));
-        },
-      ),
-    );
-  }
-}
-
-class GmailLoginBuuton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 200.0,
-      height: 40.0,
-      child: RaisedButton(
-        elevation: 6.0,
-        padding: EdgeInsets.all(8.0),
-        shape: new RoundedRectangleBorder(
-          borderRadius: new BorderRadius.circular(30.0),
-        ),
-        textColor: Colors.white,
-        color: Color.fromRGBO(217, 83, 79, 1.0),
-        child: Text(
-          "Login With Google",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 16.0,
-            fontStyle: FontStyle.italic,
-          ),
-        ),
-        onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => CustomerHome()));
-        },
-      ),
-    );
-  }
-}
-
-void _showAlert(BuildContext context) {
-  showDialog<void>(
-    context: context,
-    barrierDismissible: false, // user must tap button!
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Forget Password!'),
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.all(8.0),
-                child: TextField(
-                  maxLength: 11,
-                  keyboardType: TextInputType.number,
-                  textInputAction: TextInputAction.send,
-                  decoration: const InputDecoration(
-                    labelText: 'Enter Phone No.',
+  showAlert(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Forget Password!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: TextField(
+                    maxLength: 11,
+                    keyboardType: TextInputType.number,
+                    textInputAction: TextInputAction.send,
+                    decoration: const InputDecoration(
+                      labelText: 'Enter Phone No.',
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        actions: <Widget>[
-          FlatButton(
-            child: Text('Send Code'),
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => Otp(
-                            phone: 03004046580,
-                          )));
-            },
-          ),
-        ],
-      );
-    },
-  );
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Send Code'),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            Otp(
+                              phone: '03004046580',
+                            )));
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
 }
+
+
