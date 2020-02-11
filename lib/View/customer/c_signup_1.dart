@@ -14,7 +14,6 @@ class CustomerSignup1 extends StatefulWidget {
 final bundle = CustomerData();
 
 final TextEditingController _FirstName = new TextEditingController();
-final TextEditingController _LastName = new TextEditingController();
 final TextEditingController _Ph = new TextEditingController();
 final TextEditingController _Email = new TextEditingController();
 
@@ -25,11 +24,9 @@ final FocusNode _emailFocus = FocusNode();
 final FocusNode _nextFocus = FocusNode();
 final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-
 class _MySignupPageState extends State<CustomerSignup1> {
   File _image = null;
   String profilePath;
-
 
   @override
   void initState() {
@@ -37,7 +34,6 @@ class _MySignupPageState extends State<CustomerSignup1> {
     downloadImage();
     bundle.imagePath = null;
     bundle.image = null;
-
   }
 
   Future getImage() async {
@@ -61,6 +57,7 @@ class _MySignupPageState extends State<CustomerSignup1> {
 
   @override
   Widget build(BuildContext context) {
+    var Gender = 'Male';
     return Scaffold(
       resizeToAvoidBottomPadding: true,
       appBar: AppBar(
@@ -86,8 +83,9 @@ class _MySignupPageState extends State<CustomerSignup1> {
                     new Center(
                       child: _image == null
                           ? new CircleAvatar(
-                              child: Image.network("https://previews.123rf.com/images/tuktukdesign/tuktukdesign1606/tuktukdesign160600105/59070189-user-icon-man-profile-businessman-avatar-person-icon-in-vector-illustration.jpg"),
-                        radius: 65.0,
+                              child: Image.network(
+                                  "https://previews.123rf.com/images/tuktukdesign/tuktukdesign1606/tuktukdesign160600105/59070189-user-icon-man-profile-businessman-avatar-person-icon-in-vector-illustration.jpg"),
+                              radius: 65.0,
                               backgroundColor: Colors.lightGreen[200],
                             )
                           : new CircleAvatar(
@@ -133,30 +131,35 @@ class _MySignupPageState extends State<CustomerSignup1> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(8.0),
-                child: TextFormField(
-                  textInputAction: TextInputAction.next,
-                  controller: _LastName,
-                  focusNode: _lastNameFocus,
-                  onFieldSubmitted: (term) {
-                    _fieldFocusChange(context, _lastNameFocus, _phFocus);
-                  },
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter last Name';
-                    }
-                    return null;
-                  },
-                  decoration: const InputDecoration(
-                    labelText: 'Last Name',
-                    prefixIcon: Icon(Icons.person),
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.close),
-                      onPressed: clearLastName,
+                padding: EdgeInsets.fromLTRB(18, 10, 18, 10),
+                child: Container(
+                    decoration: ShapeDecoration(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(width: 1.0, style: BorderStyle.solid),
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      ),
                     ),
-                    border: OutlineInputBorder(),
-                  ),
-                ),
+                    child: DropdownButton<String>(
+                      hint: Text('Select Gender'),
+                      icon: Icon(Icons.person,
+                          color: Colors.lightGreen, size: 24),
+                      isExpanded: true,
+                      style: TextStyle(color: Colors.black, fontSize: 18.0),
+                      onChanged: (String newValue) {
+                        setState(() {
+                          Gender = newValue;
+                          bundle.gender = newValue;
+                        });
+                      },
+                      items: <String>['Male', 'Female']
+                          .map<DropdownMenuItem<String>>((String Gender) {
+                        return DropdownMenuItem<String>(
+                          value: Gender,
+                          child: Text(Gender),
+                        );
+                      }).toList(),
+                      value: Gender,
+                    )),
               ),
               Padding(
                 padding: EdgeInsets.all(8.0),
@@ -250,7 +253,6 @@ class NextButton extends StatelessWidget {
         onPressed: () async {
           if (_formKey.currentState.validate()) {
             bundle.fname = _FirstName.text;
-            bundle.lname = _LastName.text;
             bundle.ph = _Ph.text;
             bundle.email = _Email.text;
             print(bundle.imagePath);
@@ -274,10 +276,6 @@ void _fieldFocusChange(
 
 void clearFirstName() {
   _FirstName.clear();
-}
-
-void clearLastName() {
-  _LastName.clear();
 }
 
 void clearPh() {

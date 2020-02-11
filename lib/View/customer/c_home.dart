@@ -1,18 +1,42 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:home_well/Controller/CustomerController/customerProfile.dart';
 import 'c_drawer.dart';
 import 'c_sub_category.dart';
 
 
 class CustomerHome extends StatefulWidget {
 
+
+
   _MyHomePageState createState() => _MyHomePageState();
 }
 
+CustomerDataFromFireStore customerDataFromFireStore = new CustomerDataFromFireStore();
+
+
 class _MyHomePageState extends State<CustomerHome> {
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseUser user;
+
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final List<Category> category = CategoryList.getCategory();
+
+  _MyHomePageState();
+
+  @override
+  void initState() {
+    super.initState();
+    initUser();
+  }
+
+  initUser() async {
+    user = await _auth.currentUser();
+    setState(() {});
+  }
 
   Widget _buildCatogeryList() {
     return Container(
@@ -35,7 +59,7 @@ class _MyHomePageState extends State<CustomerHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      drawer: CustomerDrawerOnly(),
+      drawer: CustomerDrawerOnly(user: customerDataFromFireStore.getCustomerData(user.uid)),
 
       appBar: new AppBar(
         leading: new IconButton(

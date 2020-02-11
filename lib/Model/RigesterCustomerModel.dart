@@ -24,7 +24,7 @@ class DatabaseService {
     //upload customer data to firebase
     return await customerCollection.document(uid).setData({
       'First Name': bundle.fname,
-      'Last Name': bundle.lname,
+      'Gender': bundle.gender,
       'Phone': bundle.ph,
       'Email': bundle.email,
       'City': bundle.city,

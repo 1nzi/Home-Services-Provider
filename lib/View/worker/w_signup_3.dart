@@ -298,7 +298,6 @@ class SignupButton extends StatelessWidget {
                 duration: Duration(seconds: 5),
               ));
               if (result == 'Signup Successfully') {
-                Navigator.pop(context);
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => HomeScreen()));
               }

@@ -301,6 +301,7 @@ Future  signin() async{
     AuthResult authResult = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: _email.text, password: _password.text);
     FirebaseUser user = authResult.user;
+    print(user.uid);
     return user;
   }catch(signinError) {
     print(signinError.toString());

@@ -1,7 +1,8 @@
 
 class CustomerData {
+  String userId;
   String fname;
-  String lname;
+  String gender;
   String ph;
   String email;
   String city;
@@ -11,8 +12,10 @@ class CustomerData {
   String imagePath;
   dynamic image;
 
-  CustomerData({this.fname,
-    this.lname,
+  CustomerData({
+    this.userId,
+    this.fname,
+    this.gender,
     this.ph,
     this.email,
     this.city,

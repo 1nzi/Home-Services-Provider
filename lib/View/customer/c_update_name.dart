@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:home_well/Controller/CustomerController/customerProfile.dart';
 
 import 'c_profile.dart';
+CustomerDataFromFireStore updateDataFromFireStore = new CustomerDataFromFireStore();
 
 class UpdateName extends StatefulWidget {
+  final String uid;
+
+  const UpdateName({Key key, this.uid}) : super(key: key);
   @override
-  _UpdateNameState createState() => _UpdateNameState();
+  _UpdateNameState createState() => _UpdateNameState(uid);
 }
 
+final TextEditingController _name = new TextEditingController();
+
 class _UpdateNameState extends State<UpdateName> {
+  final String uid;
+
+  _UpdateNameState(this.uid);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,6 +66,7 @@ class _UpdateNameState extends State<UpdateName> {
                 padding: EdgeInsets.only(top: 20),
               ),
               TextField(
+                controller: _name,
                 decoration: InputDecoration(
                   hintText: 'Enter your full name',
                 ),
@@ -77,6 +88,7 @@ class _UpdateNameState extends State<UpdateName> {
                       ),
                     ),
                     onPressed: () {
+                      updateDataFromFireStore.updateData(uid,'First Name',_name.text);
                       Navigator.pop(context,
                           MaterialPageRoute(builder: (context) {
                         return Profile();
