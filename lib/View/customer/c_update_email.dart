@@ -1,13 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:home_well/Controller/CustomerController/customerProfile.dart';
 
 import 'c_profile.dart';
 
+
+CustomerDataFromFireStore updateDataFromFireStore =
+new CustomerDataFromFireStore();
+
 class UpdateEmail extends StatefulWidget {
+  final String uid;
+
+  const UpdateEmail({Key key, this.uid}) : super(key: key);
   @override
-  _UpdateEmailState createState() => _UpdateEmailState();
+  _UpdateEmailState createState() => _UpdateEmailState(uid);
 }
 
+final TextEditingController _email = new TextEditingController();
+final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
 class _UpdateEmailState extends State<UpdateEmail> {
+  final String uid;
+
+  _UpdateEmailState(this.uid);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,63 +45,80 @@ class _UpdateEmailState extends State<UpdateEmail> {
         ),
         body: Container(
           padding: EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Text('Update your email',
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text('Update your email',
+                    style: TextStyle(
+                      fontSize: 25,
+                      color: Colors.black,
+                      decoration: TextDecoration.none,
+                      //              fontFamily: 'Raleway',
+                    )),
+                Padding(
+                  padding: EdgeInsets.only(top: 10),
+                ),
+                Text(
+                  'Receive info about new updates and awesome promos in your inbox',
                   style: TextStyle(
-                    fontSize: 25,
-                    color: Colors.black,
+                    fontSize: 12,
                     decoration: TextDecoration.none,
-                    //              fontFamily: 'Raleway',
-                  )),
-              Padding(
-                padding: EdgeInsets.only(top: 10),
-              ),
-              Text(
-                'Receive info about new updates and awesome promos in your inbox',
-                style: TextStyle(
-                  fontSize: 12,
-                  decoration: TextDecoration.none,
-                  color: Colors.grey,
+                    color: Colors.grey,
+                  ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 20),
-              ),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: 'Enter your new email address',
-                  hintStyle: TextStyle(),
+                Padding(
+                  padding: EdgeInsets.only(top: 20),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 20),
-              ),
-              Container(
-                  width: 330,
-                  child: RaisedButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.lightGreen)),
-                    color: Colors.lightGreen,
-                    child: Text(
-                      'Update',
-                      style: TextStyle(
-                        fontSize: 20,
+                TextFormField(
+                  controller: _email,
+                  decoration: InputDecoration(
+                    hintText: 'Enter your new email address',
+                    hintStyle: TextStyle(),
+                  ),
+                  validator: (value) {
+                    if (!value.contains('@')) {
+                      return 'Please enter valid Email';
+                    }
+                    if (!value.contains('.')) {
+                      return 'Please enter valid Email';
+                    }
+                    return null;
+                  },
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 20),
+                ),
+                Container(
+                    width: 330,
+                    child: RaisedButton(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(18.0),
+                          side: BorderSide(color: Colors.lightGreen)),
+                      color: Colors.lightGreen,
+                      child: Text(
+                        'Update',
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
                       ),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context,
-                          MaterialPageRoute(builder: (context) {
-                        return Profile();
-                      }));
-                    },
+                      onPressed: () {
+                        if (_formKey.currentState.validate()) {
+                          updateDataFromFireStore.updateData(
+                              uid, 'Email', _email.text);
+                          Navigator.pop(context,
+                              MaterialPageRoute(builder: (context) {
+                            return Profile();
+                          }));
+                        }
+                      },
 
-                    //  padding: EdgeInsets.only(top: 20),
-                  )),
-            ],
+                      //  padding: EdgeInsets.only(top: 20),
+                    )),
+              ],
+            ),
           ),
         ));
   }

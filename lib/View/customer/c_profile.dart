@@ -49,7 +49,7 @@ class ProfileState extends State<Profile> {
                 'Name',
                 style: TextStyle(color: Colors.black),
               ),
-              subtitle: Text(customerData.fname),
+              subtitle: Text(customerData.fname!=null?customerData.fname:'Name'),
               trailing: IconButton(
                   icon: Icon(Icons.edit, color: Colors.lightGreen, size: 24 ),
                   onPressed: () {
@@ -69,7 +69,7 @@ class ProfileState extends State<Profile> {
                   icon: Icon(Icons.edit, color: Colors.lightGreen, size: 24),
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) {
-                      return Mobile();
+                      return Mobile(uid: customerData.userId);
                     }));
                   }),
             ),
@@ -96,7 +96,7 @@ class ProfileState extends State<Profile> {
                   icon: Icon(Icons.edit, color: Colors.lightGreen, size: 24),
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) {
-                      return UpdateEmail();
+                      return UpdateEmail(uid: customerData.userId);
                     }));
                   }),
             ),
@@ -110,7 +110,7 @@ class ProfileState extends State<Profile> {
                   icon: Icon(Icons.edit, color: Colors.lightGreen, size: 24),
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) {
-                      return ChangePassword();
+                      return ChangePassword(uid: customerData.userId);
                     }));
                   }),
             ),
@@ -125,7 +125,7 @@ class ProfileState extends State<Profile> {
                   icon: Icon(Icons.edit, color: Colors.lightGreen, size: 24),
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) {
-                      return Gender();
+                      return Gender(uid: customerData.userId);
                     }));
                   }),
             ),

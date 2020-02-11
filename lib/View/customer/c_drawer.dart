@@ -22,8 +22,6 @@ class CustomerDrawerOnly extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // String name = customerDataFromFireStore.getCustomerData(userID);
-    //print(name);
     return new Drawer(
         child: new ListView(
       children: <Widget>[
@@ -31,8 +29,8 @@ class CustomerDrawerOnly extends StatelessWidget {
           child: Column(
             children: <Widget>[
               new Container(
-                width: 130,
-                height: 130,
+                width: 100,
+                height: 100,
                 decoration: new BoxDecoration(
                   shape: BoxShape.circle,
                   image: new DecorationImage(
@@ -44,7 +42,7 @@ class CustomerDrawerOnly extends StatelessWidget {
                 ),
               ),
               Text(
-                user.fname,
+                user.fname!=null?user.fname:'Name',
                 textAlign: TextAlign.center,
               )
             ],

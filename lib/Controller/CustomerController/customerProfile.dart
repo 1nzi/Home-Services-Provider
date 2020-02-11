@@ -24,7 +24,7 @@ class CustomerDataFromFireStore {
     var userQuery = db.collection('Customer').document(uid);
     userQuery.get().then((data) {
       userData.userId = uid;
-      userData.fname = data['First Name'];
+      userData.fname = data['Name'];
       userData.email = data['Email'];
       userData.ph = data['Phone'];
       userData.image = data['Image'];

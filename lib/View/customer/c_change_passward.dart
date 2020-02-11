@@ -1,15 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:home_well/Controller/CustomerController/customerProfile.dart';
 
 import 'c_profile.dart';
 
+CustomerDataFromFireStore updateDataFromFireStore = new CustomerDataFromFireStore();
+final TextEditingController _passw = new TextEditingController();
+
 class ChangePassword extends StatefulWidget {
+  final String uid;
+  final String uPassw;
+
+  const ChangePassword({Key key, this.uid, this.uPassw}) : super(key: key);
   @override
-  _ChangePasswordState createState() => _ChangePasswordState();
+  _ChangePasswordState createState() => _ChangePasswordState(uid, uPassw);
 }
 
 class _ChangePasswordState extends State<ChangePassword> {
+  final String uid;
+  final String uPassw;
+
   bool _obscureText = true;
   final _formKey = GlobalKey<FormState>();
+
+  _ChangePasswordState(this.uid, this.uPassw);
 
 
   void _toggle() {
@@ -51,8 +64,11 @@ class _ChangePasswordState extends State<ChangePassword> {
                   TextFormField(
                     obscureText: _obscureText,
                     validator: (value) {
-                      if (value.isEmpty && value.length<5) {
-                        return 'Password should have atleast 5 digits';
+                      if (value.length<6) {
+                        return 'Current Password is Incorrect';
+                      }
+                      if (value != uPassw) {
+                        return 'Current Password is Incorrect';
                       }
                       return null;
                     },
@@ -66,10 +82,11 @@ class _ChangePasswordState extends State<ChangePassword> {
                     padding: EdgeInsets.only(top: 5),
                   ),
                   TextFormField(
+                    controller: _passw,
                     obscureText: _obscureText,
                     validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Please enter some text';
+                      if (value.length < 6) {
+                        return 'Password should have atleast 6 digits';
                       }
                       return null;
                     },
@@ -85,8 +102,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                   TextFormField(
                     obscureText: _obscureText,
                     validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Please enter some text';
+                      if (value != _passw.text) {
+                        return 'Password not match';
                       }
                       return null;
                     },
@@ -103,7 +120,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     width: 330,
                     height: 150,
                     child: Text(
-                      'For security reasons,  your password needs at least 8 characters, consisting of:'
+                      'For security reasons,  your password needs at least 6 characters, consisting of:'
                       ' upper and lower casse latters'
                       ' numbers ',
                       style: TextStyle(
@@ -131,6 +148,9 @@ class _ChangePasswordState extends State<ChangePassword> {
                         ),
                         onPressed: () {
                           if (_formKey.currentState.validate()) {
+                            updateDataFromFireStore.updateData(
+                                uid, 'Password', _passw.text);
+
                             Navigator.pop(context, MaterialPageRoute(builder: (context) {
                               return Profile();
                             }));

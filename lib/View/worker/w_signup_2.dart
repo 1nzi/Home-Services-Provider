@@ -142,7 +142,7 @@ class _MySignupPageState extends State<WorkerSignup2> {
                               });
                             },
                             validator: (newVal) {
-                              if (newVal.isEmpty) {
+                              if (newVal==null) {
                                 return 'Area is required';
                               }
                               return null;
@@ -292,7 +292,6 @@ class NextButton extends StatelessWidget {
           }
 
           if (_formKey.currentState.validate()){
-            Navigator.of(context).pop();
             Navigator.push(
                 context,
                 MaterialPageRoute(

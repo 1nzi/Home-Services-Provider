@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:home_well/Controller/CustomerController/rigesterCustomer.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 class DatabaseService {
   final String uid;
 
@@ -23,7 +22,7 @@ class DatabaseService {
     }
     //upload customer data to firebase
     return await customerCollection.document(uid).setData({
-      'First Name': bundle.fname,
+      'Name': bundle.fname,
       'Gender': bundle.gender,
       'Phone': bundle.ph,
       'Email': bundle.email,

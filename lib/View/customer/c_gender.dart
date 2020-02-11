@@ -1,19 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:home_well/Controller/CustomerController/customerProfile.dart';
 
 import 'c_profile.dart';
 
+CustomerDataFromFireStore updateDataFromFireStore = new CustomerDataFromFireStore();
+
 class Gender extends StatefulWidget {
+  final String uid;
+
+  const Gender({Key key, this.uid}) : super(key: key);
+
   @override
-  _GenderState createState() => _GenderState();
+  _GenderState createState() => _GenderState(uid);
 }
 
 class _GenderState extends State<Gender> {
+  final String uid;
+
   int selectedRadioTile;
+
+  _GenderState(this.uid);
 
   @override
   void initState() {
     super.initState();
-    selectedRadioTile = 0;
+    selectedRadioTile = 1;
   }
 
   setSelectedRadioTile(int val) {
@@ -72,14 +83,7 @@ class _GenderState extends State<Gender> {
                       setSelectedRadioTile(val);
                     },
                   ),
-                  RadioListTile(
-                    value: 3,
-                    groupValue: selectedRadioTile,
-                    title: Text('Prefer not to specify'),
-                    onChanged: (val) {
-                      setSelectedRadioTile(val);
-                    },
-                  ),
+                  SizedBox(height: 20,),
                   Row(
                     children: <Widget>[
                       Expanded(
@@ -100,6 +104,7 @@ class _GenderState extends State<Gender> {
                           },
                         ),
                       ),
+                      SizedBox(width: 10,),
                       Expanded(
                         child: FlatButton(
                           shape: RoundedRectangleBorder(
@@ -111,6 +116,14 @@ class _GenderState extends State<Gender> {
                             style: TextStyle(fontSize: 16, color: Colors.black),
                           ),
                           onPressed: () {
+                            if(selectedRadioTile==1){
+                              updateDataFromFireStore.updateData(
+                                  uid, 'Gender', 'Male');
+                            }
+                            else{
+                              updateDataFromFireStore.updateData(
+                                  uid, 'Gender', 'Femal');
+                            }
                             Navigator.pop(context,
                                 MaterialPageRoute(builder: (context) {
                               return Profile();

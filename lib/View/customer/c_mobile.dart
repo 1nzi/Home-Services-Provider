@@ -1,32 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:home_well/Controller/CustomerController/customerProfile.dart';
 
 import 'c_profile.dart';
 
+CustomerDataFromFireStore updateDataFromFireStore =
+    new CustomerDataFromFireStore();
+
 class Mobile extends StatefulWidget {
+  final String uid;
+
+  const Mobile({Key key, this.uid}) : super(key: key);
+
   @override
-  _MobileState createState() => _MobileState();
+  _MobileState createState() => _MobileState(uid);
 }
 
+final TextEditingController _ph = new TextEditingController();
+final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
 class _MobileState extends State<Mobile> {
+  final String uid;
+
+  _MobileState(this.uid);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-          appBar: AppBar(
-            title: Text('Update Number',
-              style: new TextStyle(
-                  fontSize: 20.0, color: Colors.black, fontWeight: FontWeight.bold),
-            ),
-            backgroundColor: Colors.lightGreen,
-            leading: IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigator.pop(context, MaterialPageRoute(builder: (context) {
-                    return Profile();
-                  }));
-                }),
+        appBar: AppBar(
+          title: Text(
+            'Update Number',
+            style: new TextStyle(
+                fontSize: 20.0,
+                color: Colors.black,
+                fontWeight: FontWeight.bold),
           ),
-          body: Container(
-            padding: EdgeInsets.all(20),
+          backgroundColor: Colors.lightGreen,
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.pop(context, MaterialPageRoute(builder: (context) {
+                  return Profile();
+                }));
+              }),
+        ),
+        body: Container(
+          padding: EdgeInsets.all(20),
+          child: Form(
+            key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -36,7 +56,7 @@ class _MobileState extends State<Mobile> {
                       fontSize: 25,
                       color: Colors.black,
                       decoration: TextDecoration.none,
-                     // fontFamily: 'Raleway',
+                      // fontFamily: 'Raleway',
                     )),
                 Padding(
                   padding: EdgeInsets.only(top: 10),
@@ -52,18 +72,28 @@ class _MobileState extends State<Mobile> {
                 Padding(
                   padding: EdgeInsets.only(top: 20),
                 ),
-                TextField(
-                  keyboardType:TextInputType.number,
+                TextFormField(
+                  controller: _ph,
+                  keyboardType: TextInputType.number,
+                  maxLength: 11,
                   decoration: InputDecoration(
-                    hintText: '+92 301 2345678',
+                    hintText: '0301 2345678',
                   ),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter valid Phone';
+                    }
+                    if (value.length < 11) {
+                      return 'Please enter valid Phone';
+                    }
+                    return null;
+                  },
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 20),
                 ),
                 Container(
                     width: 330,
-
                     child: RaisedButton(
                       shape: RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(18.0),
@@ -76,17 +106,21 @@ class _MobileState extends State<Mobile> {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.pop(context,
-                            MaterialPageRoute(builder: (context) {
-                          return Profile();
-                        }));
+                        if (_formKey.currentState.validate()) {
+                          updateDataFromFireStore.updateData(
+                              uid, 'Phone', _ph.text);
+                          Navigator.pop(context,
+                              MaterialPageRoute(builder: (context) {
+                                return Profile();
+                              }));
+                        }
                       },
 
                       //  padding: EdgeInsets.only(top: 20),
                     )),
               ],
             ),
-          )
-    );
+          ),
+        ));
   }
 }
