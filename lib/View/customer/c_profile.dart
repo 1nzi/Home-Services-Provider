@@ -1,10 +1,9 @@
 
 import 'package:flutter/material.dart';
-import 'package:home_well/Controller/CustomerController/customerProfile.dart';
 import 'package:home_well/Controller/CustomerController/rigesterCustomer.dart';
 import 'c_change_passward.dart';
-import 'c_drawer.dart';
 import 'c_gender.dart';
+import 'c_home.dart';
 import 'c_mobile.dart';
 import 'c_update_email.dart';
 import 'c_update_name.dart';
@@ -37,7 +36,7 @@ class ProfileState extends State<Profile> {
               icon: Icon(Icons.arrow_back),
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return CustomerDrawerOnly();
+                  return CustomerHome();
                 }));
               }),
         ),

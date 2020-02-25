@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:home_well/Controller/CustomerController/customerProfile.dart';
 import 'package:home_well/Controller/CustomerController/rigesterCustomer.dart';
 

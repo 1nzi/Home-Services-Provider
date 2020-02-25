@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:home_well/View/customer/c_home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:home_well/View/customer/c_select_subCategory.dart';
@@ -19,7 +18,7 @@ class FbLoginBuuton extends StatelessWidget {
     FacebookAccessToken facebookAccessToken = facebookLoginResult.accessToken;
     AuthCredential authCredential = FacebookAuthProvider.getCredential(accessToken: facebookAccessToken.token);
     FirebaseUser fbUser;
-    fbUser = (await _auth.signInWithCredential(authCredential)).user;
+    return fbUser = (await _auth.signInWithCredential(authCredential)).user;
   }
 
   void _logIn(BuildContext context) {

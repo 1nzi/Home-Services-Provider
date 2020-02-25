@@ -1,33 +1,58 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import '../services/panting_service.dart';
-import '../services/plumbing_services.dart';
 import 'c_drawer.dart';
 import 'c_select_subCategory.dart';
 
 class SubJobs extends StatefulWidget {
-  _MySubCategoryPageState createState() => _MySubCategoryPageState();
+  final String title;
+
+  const SubJobs({Key key, this.title}) : super(key: key);
+
+  _MySubCategoryPageState createState() => _MySubCategoryPageState(title);
 }
 
+
 class _MySubCategoryPageState extends State<SubJobs> {
+  final String title;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  final List<SubCategory> _subCategory = SubCategoryList.getCatogery();
+
+  _MySubCategoryPageState(this.title);
 
   Widget _buildSubCategoryList() {
     return Container(
-      child: _subCategory.length > 0
-          ? ListView.builder(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              itemCount: _subCategory.length,
-              itemBuilder: (BuildContext context, int index) {
-                return SubCategoryCard(
-                  subCategory: _subCategory[index],
-                );
-              },
-            )
-          : Center(child: Text('No Items')),
+      child: StreamBuilder<DocumentSnapshot>(
+          stream: Firestore.instance.collection("Jobs").document(title).get().asStream(),
+          builder: (context, snapshot) {
+            List<String> subJob = new List();
+            List<String> subJobImg = new List();
+            List<SubCategory> subCategory = new List();
+
+            if (!snapshot.hasData) {
+              print(snapshot.data);
+
+              return Text("Loading...");
+            } else {
+              subJob = List.from(snapshot.data["subjob"]);
+              subJobImg = List.from(snapshot.data['subjobImg']);
+              for (int i = 0; i < subJob.length; i++) {
+                subCategory.add(SubCategory(subJob[i], subJobImg[i]));
+              }
+              return Container(
+                child: subJob.length > 0
+                    ? ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: subJob.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return SubCategoryCard(
+                              subCategory: subCategory[index]);
+                        })
+                    : Center(child: Text('This Job has No SubJobs')),
+              );
+            }
+          }),
     );
   }
 
@@ -38,9 +63,9 @@ class _MySubCategoryPageState extends State<SubJobs> {
       drawer: CustomerDrawerOnly(),
       appBar: new AppBar(
         leading: new IconButton(
-          icon: Icon(Icons.menu),
+          icon: Icon(Icons.arrow_back),
           onPressed: () {
-            _scaffoldKey.currentState.openDrawer();
+            Navigator.pop(context);
           },
         ),
         title: new Text(
@@ -66,26 +91,9 @@ class _MySubCategoryPageState extends State<SubJobs> {
 
 class SubCategory {
   final String title;
-  final String subtitle;
   final String imageUrl;
-  final String id;
 
-  SubCategory(this.title, this.subtitle, this.imageUrl, this.id);
-}
-
-class SubCategoryList {
-  static List<SubCategory> getCatogery() {
-    return [
-      SubCategory('Electrical', 'home Electric Applience...',
-          'Images/electric.jpg', '1'),
-      SubCategory('Ac Technician', 'Ac Repair, gas filling...',
-          'Images/AcTech.jpg', '2'),
-      SubCategory('Fridge Technician', 'Fridge Repair, gas filling...',
-          'Images/fridgeTech.jpg', '3'),
-      SubCategory(
-          'TV Technician', 'TV , LED, Repair...', 'Images/tvTech.jpg', '4'),
-    ];
-  }
+  SubCategory(this.title, this.imageUrl);
 }
 
 class SubCategoryCard extends StatelessWidget {
@@ -102,28 +110,10 @@ class SubCategoryCard extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(8.0))),
         child: InkWell(
           onTap: () {
-            Navigator.pop(cxt);
-            if (subCategory.id == '1') {
-              Navigator.push(
-                  cxt,
-                  new MaterialPageRoute(
-                      builder: (context) => new SelectSubCategory()));
-            } else if (subCategory.id == '2') {
-              Navigator.push(
-                  cxt,
-                  new MaterialPageRoute(
-                      builder: (context) => new SelectSubCategory()));
-            } else if (subCategory.id == '3') {
-              Navigator.push(
-                  cxt,
-                  new MaterialPageRoute(
-                      builder: (context) => new PlumbingServices()));
-            } else if (subCategory.id == '4') {
-              Navigator.push(
-                  cxt,
-                  new MaterialPageRoute(
-                      builder: (context) => new PaintingService()));
-            }
+            Navigator.push(
+                cxt,
+                new MaterialPageRoute(
+                    builder: (context) => new SelectSubCategory(ref: subCategory.title)));
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -141,7 +131,6 @@ class SubCategoryCard extends StatelessWidget {
                   subCategory.title,
                   textAlign: TextAlign.center,
                 ),
-                subtitle: Text(subCategory.subtitle),
               ),
             ],
           ),

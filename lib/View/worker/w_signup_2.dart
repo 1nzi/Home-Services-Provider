@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:home_well/Controller/WorkerController/rigesterWorker.dart';
-import 'package:home_well/View/customer/c_signup_2.dart';
 import 'w_signup_1.dart';
 import 'w_signup_3.dart';
 
@@ -16,15 +15,22 @@ class WorkerSignup2 extends StatefulWidget {
 }
 
 final _formKey = GlobalKey<FormState>();
+List _selectedSubJobs = new List();
 
 class _MySignupPageState extends State<WorkerSignup2> {
   // ignore: non_constant_identifier_names
   String City = 'Lahore';
+
   // ignore: non_constant_identifier_names
   String Area;
+
   // ignore: non_constant_identifier_names
-  String Job ;
+  String Job;
+  List<String> subJob = new List();
+  List<SubJobs> subJobs = new List();
+
   bool subJobState = false;
+
   @override
   Widget build(BuildContext context) {
     Size media = MediaQuery.of(context).size;
@@ -84,7 +90,6 @@ class _MySignupPageState extends State<WorkerSignup2> {
                                 TextStyle(color: Colors.black, fontSize: 18.0),
                             isExpanded: true,
                             value: City,
-
                             items: city,
                             onChanged: (String newValue) {
                               setState(() {
@@ -142,7 +147,7 @@ class _MySignupPageState extends State<WorkerSignup2> {
                               });
                             },
                             validator: (newVal) {
-                              if (newVal==null) {
+                              if (newVal == null) {
                                 return 'Area is required';
                               }
                               return null;
@@ -193,6 +198,8 @@ class _MySignupPageState extends State<WorkerSignup2> {
                                 Job = newValue;
                                 bucket.job = newValue;
                                 subJobState = true;
+                                subJobs = null;
+
                               });
                             },
                             value: Job,
@@ -205,49 +212,48 @@ class _MySignupPageState extends State<WorkerSignup2> {
                           ));
                     }
                   }),
-          Visibility(
-            visible: subJobState,
-            child:Text("Select Sub Jobs")
-          ),
+              Visibility(visible: subJobState, child: Text("Select Sub Jobs")),
+              Visibility(
+                visible: subJobState,
+                child: StreamBuilder<DocumentSnapshot>(
+                    stream: Firestore.instance
+                        .collection("Jobs")
+                        .document(Job)
+                        .get()
+                        .asStream(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return Text("Loading...");
+                      } else {
+                        subJob = null;
+                        subJobs = new List();
 
-          Visibility(
-            visible: subJobState,
-            child:StreamBuilder<DocumentSnapshot>(
-                  stream: Firestore.instance
-                      .collection("Jobs")
-                      .document(Job)
-                      .get()
-                      .asStream(),
-                  builder: (context, snapshot) {
-                    List<String> subJob = new List();
-                    List<SubJobs> subJobs = new List();
-                    if (!snapshot.hasData) {
-                      return Text("Loading...");
-                    } else {
-                      subJob = List.from(snapshot.data['SubJobs']);
-                      for (int i = 0; i < subJob.length; i++) {
-                        subJobs.add(SubJobs(subJob[i], false));
+                        subJob = List.from(snapshot.data['subjob']);
+                        for (int i = 0; i < subJob.length; i++) {
+                          subJobs.add(SubJobs(subJob[i], false));
+                        }
+                        return Container(
+                          height: 200,
+                          width: media.width * 0.85,
+                          color: Colors.lightGreen,
+                          child: Container(
+                            child: subJobs.length > 0
+                                ? ListView.builder(
+                                    scrollDirection: Axis.vertical,
+                                    shrinkWrap: true,
+                                    itemCount: subJobs.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return new SubJobsCard(
+                                          subJobs: subJobs[index]);
+                                    })
+                                : Center(
+                                    child: Text('This Job has No SubJobs')),
+                          ),
+                        );
                       }
-                      return Container(
-                        height: 200,
-                        width: media.width * 0.85,
-                        color: Colors.lightGreen,
-                        child: Container(
-                          child: subJobs.length > 0
-                              ? ListView.builder(
-                                  scrollDirection: Axis.vertical,
-                                  shrinkWrap: true,
-                                  itemCount: subJobs.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return SubJobsCard(subJobs: subJobs[index]);
-                                  })
-                              : Center(child: Text('This Job has No SubJobs')),
-                        ),
-                      );
-                    }
-                  }),
-          ),
+                    }),
+              ),
               SizedBox(
                 height: 20,
               ),
@@ -283,15 +289,12 @@ class NextButton extends StatelessWidget {
         ),
         onPressed: () {
 
-          print(bucket.city);
-          print(bucket.area);
-          print(bucket.subJobs);
-
           if (bucket.city == null) {
             bucket.city = 'Lahore';
           }
 
-          if (_formKey.currentState.validate()){
+          if (_formKey.currentState.validate()) {
+            bucket.subJobs = _selectedSubJobs;
             Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -311,7 +314,7 @@ class SubJobs {
 }
 
 class SubJobsCard extends StatefulWidget {
-  final SubJobs subJobs;
+  final SubJobs subJobs ;
 
   const SubJobsCard({this.subJobs});
 
@@ -321,7 +324,7 @@ class SubJobsCard extends StatefulWidget {
 
 // ignore: camel_case_types
 class _subJobsCard extends State<SubJobsCard> {
-  final SubJobs subJobs;
+  final SubJobs subJobs ;
 
   _subJobsCard({this.subJobs});
 
@@ -334,27 +337,36 @@ class _subJobsCard extends State<SubJobsCard> {
           decoration: BoxDecoration(color: Colors.black12),
           child: Column(
             children: <Widget>[
-              ListTile(
-                title: Text(
-                  subJobs.title,
-                  textAlign: TextAlign.start,
-                  style: TextStyle(
-                      fontSize: 16.0,
-                      fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.bold),
-                ),
-                trailing: Checkbox(
-                    value: subJobs.isCheck,
-                    onChanged: (bool value) {
-
-                      setState(() {
-                        subJobs.isCheck = value;
-
-                      });
-                    }),
-              )
+              CheckboxListTile(
+                  title: Text(
+                    subJobs.title,
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                        fontSize: 16.0,
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  value: subJobs.isCheck,
+                  onChanged: (bool value) {
+                    setState(() {
+                      subJobs.isCheck = value;
+                    });
+                    _onSubJobSelected(value, subJobs.title);
+                  }),
             ],
           ),
         ));
+  }
+
+  void _onSubJobSelected(bool selected, subJob) {
+    if (selected == true) {
+      setState(() {
+        _selectedSubJobs.add(subJob);
+      });
+    } else {
+      setState(() {
+        _selectedSubJobs.remove(subJob);
+      });
+    }
   }
 }

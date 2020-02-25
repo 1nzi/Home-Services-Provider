@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -30,11 +31,11 @@ final _formKey = GlobalKey<FormState>();
 String City = 'Lahore';
 
 // ignore: non_constant_identifier_names
-String Area = 'DHA';
+String Area ;
 
 class _MySignupPageState extends State<CustomerSignup2> {
   bool _obscureText = true;
-  String pass;
+
 
 
   void _toggle() {
@@ -66,71 +67,101 @@ class _MySignupPageState extends State<CustomerSignup2> {
               Text(
                 "Select City",
               ),
-              Padding(
-                  padding: EdgeInsets.fromLTRB(18, 10, 18, 10),
-                  child: DropdownButton<String>(
-                    value: City,
-                    icon: Icon(
-                      Icons.location_city,
-                      color: Colors.lightGreen,
-                      size: 24,
-                    ),
-                    isExpanded: true,
-                    style: TextStyle(color: Colors.black, fontSize: 18.0),
-                    onChanged: (String newValue) {
-                      setState(() {
-                        City = newValue;
-                      });
-                    },
-                    items: <String>[
-                      'Lahore',
-                      'Krachi',
-                      'Multan',
-                      'Islamabad',
-                      'Faislabad',
-                    ].map<DropdownMenuItem<String>>((String city) {
-                      return DropdownMenuItem<String>(
-                        value: city,
-                        child: Text(city),
-                      );
-                    }).toList(),
-                  )),
+              StreamBuilder<QuerySnapshot>(
+                  stream: Firestore.instance.collection("City").snapshots(),
+                  builder: (context, snapshot) {
+                    List<DropdownMenuItem<String>> city = new List();
+                    if (!snapshot.hasData) {
+                      return Text("No City Found");
+                    } else {
+                      for (int i = 0; i < snapshot.data.documents.length; i++) {
+                        DocumentSnapshot snap = snapshot.data.documents[i];
+                        city.add(
+                          DropdownMenuItem(
+                            child: Text(snap.documentID),
+                            value: "${snap.documentID}",
+                          ),
+                        );
+                      }
+                      return Padding(
+                          padding: EdgeInsets.fromLTRB(18, 0, 18, 10),
+                          child: DropdownButton<String>(
+                            icon: Icon(
+                              Icons.location_city,
+                              color: Colors.lightGreen,
+                              // ignore: missing_return
+                              size: 24,
+                            ),
+                            style:
+                            TextStyle(color: Colors.black, fontSize: 18.0),
+                            isExpanded: true,
+                            value: City,
+                            items: city,
+                            onChanged: (String newValue) {
+                              setState(() {
+                                City = newValue;
+                                bundle.city = newValue;
+                                Area = null;
+                              });
+                            },
+                          ));
+                    }
+                  }),
               SizedBox(
                 height: 10,
               ),
               Text(
                 "Select Area",
               ),
-              Padding(
-                  padding: EdgeInsets.fromLTRB(18, 10, 18, 10),
-                  child: DropdownButton<String>(
-                    hint: Text('Select Area'),
-                    value: Area,
-                    icon: Icon(Icons.location_city,
-                        color: Colors.lightGreen, size: 24),
-                    isExpanded: true,
-                    style: TextStyle(color: Colors.black, fontSize: 18.0),
-                    onChanged: (String newValue) {
-                      setState(() {
-                        Area = newValue;
-                        bundle.area = newValue;
-                      });
-                    },
-                    items: <String>[
-                      'DHA',
-                      'Samnabad',
-                      'Shadman',
-                      'Johar Town',
-                      'Muslim Town',
-                      'Anarkali',
-                      'MughalPura'
-                    ].map<DropdownMenuItem<String>>((String area) {
-                      return DropdownMenuItem<String>(
-                        value: area,
-                        child: Text(area),
-                      );
-                    }).toList(),
-                  )),
+              StreamBuilder<DocumentSnapshot>(
+                  stream: Firestore.instance
+                      .collection("City")
+                      .document(City)
+                      .get()
+                      .asStream(),
+                  builder: (context, snapshot) {
+                    List<String> area = new List();
+                    if (!snapshot.hasData) {
+                      return Text("Loading...");
+                    } else {
+                      area = List.from(snapshot.data['Area']);
+
+                      return Padding(
+                          padding: EdgeInsets.fromLTRB(18, 0, 18, 10),
+                          child: DropdownButtonFormField<String>(
+                            icon: Icon(
+                              Icons.location_city,
+                              color: Colors.lightGreen,
+                              // ignore: missing_return
+                              size: 24,
+                            ),
+                            style:
+                            TextStyle(color: Colors.black, fontSize: 18.0),
+                            isExpanded: true,
+                            hint: new Text("Select Area"),
+                            items: area
+                                .map<DropdownMenuItem<String>>((String area) {
+                              return DropdownMenuItem<String>(
+                                value: area,
+                                child: Text(area),
+                              );
+                            }).toList(),
+                            onChanged: (String newValue) {
+                              setState(() {
+                                Area = newValue;
+                                bundle.area = newValue;
+                              });
+                            },
+                            validator: (newVal) {
+                              if (newVal == null) {
+                                return 'Area is required';
+                              }
+                              return null;
+                            },
+                            value: Area,
+                          ));
+                    }
+                  }),
               Padding(
                 padding: EdgeInsets.all(8.0),
                 child: TextFormField(
@@ -147,7 +178,6 @@ class _MySignupPageState extends State<CustomerSignup2> {
                     }
                     return null;
                   },
-                  onSaved: (value)=> bundle.address = value,
 
                   decoration: const InputDecoration(
                     labelText: 'Street Address',

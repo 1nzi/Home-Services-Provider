@@ -10,15 +10,13 @@ class CustomerDataFromFireStore {
   FirebaseUser user;
 
   Future<String> getCurrentUser() async {
-    user = await  _auth.currentUser();
+    user = await _auth.currentUser();
     return user.uid;
   }
-
 
   updateData(String uid, String title, String newVal) async {
     await db.collection('Customer').document(uid).updateData({title: newVal});
   }
-
 
   CustomerData getCustomerData(String uid) {
     var userQuery = db.collection('Customer').document(uid);
@@ -36,4 +34,11 @@ class CustomerDataFromFireStore {
     return userData;
   }
 
+  getjobs() async {
+    return await db.collection('Jobs').getDocuments();
+  }
+
+  getSubJobs(String title) async {
+
+  }
 }

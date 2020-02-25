@@ -12,12 +12,11 @@ class DatabaseService {
   Firestore.instance.collection('Worker');
 
   Future <void> updateWorkerData(WorkerData bundle) async {
-    String imgUrl = null;
-    String cincFrontUrl = null;
-    String cnicBackUrl = null;
+    String imgUrl;
+    String cincFrontUrl ;
+    String cnicBackUrl ;
 
     //upload image & cnic pics to firebase storage
-    if(bundle.image != null && bundle.cnicFrontimage != null && bundle.cnicBackimage != null) {
       //profile image
       StorageReference firebaseStorageRef = FirebaseStorage.instance.ref()
           .child(bundle.imagePath);
@@ -40,9 +39,9 @@ class DatabaseService {
       cnicBackUrl = await taskSnapshot.ref.getDownloadURL();
 
 
-    }
     //upload worker data to firebase
-    return await workerCollection.document(uid).setData({
+
+    await workerCollection.document(uid).setData({
       'Name': bundle.name,
       'Cnic': bundle.cnic,
       'Phone': bundle.ph,
@@ -50,7 +49,7 @@ class DatabaseService {
       'City': bundle.city,
       'Area': bundle.area,
       'Job': bundle.job,
-      'Subjobs': bundle.subJobs,
+      'SubJobs': FieldValue.arrayUnion(bundle.subJobs),
       'Password': bundle.password,
       'Image': imgUrl,
       'CnicFront': cincFrontUrl,

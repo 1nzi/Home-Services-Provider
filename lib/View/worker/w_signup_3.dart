@@ -30,8 +30,8 @@ final FocusNode _SignupButtonFocus = FocusNode();
 final _formKey = GlobalKey<FormState>();
 
 class _MySignupPageState extends State<WorkerSignup3> {
-  File _frontCNIC = null;
-  File _backCNIC = null;
+  File _frontCNIC ;
+  File _backCNIC ;
   String profilePath;
   bool _obscureText = true;
 
@@ -56,7 +56,7 @@ class _MySignupPageState extends State<WorkerSignup3> {
     File image = await ImagePicker.pickImage(source: ImageSource.camera);
     setState(() {
       _frontCNIC = image;
-      bucket.cnicFrontimage = basename(_frontCNIC.path);
+      bucket.cnicFrontPath = basename(_frontCNIC.path);
       bucket.cnicFrontimage = _frontCNIC;
 
       print('Select image path' + _frontCNIC.path.toString());

@@ -13,20 +13,21 @@ class CustomerSignup1 extends StatefulWidget {
 
 final bundle = CustomerData();
 
-final TextEditingController _FirstName = new TextEditingController();
+final TextEditingController _name = new TextEditingController();
 final TextEditingController _Ph = new TextEditingController();
 final TextEditingController _Email = new TextEditingController();
 
-final FocusNode _firstNameFocus = FocusNode();
-final FocusNode _lastNameFocus = FocusNode();
+final FocusNode _nameFocus = FocusNode();
 final FocusNode _phFocus = FocusNode();
 final FocusNode _emailFocus = FocusNode();
 final FocusNode _nextFocus = FocusNode();
 final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
 class _MySignupPageState extends State<CustomerSignup1> {
-  File _image = null;
+  File _image ;
   String profilePath;
+  static const List<String> gender = const ['Male', 'Female'];
+  String Gender = gender[0];
 
   @override
   void initState() {
@@ -57,7 +58,6 @@ class _MySignupPageState extends State<CustomerSignup1> {
 
   @override
   Widget build(BuildContext context) {
-    var Gender = 'Male';
     return Scaffold(
       resizeToAvoidBottomPadding: true,
       appBar: AppBar(
@@ -108,10 +108,10 @@ class _MySignupPageState extends State<CustomerSignup1> {
                 padding: EdgeInsets.all(8.0),
                 child: TextFormField(
                   textInputAction: TextInputAction.next,
-                  controller: _FirstName,
-                  focusNode: _firstNameFocus,
+                  controller: _name,
+                  focusNode: _nameFocus,
                   onFieldSubmitted: (term) {
-                    _fieldFocusChange(context, _firstNameFocus, _lastNameFocus);
+                    _fieldFocusChange(context, _nameFocus, _phFocus);
                   },
                   validator: (value) {
                     if (value.isEmpty) {
@@ -120,7 +120,7 @@ class _MySignupPageState extends State<CustomerSignup1> {
                     return null;
                   },
                   decoration: const InputDecoration(
-                    labelText: 'First Name',
+                    labelText: 'Full Name',
                     prefixIcon: Icon(Icons.person),
                     suffixIcon: IconButton(
                       icon: Icon(Icons.close),
@@ -129,37 +129,6 @@ class _MySignupPageState extends State<CustomerSignup1> {
                     border: OutlineInputBorder(),
                   ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(18, 10, 18, 10),
-                child: Container(
-                    decoration: ShapeDecoration(
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(width: 1.0, style: BorderStyle.solid),
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                      ),
-                    ),
-                    child: DropdownButton<String>(
-                      hint: Text('Select Gender'),
-                      icon: Icon(Icons.person,
-                          color: Colors.lightGreen, size: 24),
-                      isExpanded: true,
-                      style: TextStyle(color: Colors.black, fontSize: 18.0),
-                      onChanged: (String newValue) {
-                        setState(() {
-                          Gender = newValue;
-                          bundle.gender = newValue;
-                        });
-                      },
-                      items: <String>['Male', 'Female']
-                          .map<DropdownMenuItem<String>>((String Gender) {
-                        return DropdownMenuItem<String>(
-                          value: Gender,
-                          child: Text(Gender),
-                        );
-                      }).toList(),
-                      value: Gender,
-                    )),
               ),
               Padding(
                 padding: EdgeInsets.all(8.0),
@@ -216,6 +185,43 @@ class _MySignupPageState extends State<CustomerSignup1> {
                   ),
                 ),
               ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                child: Container(
+                    height: 55,
+                    decoration: ShapeDecoration(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                            width: 1.0,
+                            style: BorderStyle.solid,
+                            color: Colors.black38),
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      ),
+                    ),
+                    child: DropdownButton<String>(
+                      hint: Text(' Select Gender'),
+                      value: Gender,
+                      icon: Icon(Icons.person,
+                          color: Colors.lightGreen, size: 24),
+                      isExpanded: true,
+                      style: TextStyle(color: Colors.black, fontSize: 18.0),
+                      onChanged: (String newValue) {
+                        setState(() {
+                          Gender = newValue;
+                          bundle.gender = newValue;
+                        });
+                      },
+                      items: gender.map((string) {
+                        return new DropdownMenuItem(
+                          child: new Text(
+                            string,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          value: string,
+                        );
+                      }).toList(),
+                    )),
+              ),
               SizedBox(
                 height: 10,
               ),
@@ -252,7 +258,7 @@ class NextButton extends StatelessWidget {
         ),
         onPressed: () async {
           if (_formKey.currentState.validate()) {
-            bundle.fname = _FirstName.text;
+            bundle.fname = _name.text;
             bundle.ph = _Ph.text;
             bundle.email = _Email.text;
             print(bundle.imagePath);
@@ -275,7 +281,7 @@ void _fieldFocusChange(
 }
 
 void clearFirstName() {
-  _FirstName.clear();
+  _name.clear();
 }
 
 void clearPh() {

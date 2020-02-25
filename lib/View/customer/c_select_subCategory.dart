@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -5,31 +6,54 @@ import 'package:flutter/widgets.dart';
 import 'c_location_selection.dart';
 
 class SelectSubCategory extends StatefulWidget {
-  _MySignupPageState createState() => _MySignupPageState();
+  final String ref;
+
+  const SelectSubCategory({Key key, this.ref}) : super(key: key);
+  _MySignupPageState createState() => _MySignupPageState(ref);
 }
 
 class _MySignupPageState extends State<SelectSubCategory> {
-  // ignore: non_constant_identifier_names
-  final List<SubJobs> subjobs = ElectricianList.getSubJob();
+  final String ref;
+  _MySignupPageState(this.ref);
 
   Widget _buildSubJobsList() {
     return Container(
-      child: subjobs.length > 0
-          ? ListView.builder(
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemCount: subjobs.length,
-          itemBuilder: (BuildContext context, int index) {
-            return SubJobsCard(subJobs: subjobs[index]);
-          })
-          : Center(child: Text('No Items')),
-    );
+        child: StreamBuilder<DocumentSnapshot>(
+            stream: Firestore.instance
+                .collection("SubJob")
+                    .document(ref).get().asStream(),
+            builder: (context, snapshot) {
+              List<String> jobTiltle = new List();
+              List<String> JobRate = new List();
+              List<SubJobs> subCategory = new List();
+              print(ref);
+
+              if (!snapshot.hasData) {
+
+                return Text("Loading...");
+              } else {
+                jobTiltle = List.from(snapshot.data['Subcategory']);
+                JobRate = List.from(snapshot.data['jobRate']);
+                for (int i = 0; i < jobTiltle.length; i++) {
+                  subCategory.add(SubJobs(jobTiltle[i], JobRate[i], false));
+                }
+                return Container(
+                  child: subCategory.length > 0
+                      ? ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: subCategory.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return SubJobsCard(subJobs: subCategory[index]);
+                          })
+                      : Center(child: Text('No Items')),
+                );
+              }
+            }));
   }
 
   @override
   Widget build(BuildContext context) {
-    Size media = MediaQuery.of(context).size;
-
     return Scaffold(
       resizeToAvoidBottomPadding: true,
       appBar: AppBar(
@@ -51,9 +75,6 @@ class _MySignupPageState extends State<SelectSubCategory> {
             SizedBox(
               height: 20,
             ),
-
-
-
             Text(
               "Select Sub Jobs",
             ),
@@ -92,8 +113,10 @@ class NextButton extends StatelessWidget {
         ),
         onPressed: () {
           Navigator.of(context).pop();
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => CustomerLocationSelection()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => CustomerLocationSelection()));
         },
       ),
     );
@@ -102,23 +125,14 @@ class NextButton extends StatelessWidget {
 
 class SubJobs {
   final String title;
+  final String subtitle;
   bool isCheck;
 
-  SubJobs(this.title, this.isCheck);
+
+  SubJobs(this.title, this.subtitle, this.isCheck);
 }
 
-class ElectricianList {
-  static List<SubJobs> getSubJob() {
-    return [
-      SubJobs('AC Tech', false),
-      SubJobs('Fridge Tech', false),
-      SubJobs('TV Tech', false),
-      SubJobs('Mobile Tech', false),
-      SubJobs('Comp/Laptop Tech', false),
-      SubJobs('Bulb/fan/Motor Tech', false),
-    ];
-  }
-}
+
 
 class SubJobsCard extends StatefulWidget {
   final SubJobs subJobs;
@@ -144,7 +158,7 @@ class _subJobsCard extends State<SubJobsCard> {
           decoration: BoxDecoration(color: Colors.black12),
           child: Column(
             children: <Widget>[
-              ListTile(
+              CheckboxListTile(
                 title: Text(
                   subJobs.title,
                   textAlign: TextAlign.start,
@@ -153,13 +167,20 @@ class _subJobsCard extends State<SubJobsCard> {
                       fontStyle: FontStyle.italic,
                       fontWeight: FontWeight.bold),
                 ),
-                trailing: Checkbox(
+                 subtitle: Text(
+                   subJobs.subtitle,
+                   textAlign: TextAlign.start,
+                   style: TextStyle(
+                       fontSize: 12.0,
+                       fontStyle: FontStyle.italic,
+                       fontWeight: FontWeight.bold),
+                 ),
                     value: subJobs.isCheck,
                     onChanged: (bool value) {
                       setState(() {
                         subJobs.isCheck = value;
                       });
-                    }),
+                    },
               )
             ],
           ),

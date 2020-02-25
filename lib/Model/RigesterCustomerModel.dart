@@ -11,7 +11,7 @@ class DatabaseService {
       Firestore.instance.collection('Customer');
 
   Future <void> updateCustomerData(CustomerData bundle) async {
-    String imgUrl = null;
+    String imgUrl;
     //upload image to firebase storage
     if(bundle.image != null && bundle.imagePath != null) {
       StorageReference firebaseStorageRef = FirebaseStorage.instance.ref()

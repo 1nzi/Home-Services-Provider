@@ -274,8 +274,8 @@ class NextButton extends StatelessWidget {
             ),
           ),
           onPressed: () async {
-            //if (_formKey.currentState.validate()) {
-              //if (bucket.imagePath != null) {
+            if (_formKey.currentState.validate()) {
+              if (bucket.imagePath != null) {
                 bucket.name = _FirstName.text;
                 bucket.cnic = _Cnic.text;
                 bucket.ph = _Ph.text;
@@ -284,14 +284,14 @@ class NextButton extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) => WorkerSignup2(bucket: bucket)));
-           //   } else {
+              } else {
                 Scaffold.of(context).showSnackBar(SnackBar(
                   content: Text("Please Add Image"),
                   duration: Duration(seconds: 5),
                 ));
               }
-           // }
-          //}
+            }
+            }
       ),
     );
   }
