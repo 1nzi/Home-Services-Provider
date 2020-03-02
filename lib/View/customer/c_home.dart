@@ -5,15 +5,30 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:home_well/Controller/CustomerController/customerProfile.dart';
+import 'package:home_well/Controller/CustomerController/rigesterCustomer.dart';
 import 'c_drawer.dart';
 import 'c_sub_category.dart';
 
+class HomeScreen extends StatelessWidget {
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Well Home',
+      theme: ThemeData(
+        primarySwatch: Colors.lightGreen,
+      ),
+
+      home: CustomerHome(),
+    );
+  }
+}
 class CustomerHome extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-CustomerDataFromFireStore customerDataFromFireStore =
-    new CustomerDataFromFireStore();
+CustomerDataFromFireStore customerDataFromFireStore = new CustomerDataFromFireStore();
+CustomerData _customerData;
 
 
 class _MyHomePageState extends State<CustomerHome> {
@@ -35,6 +50,7 @@ class _MyHomePageState extends State<CustomerHome> {
 
   initUser() async {
     user = await _auth.currentUser();
+    _customerData = customerDataFromFireStore.getCustomerData(user.uid);
   }
 
   initJobs(){
@@ -69,7 +85,7 @@ class _MyHomePageState extends State<CustomerHome> {
     return Scaffold(
       key: _scaffoldKey,
       drawer: CustomerDrawerOnly(
-          user: customerDataFromFireStore.getCustomerData(user.uid)),
+          user: _customerData),
       appBar: new AppBar(
         leading: new IconButton(
           icon: Icon(Icons.menu),
@@ -134,11 +150,11 @@ class CategoryCard extends StatelessWidget {
               trailing: IconButton(
                 icon: Icon(Icons.arrow_forward_ios, color: Colors.lightGreen),
                 onPressed: () {
-                  customerDataFromFireStore.getSubJobs(category.title);
+                  _customerData.job = category.title;
                   Navigator.push(
                       context,
                       new MaterialPageRoute(
-                          builder: (context) => new SubJobs(title: category.title)));
+                          builder: (context) => new SubJobs( user: _customerData)));
                 },
               ),
             )));

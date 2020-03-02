@@ -31,6 +31,7 @@ class DatabaseService {
       'Address': bundle.address,
       'Password': bundle.password,
       'Image': imgUrl,
+      'JobCount': bundle.jobCount,
     });
   }
 }

@@ -13,7 +13,7 @@ class HomeScreen extends StatelessWidget {
         primarySwatch: Colors.lightGreen,
       ),
 
-      home: HomeScreenPage(title: ''),
+      home: HomeScreenPage(title: 'Well Home'),
     );
   }
 }

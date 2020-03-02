@@ -2,28 +2,36 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:home_well/Controller/CustomerController/rigesterCustomer.dart';
 import 'c_drawer.dart';
 import 'c_select_subCategory.dart';
 
 class SubJobs extends StatefulWidget {
-  final String title;
+  final CustomerData user;
 
-  const SubJobs({Key key, this.title}) : super(key: key);
+  const SubJobs({Key key, this.user}) : super(key: key);
 
-  _MySubCategoryPageState createState() => _MySubCategoryPageState(title);
+  _MySubCategoryPageState createState() => _MySubCategoryPageState( user);
 }
+CustomerData _customerData;
 
 
 class _MySubCategoryPageState extends State<SubJobs> {
-  final String title;
+  final CustomerData user;
+
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  _MySubCategoryPageState(this.title);
+  _MySubCategoryPageState(this.user);
+  @override
+  void initState() {
+    _customerData = user;
+    super.initState();
 
+  }
   Widget _buildSubCategoryList() {
     return Container(
       child: StreamBuilder<DocumentSnapshot>(
-          stream: Firestore.instance.collection("Jobs").document(title).get().asStream(),
+          stream: Firestore.instance.collection("Jobs").document(user.job).get().asStream(),
           builder: (context, snapshot) {
             List<String> subJob = new List();
             List<String> subJobImg = new List();
@@ -110,10 +118,11 @@ class SubCategoryCard extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(8.0))),
         child: InkWell(
           onTap: () {
+            _customerData.subJob = subCategory.title;
             Navigator.push(
                 cxt,
                 new MaterialPageRoute(
-                    builder: (context) => new SelectSubCategory(ref: subCategory.title)));
+                    builder: (context) => new SelectSubCategory( user: _customerData)));
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,

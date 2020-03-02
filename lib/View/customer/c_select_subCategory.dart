@@ -2,40 +2,46 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:home_well/Controller/CustomerController/rigesterCustomer.dart';
 
 import 'c_location_selection.dart';
 
 class SelectSubCategory extends StatefulWidget {
-  final String ref;
-
-  const SelectSubCategory({Key key, this.ref}) : super(key: key);
-  _MySignupPageState createState() => _MySignupPageState(ref);
+ final CustomerData user;
+  const SelectSubCategory({Key key, this.user}) : super(key: key);
+  _MySignupPageState createState() => _MySignupPageState(user);
 }
+ CustomerData _customerData;
 
 class _MySignupPageState extends State<SelectSubCategory> {
-  final String ref;
-  _MySignupPageState(this.ref);
+  final CustomerData user;
 
+  _MySignupPageState( this.user);
+  @override
+  void initState() {
+    _customerData = user;
+    super.initState();
+
+  }
   Widget _buildSubJobsList() {
     return Container(
         child: StreamBuilder<DocumentSnapshot>(
             stream: Firestore.instance
                 .collection("SubJob")
-                    .document(ref).get().asStream(),
+                    .document(user.subJob).get().asStream(),
             builder: (context, snapshot) {
               List<String> jobTiltle = new List();
-              List<String> JobRate = new List();
+              List<String> jobRate = new List();
               List<SubJobs> subCategory = new List();
-              print(ref);
 
               if (!snapshot.hasData) {
 
                 return Text("Loading...");
               } else {
                 jobTiltle = List.from(snapshot.data['Subcategory']);
-                JobRate = List.from(snapshot.data['jobRate']);
+                jobRate = List.from(snapshot.data['jobRate']);
                 for (int i = 0; i < jobTiltle.length; i++) {
-                  subCategory.add(SubJobs(jobTiltle[i], JobRate[i], false));
+                  subCategory.add(SubJobs(jobTiltle[i], jobRate[i], false));
                 }
                 return Container(
                   child: subCategory.length > 0
@@ -112,12 +118,11 @@ class NextButton extends StatelessWidget {
               fontWeight: FontWeight.bold),
         ),
         onPressed: () {
-          Navigator.of(context).pop();
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => CustomerLocationSelection()));
-        },
+                  builder: (context) => CustomerLocationSelection(user: _customerData)));
+        }
       ),
     );
   }
@@ -180,10 +185,24 @@ class _subJobsCard extends State<SubJobsCard> {
                       setState(() {
                         subJobs.isCheck = value;
                       });
+                     // _onSubJobSelected(value, subJobs.title);
                     },
               )
             ],
           ),
         ));
   }
+
+  void _onSubJobSelected(bool selected, subJob) {
+    if (selected == true) {
+      setState(() {
+        _customerData.subJobFields.add(subJob);
+      });
+    } else {
+      setState(() {
+        _customerData.subJobFields.remove(subJob);
+      });
+    }
+  }
 }
+

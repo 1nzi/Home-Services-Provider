@@ -9,12 +9,12 @@ class CustomerDataFromFireStore {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseUser user;
 
-  Future<String> getCurrentUser() async {
-    user = await _auth.currentUser();
-    return user.uid;
-  }
 
   updateData(String uid, String title, String newVal) async {
+    await db.collection('Customer').document(uid).updateData({title: newVal});
+  }
+
+  updateJobCount(String uid, String title, int newVal) async {
     await db.collection('Customer').document(uid).updateData({title: newVal});
   }
 
@@ -30,6 +30,7 @@ class CustomerDataFromFireStore {
       userData.gender = 'male';
       userData.area = data['Area'];
       userData.address = data['Address'];
+      userData.jobCount = data['JobCount'];
     });
     return userData;
   }
@@ -38,7 +39,7 @@ class CustomerDataFromFireStore {
     return await db.collection('Jobs').getDocuments();
   }
 
-  getSubJobs(String title) async {
-
+  getWorker(CustomerData user) async {
+    return await db.collection('Worker').where('City' , isEqualTo: user.city ).where('Area', isEqualTo: user.area).snapshots();
   }
 }

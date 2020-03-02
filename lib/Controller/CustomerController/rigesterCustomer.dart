@@ -8,6 +8,12 @@ class CustomerData {
   String city;
   String area;
   String address;
+  String job;
+  String subJob;
+  int jobCount;
+  List subJobFields;
+  dynamic date;
+  dynamic time;
   String password;
   String imagePath;
   dynamic image;
@@ -21,6 +27,12 @@ class CustomerData {
     this.city,
     this.area,
     this.address,
+    this.job,
+    this.subJob,
+    this.jobCount,
+    this.subJobFields,
+    this.date,
+    this.time,
     this.password,
     this.imagePath,
     this.image,

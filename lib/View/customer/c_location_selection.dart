@@ -1,29 +1,35 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
+import 'package:home_well/Controller/CustomerController/customerProfile.dart';
+import 'package:home_well/Controller/CustomerController/rigesterCustomer.dart';
 import 'package:intl/intl.dart';
 
 import 'c_available_worker.dart';
 
 class CustomerLocationSelection extends StatefulWidget {
-  @override
+  final CustomerData user;
+
+  const CustomerLocationSelection({Key key, this.user}) : super(key: key);
+
   State<StatefulWidget> createState() {
-    return LocationSelection();
+    return LocationSelection(user);
   }
 }
 
-final TextEditingController _clearStreetAdd = new TextEditingController();
+final TextEditingController _StreetAdd = new TextEditingController();
+var _myKey = GlobalKey<FormState>();
 
 class LocationSelection extends State<CustomerLocationSelection> {
-  // ignore: non_constant_identifier_names
-  String City = 'Lahore';
+  final CustomerData user;
 
-  // ignore: non_constant_identifier_names
-  String Area = 'DHA';
-
-  // ignore: non_constant_identifier_names
+  LocationSelection(this.user);
 
   @override
   Widget build(BuildContext context) {
+    String City = user.city;
+    String Area = user.area;
+    _StreetAdd.text = user.address;
     return Scaffold(
       resizeToAvoidBottomPadding: true,
       appBar: AppBar(
@@ -36,130 +42,163 @@ class LocationSelection extends State<CustomerLocationSelection> {
         backgroundColor: Colors.lightGreen,
       ),
       body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.all(10.0),
-            ),
-            Text('When would you like us to come?',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold)),
-            Text('Date',
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                  color: Colors.lightGreen,
-                  fontSize: 18.0,
-                )),
-            Padding(
-                padding: EdgeInsets.fromLTRB(18, 0, 18,18),
-                child: DateField()),
-            Text("Time",
-                style: TextStyle(
-                  color: Colors.lightGreen,
-                  fontSize: 18.0,
-                )),
-            Padding(
-                padding: EdgeInsets.fromLTRB(18, 0, 18, 18),
-                child: TimeField()),
-
-            SizedBox(
-              height: 20,
-            ),
-            Text("Select City",
-                style: TextStyle(
-                  color: Colors.lightGreen,
-                  fontSize: 18.0,
-                )),
-            Padding(
-                padding: EdgeInsets.fromLTRB(18, 10, 18, 10),
-                child: DropdownButton<String>(
-                  value: City,
-                  icon: Icon(
-                    Icons.location_city,
+        child: Form(
+          key: _myKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.all(10.0),
+              ),
+              Text('When would you like us to come?',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold)),
+              Text('Date',
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
                     color: Colors.lightGreen,
-                    size: 24,
+                    fontSize: 18.0,
+                  )),
+              Padding(
+                  padding: EdgeInsets.fromLTRB(18, 0, 18, 18),
+                  child: DateField()),
+              Text("Time",
+                  style: TextStyle(
+                    color: Colors.lightGreen,
+                    fontSize: 18.0,
+                  )),
+              Padding(
+                  padding: EdgeInsets.fromLTRB(18, 0, 18, 18),
+                  child: TimeField()),
+              SizedBox(
+                height: 20,
+              ),
+              Text("Select City",
+                  style: TextStyle(
+                    color: Colors.lightGreen,
+                    fontSize: 18.0,
+                  )),
+              StreamBuilder<QuerySnapshot>(
+                  stream: Firestore.instance.collection("City").snapshots(),
+                  builder: (context, snapshot) {
+                    List<DropdownMenuItem<String>> city = new List();
+                    if (!snapshot.hasData) {
+                      return Text("No City Found");
+                    } else {
+                      for (int i = 0; i < snapshot.data.documents.length; i++) {
+                        DocumentSnapshot snap = snapshot.data.documents[i];
+                        city.add(
+                          DropdownMenuItem(
+                            child: Text(snap.documentID),
+                            value: "${snap.documentID}",
+                          ),
+                        );
+                      }
+                      return Padding(
+                          padding: EdgeInsets.fromLTRB(18, 0, 18, 10),
+                          child: DropdownButton<String>(
+                            icon: Icon(
+                              Icons.location_city,
+                              color: Colors.lightGreen,
+                              // ignore: missing_return
+                              size: 24,
+                            ),
+                            style:
+                                TextStyle(color: Colors.black, fontSize: 18.0),
+                            isExpanded: true,
+                            value: City,
+                            items: city,
+                            onChanged: (String newValue) {
+                              setState(() {
+                                City = newValue;
+                                //bundle.city = newValue;
+                                Area = null;
+                              });
+                            },
+                          ));
+                    }
+                  }),
+              SizedBox(
+                height: 10,
+              ),
+              Text("Select Area",
+                  style: TextStyle(
+                    color: Colors.lightGreen,
+                    fontSize: 18.0,
+                  )),
+              StreamBuilder<DocumentSnapshot>(
+                  stream: Firestore.instance
+                      .collection("City")
+                      .document(City)
+                      .get()
+                      .asStream(),
+                  builder: (context, snapshot) {
+                    List<String> area = new List();
+                    if (!snapshot.hasData) {
+                      return Text("Loading...");
+                    } else {
+                      area = List.from(snapshot.data['Area']);
+
+                      return Padding(
+                          padding: EdgeInsets.fromLTRB(18, 0, 18, 10),
+                          child: DropdownButtonFormField<String>(
+                            icon: Icon(
+                              Icons.location_city,
+                              color: Colors.lightGreen,
+                              // ignore: missing_return
+                              size: 24,
+                            ),
+                            style:
+                                TextStyle(color: Colors.black, fontSize: 18.0),
+                            isExpanded: true,
+                            hint: new Text("Select Area"),
+                            items: area
+                                .map<DropdownMenuItem<String>>((String area) {
+                              return DropdownMenuItem<String>(
+                                value: area,
+                                child: Text(area),
+                              );
+                            }).toList(),
+                            onChanged: (String newValue) {
+                              setState(() {
+                                Area = newValue;
+                                // bundle.area = newValue;
+                              });
+                            },
+                            value: Area,
+                            validator: (newVal) {
+                              if (newVal == null) {
+                                return 'Area is required';
+                              }
+                              return null;
+                            },
+                          ));
+                    }
+                  }),
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: TextField(
+                  keyboardType: TextInputType.multiline,
+                  controller: _StreetAdd,
+                  decoration: const InputDecoration(
+                    labelText: 'Street Address',
+                    prefixIcon: Icon(Icons.location_city),
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.close),
+                      onPressed: clearAddress,
+                    ),
+                    border: OutlineInputBorder(),
                   ),
-                  isExpanded: true,
-                  style: TextStyle(color: Colors.black, fontSize: 18.0),
-                  onChanged: (String newValue) {
-                    setState(() {
-                      City = newValue;
-                    });
-                  },
-                  items: <String>[
-                    'Lahore',
-                    'Krachi',
-                    'Multan',
-                    'Islamabad',
-                    'Faislabad',
-                  ].map<DropdownMenuItem<String>>((String city) {
-                    return DropdownMenuItem<String>(
-                      value: city,
-                      child: Text(city),
-                    );
-                  }).toList(),
-                )),
-            SizedBox(
-              height: 10,
-            ),
-            Text("Select Area",
-                style: TextStyle(
-                  color: Colors.lightGreen,
-                  fontSize: 18.0,
-                )),
-            Padding(
-                padding: EdgeInsets.fromLTRB(18, 10, 18, 10),
-                child: DropdownButton<String>(
-                  hint: Text('Select Area'),
-                  value: Area,
-                  icon: Icon(Icons.location_city,
-                      color: Colors.lightGreen, size: 24),
-                  isExpanded: true,
-                  style: TextStyle(color: Colors.black, fontSize: 18.0),
-                  onChanged: (String newValue) {
-                    setState(() {
-                      Area = newValue;
-                    });
-                  },
-                  items: <String>[
-                    'DHA',
-                    'Samnabad',
-                    'Shadman',
-                    'Johar Town',
-                    'Muslim Town',
-                    'Anarkali',
-                    'MughalPura'
-                  ].map<DropdownMenuItem<String>>((String area) {
-                    return DropdownMenuItem<String>(
-                      value: area,
-                      child: Text(area),
-                    );
-                  }).toList(),
-                )),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: TextField(
-                keyboardType: TextInputType.multiline,
-                controller: _clearStreetAdd,
-                decoration: const InputDecoration(
-                  labelText: 'Street Address',
-                  prefixIcon: Icon(Icons.location_city),
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: clearAddress,
-                  ),
-                  border: OutlineInputBorder(),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            ProceedButton()
-          ],
+              SizedBox(
+                height: 10,
+              ),
+              ProceedButton()
+            ],
+          ),
         ),
       ),
     );
@@ -188,17 +227,22 @@ class ProceedButton extends StatelessWidget {
           ),
         ),
         onPressed: () {
-          Navigator.pop(context);
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AvailableWorker()));
-        },
+          print(userData.time);
+          print(userData.date);
+          if (userData.time != null && userData.date != null) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AvailableWorker(user: userData)));
+          }
+        }
       ),
     );
   }
 }
 
 void clearAddress() {
-  _clearStreetAdd.clear();
+  _StreetAdd.clear();
 }
 
 class DateField extends StatelessWidget {
@@ -210,11 +254,15 @@ class DateField extends StatelessWidget {
       DateTimeField(
         format: format,
         onShowPicker: (context, currentValue) {
-          return showDatePicker(
+          final date = showDatePicker(
               context: context,
               firstDate: DateTime(1900),
               initialDate: currentValue ?? DateTime.now(),
               lastDate: DateTime(2100));
+          if (date != null) {
+            userData.date = date.toString();
+          }
+          return date;
         },
       ),
     ]);
@@ -234,6 +282,9 @@ class TimeField extends StatelessWidget {
             context: context,
             initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
           );
+          if (time != null) {
+            userData.time = DateTimeField.convert(time);
+          }
           return DateTimeField.convert(time);
         },
       ),

@@ -228,11 +228,11 @@ class _MySignupPageState extends State<CustomerSignup2> {
                   onFieldSubmitted: (term) {
                     _fieldFocusChange(context, _confirmpasswordFocus, _SignupButtonFocus);
                   },validator: (value) {
-                    if (value != _password.text) {
-                      return 'Password not match';
-                    }
-                    return null;
-                  },
+                  if (value != _password.text) {
+                    return 'Password not match';
+                  }
+                  return null;
+                },
                   decoration: InputDecoration(
                     labelText: 'Confirm Password',
                     prefixIcon: Icon(Icons.lock),
@@ -284,16 +284,17 @@ class SignupButton extends StatelessWidget {
             bundle.area = Area;
             bundle.address = _streetAdd.text;
             bundle.password = _password.text;
+            bundle.jobCount = 0;
             String result =await registerUser(bundle);
-              Scaffold.of(context).showSnackBar(SnackBar(
-                content: Text(result),
-                duration: Duration(seconds: 5),
-              ));
-              if(result=='Signup Successfully'){
-            Navigator.pop(context);
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => CustomerLogin()));
-          }
+            Scaffold.of(context).showSnackBar(SnackBar(
+              content: Text(result),
+              duration: Duration(seconds: 5),
+            ));
+            if(result=='Signup Successfully'){
+              Navigator.pop(context);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => CustomerLogin()));
+            }
           }
         },
       ),
@@ -316,13 +317,12 @@ Future registerUser(CustomerData bundle) async{
     AuthResult authResult = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: bundle.email, password: bundle.password);
     FirebaseUser user = authResult.user;
-   //create document for customer with customerId
+    //create document for customer with customerId
     DatabaseService(uid: user.uid).updateCustomerData(bundle);
     return 'Signup Successfully';
 
   }catch(signUpError) {
     print(signUpError.toString());
-      return signUpError.code;
-    }
+    return signUpError.code;
+  }
 }
-
