@@ -91,7 +91,7 @@ class _PlumbingServicesState extends State<PlumbingServices> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>SubJobs()));
+                                builder: (context) =>SubJob()));
                       },
                       child: Text(
                         "Add more jobs",

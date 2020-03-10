@@ -52,7 +52,7 @@ class _HomeScreenState extends State<HomeScreenPage> {
                           borderRadius: new BorderRadius.circular(30.0),),
 
                         onPressed: () {
-                        Navigator.pop(context);
+                       // Navigator.pop(context);
                           Navigator.push(context,
                           new MaterialPageRoute(builder: (context) => new CustomerLogin()));
                   },

@@ -39,7 +39,7 @@ class _CustomerLoginState extends State<CustomerLogin> {
               color: Colors.black54,
             ),
             onTap: () {
-              Navigator.pop(context);
+              //Navigator.pop(context);
             },
           ),
           centerTitle: true,
@@ -175,6 +175,7 @@ class LoginBuuton extends StatelessWidget {
             dynamic result = await signin();
 
             if (result is FirebaseUser) {
+             // Navigator.pop(context);
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => CustomerHome()));
             } else {
@@ -300,7 +301,6 @@ Future  signin() async{
     AuthResult authResult = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: _email.text, password: _password.text);
     FirebaseUser user = authResult.user;
-    print(user.uid);
     return user;
   }catch(signinError) {
     print(signinError.toString());
