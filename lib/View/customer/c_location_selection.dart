@@ -260,7 +260,7 @@ class DateField extends StatelessWidget {
               initialDate: currentValue ?? DateTime.now(),
               lastDate: DateTime(2100));
           if (date != null) {
-            userData.date = date.toString();
+            userData.date = date;
           }
           return date;
         },

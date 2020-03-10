@@ -12,6 +12,8 @@ class SelectSubCategory extends StatefulWidget {
   _MySignupPageState createState() => _MySignupPageState(user);
 }
  CustomerData _customerData;
+List _selectedSubJobs = new List();
+
 
 class _MySignupPageState extends State<SelectSubCategory> {
   final CustomerData user;
@@ -118,6 +120,8 @@ class NextButton extends StatelessWidget {
               fontWeight: FontWeight.bold),
         ),
         onPressed: () {
+          _customerData.subJobFields = _selectedSubJobs;
+          print(_customerData.subJobFields);
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -185,7 +189,7 @@ class _subJobsCard extends State<SubJobsCard> {
                       setState(() {
                         subJobs.isCheck = value;
                       });
-                     // _onSubJobSelected(value, subJobs.title);
+                      _onSubJobSelected(value, subJobs.title);
                     },
               )
             ],
@@ -193,14 +197,14 @@ class _subJobsCard extends State<SubJobsCard> {
         ));
   }
 
-  void _onSubJobSelected(bool selected, subJob) {
+  void _onSubJobSelected(bool selected,String subJob) {
     if (selected == true) {
       setState(() {
-        _customerData.subJobFields.add(subJob);
+        _selectedSubJobs.add(subJob);
       });
     } else {
       setState(() {
-        _customerData.subJobFields.remove(subJob);
+        _selectedSubJobs.remove(subJob);
       });
     }
   }
