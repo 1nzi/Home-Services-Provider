@@ -8,7 +8,7 @@ import 'c_select_subCategory.dart';
 
 class SubJobs extends StatefulWidget {
   final CustomerData user;
-
+//recive Customer data
   const SubJobs({Key key, this.user}) : super(key: key);
 
   _MySubCategoryPageState createState() => _MySubCategoryPageState( user);
