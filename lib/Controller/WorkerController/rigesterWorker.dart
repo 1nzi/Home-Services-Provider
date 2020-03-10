@@ -1,5 +1,6 @@
 
 class WorkerData {
+  String workerId;
   String name;
   String cnic;
   String ph;

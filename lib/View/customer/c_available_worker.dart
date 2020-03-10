@@ -7,8 +7,10 @@ import 'c_wait_for_response.dart';
 import 'package:home_well/Controller/CustomerController/rigesterCustomer.dart';
 import 'package:home_well/Controller/CustomerController/customerProfile.dart';
 
-CustomerDataFromFireStore updateDataFromFireStore = new CustomerDataFromFireStore();
+CustomerDataFromFireStore updateDataFromFireStore =
+    new CustomerDataFromFireStore();
 AddJobRequest _jobRequest = new AddJobRequest();
+
 class AvailableWorker extends StatefulWidget {
   final CustomerData user;
 
@@ -19,7 +21,6 @@ class AvailableWorker extends StatefulWidget {
 
 CustomerDataFromFireStore customerDataFromFireStore =
     new CustomerDataFromFireStore();
-var _myKey = GlobalKey<FormState>();
 
 class _MyWorkerPageState extends State<AvailableWorker> {
   final CustomerData user;
@@ -45,6 +46,7 @@ class _MyWorkerPageState extends State<AvailableWorker> {
               int workerCount = snapshot.data.documents.length;
               for (var msg in doc) {
                 worker.add(Worker(
+                  msg.data['Id'],
                   msg.data['Name'],
                   msg.data['Rating'],
                   msg.data['Image'],
@@ -97,11 +99,17 @@ class _MyWorkerPageState extends State<AvailableWorker> {
 }
 
 class Worker {
+  final String workerId;
   final String title;
   final int subtitle;
   final String imageUrl;
 
-  Worker(this.title, this.subtitle, this.imageUrl);
+  Worker(
+    this.workerId,
+    this.title,
+    this.subtitle,
+    this.imageUrl,
+  );
 }
 
 class WorkerCard extends StatelessWidget {
@@ -146,9 +154,12 @@ class WorkerCard extends StatelessWidget {
                           fontSize: 14.0,
                           color: Colors.black,
                           fontWeight: FontWeight.w600)),
-                  Icon(Icons.star, size: 15,)
+                  Icon(
+                    Icons.star,
+                    size: 15,
+                  )
                 ]),
-                trailing: RequestButton(worker: worker.title),
+                trailing: RequestButton(worker: worker),
               )
             ],
           ),
@@ -157,8 +168,10 @@ class WorkerCard extends StatelessWidget {
 }
 
 class RequestButton extends StatelessWidget {
-  final String worker;
+  final Worker worker;
+
   const RequestButton({Key key, this.worker}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -177,13 +190,17 @@ class RequestButton extends StatelessWidget {
               fontWeight: FontWeight.bold),
         ),
         onPressed: () {
-          updateDataFromFireStore.updateJobCount(
-              userData.userId, 'JobCount', (userData.jobCount+1) );
-
+          userData.workerId = worker.workerId;
           _jobRequest.updateCustomerData(userData);
+          userData.jobCount += 1;
+          updateDataFromFireStore.updateJobCount(
+              userData.userId, 'JobCount', (userData.jobCount));
           Navigator.pop(context);
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => ResponseWait(job:userData.job, worker: worker)));
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      ResponseWait(job: userData.job, worker: worker.title)));
         },
       ),
     );

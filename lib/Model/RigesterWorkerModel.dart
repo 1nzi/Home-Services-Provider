@@ -42,6 +42,7 @@ class DatabaseService {
     //upload worker data to firebase
 
     await workerCollection.document(uid).setData({
+      'Id': uid,
       'Name': bundle.name,
       'Cnic': bundle.cnic,
       'Phone': bundle.ph,

@@ -1,36 +1,67 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:home_well/Controller/CustomerController/rigesterCustomer.dart';
 
 import 'c_location_selection.dart';
-import 'c_sub_category.dart';
 
 class SelectSubCategory extends StatefulWidget {
-  _MySignupPageState createState() => _MySignupPageState();
+ final CustomerData user;
+  const SelectSubCategory({Key key, this.user}) : super(key: key);
+  _MySignupPageState createState() => _MySignupPageState(user);
 }
+ CustomerData _customerData;
+List _selectedSubJobs = new List();
+
 
 class _MySignupPageState extends State<SelectSubCategory> {
-  // ignore: non_constant_identifier_names
-  final List<SubJobs> subjobs = ElectricianList.getSubJob();
+  final CustomerData user;
 
+  _MySignupPageState( this.user);
+  @override
+  void initState() {
+    _customerData = user;
+    super.initState();
+
+  }
   Widget _buildSubJobsList() {
     return Container(
-      child: subjobs.length > 0
-          ? ListView.builder(
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemCount: subjobs.length,
-          itemBuilder: (BuildContext context, int index) {
-            return SubJobsCard(subJobs: subjobs[index]);
-          })
-          : Center(child: Text('No Items')),
-    );
+        child: StreamBuilder<DocumentSnapshot>(
+            stream: Firestore.instance
+                .collection("SubJob")
+                    .document(user.subJob).get().asStream(),
+            builder: (context, snapshot) {
+              List<String> jobTiltle = new List();
+              List<String> jobRate = new List();
+              List<SubJobs> subCategory = new List();
+
+              if (!snapshot.hasData) {
+
+                return Text("Loading...");
+              } else {
+                jobTiltle = List.from(snapshot.data['Subcategory']);
+                jobRate = List.from(snapshot.data['jobRate']);
+                for (int i = 0; i < jobTiltle.length; i++) {
+                  subCategory.add(SubJobs(jobTiltle[i], jobRate[i], false));
+                }
+                return Container(
+                  child: subCategory.length > 0
+                      ? ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: subCategory.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return SubJobsCard(subJobs: subCategory[index]);
+                          })
+                      : Center(child: Text('No Items')),
+                );
+              }
+            }));
   }
 
   @override
   Widget build(BuildContext context) {
-    Size media = MediaQuery.of(context).size;
-
     return Scaffold(
       resizeToAvoidBottomPadding: true,
       appBar: AppBar(
@@ -42,8 +73,7 @@ class _MySignupPageState extends State<SelectSubCategory> {
         leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
-              Navigator.pop(context,
-                  new MaterialPageRoute(builder: (context) => new SubJob()));
+              Navigator.pop(context);
             }),
       ),
       body: SingleChildScrollView(
@@ -53,9 +83,6 @@ class _MySignupPageState extends State<SelectSubCategory> {
             SizedBox(
               height: 20,
             ),
-
-
-
             Text(
               "Select Sub Jobs",
             ),
@@ -93,10 +120,13 @@ class NextButton extends StatelessWidget {
               fontWeight: FontWeight.bold),
         ),
         onPressed: () {
-          //Navigator.of(context).pop();
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => CustomerLocationSelection()));
-        },
+          _customerData.subJobFields = _selectedSubJobs;
+          print(_customerData.subJobFields);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => CustomerLocationSelection(user: _customerData)));
+        }
       ),
     );
   }
@@ -104,23 +134,14 @@ class NextButton extends StatelessWidget {
 
 class SubJobs {
   final String title;
+  final String subtitle;
   bool isCheck;
 
-  SubJobs(this.title, this.isCheck);
+
+  SubJobs(this.title, this.subtitle, this.isCheck);
 }
 
-class ElectricianList {
-  static List<SubJobs> getSubJob() {
-    return [
-      SubJobs('AC Tech', false),
-      SubJobs('Fridge Tech', false),
-      SubJobs('TV Tech', false),
-      SubJobs('Mobile Tech', false),
-      SubJobs('Comp/Laptop Tech', false),
-      SubJobs('Bulb/fan/Motor Tech', false),
-    ];
-  }
-}
+
 
 class SubJobsCard extends StatefulWidget {
   final SubJobs subJobs;
@@ -146,7 +167,7 @@ class _subJobsCard extends State<SubJobsCard> {
           decoration: BoxDecoration(color: Colors.black12),
           child: Column(
             children: <Widget>[
-              ListTile(
+              CheckboxListTile(
                 title: Text(
                   subJobs.title,
                   textAlign: TextAlign.start,
@@ -155,16 +176,37 @@ class _subJobsCard extends State<SubJobsCard> {
                       fontStyle: FontStyle.italic,
                       fontWeight: FontWeight.bold),
                 ),
-                trailing: Checkbox(
+                 subtitle: Text(
+                   subJobs.subtitle,
+                   textAlign: TextAlign.start,
+                   style: TextStyle(
+                       fontSize: 12.0,
+                       fontStyle: FontStyle.italic,
+                       fontWeight: FontWeight.bold),
+                 ),
                     value: subJobs.isCheck,
                     onChanged: (bool value) {
                       setState(() {
                         subJobs.isCheck = value;
                       });
-                    }),
+                      _onSubJobSelected(value, subJobs.title);
+                    },
               )
             ],
           ),
         ));
   }
+
+  void _onSubJobSelected(bool selected,String subJob) {
+    if (selected == true) {
+      setState(() {
+        _selectedSubJobs.add(subJob);
+      });
+    } else {
+      setState(() {
+        _selectedSubJobs.remove(subJob);
+      });
+    }
+  }
 }
+
