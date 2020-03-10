@@ -154,7 +154,7 @@ class CategoryCard extends StatelessWidget {
                   Navigator.push(
                       context,
                       new MaterialPageRoute(
-                          builder: (context) => new SubJobs( user: _customerData)));
+                          builder: (context) =>new SubJobs(user: _customerData )));
                 },
               ),
             )));

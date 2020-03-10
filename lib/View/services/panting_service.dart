@@ -160,7 +160,7 @@ class _PaintingService extends State<PaintingService> {
                     onPressed: () {
                       Navigator.pop(context);
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => SubJob()));
+                          MaterialPageRoute(builder: (context) => SubJobs()));
                     },
                     child: Text(
                       "Add more jobs",
