@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
-import 'package:home_well/Controller/CustomerController/customerProfile.dart';
-import 'package:home_well/Controller/CustomerController/rigesterCustomer.dart';
+import 'package:home_well/Controller/CustomerController/customerProfileCtrl.dart';
+import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
 import 'package:intl/intl.dart';
 
 import 'c_available_worker.dart';
@@ -30,9 +30,18 @@ class LocationSelection extends State<CustomerLocationSelection> {
     String City = user.city;
     String Area = user.area;
     _StreetAdd.text = user.address;
+
     return Scaffold(
       resizeToAvoidBottomPadding: true,
       appBar: AppBar(
+        leading: new IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            user.date = null;
+            user.time = null;
+            Navigator.pop(context);
+          },
+        ),
         title: Text(
           "Time & Address",
           style: new TextStyle(
@@ -227,9 +236,10 @@ class ProceedButton extends StatelessWidget {
           ),
         ),
         onPressed: () {
-          print(userData.time);
-          print(userData.date);
-          if (userData.time != null && userData.date != null) {
+          if (userData.date != null  && userData.date != null ) {
+            print(userData.time);
+            print(userData.date);
+
             Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -246,25 +256,24 @@ void clearAddress() {
 }
 
 class DateField extends StatelessWidget {
-  final format = DateFormat.yMMMMd();
+  final format = DateFormat.yMMMd();
 
   @override
   Widget build(BuildContext context) {
     return Column(children: <Widget>[
       DateTimeField(
         format: format,
-        onShowPicker: (context, currentValue) {
-          final date = showDatePicker(
+        onShowPicker: (context, currentValue) async{
+        final date = await showDatePicker (
               context: context,
               firstDate: DateTime(1900),
               initialDate: currentValue ?? DateTime.now(),
               lastDate: DateTime(2100));
-          if (date != null) {
-            userData.date = date;
-          }
-          return date;
+        userData.date = date.toString().substring(0,10);
+        return date;
         },
       ),
+
     ]);
   }
 }
@@ -282,9 +291,7 @@ class TimeField extends StatelessWidget {
             context: context,
             initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
           );
-          if (time != null) {
-            userData.time = DateTimeField.convert(time);
-          }
+          userData.time = DateTimeField.convert(time).toString().substring(12,16);
           return DateTimeField.convert(time);
         },
       ),

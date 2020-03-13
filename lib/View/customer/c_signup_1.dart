@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:home_well/Controller/CustomerController/rigesterCustomer.dart';
+import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'c_signup_2.dart';
@@ -83,15 +83,15 @@ class _MySignupPageState extends State<CustomerSignup1> {
                     new Center(
                       child: _image == null
                           ? new CircleAvatar(
-                              child: Image.network(
-                                  "https://previews.123rf.com/images/tuktukdesign/tuktukdesign1606/tuktukdesign160600105/59070189-user-icon-man-profile-businessman-avatar-person-icon-in-vector-illustration.jpg"),
-                              radius: 65.0,
-                              backgroundColor: Colors.lightGreen[200],
-                            )
+                        child: Image.network(
+                            "https://previews.123rf.com/images/tuktukdesign/tuktukdesign1606/tuktukdesign160600105/59070189-user-icon-man-profile-businessman-avatar-person-icon-in-vector-illustration.jpg"),
+                        radius: 65.0,
+                        backgroundColor: Colors.lightGreen[200],
+                      )
                           : new CircleAvatar(
-                              backgroundImage: new FileImage(_image),
-                              radius: 65.0,
-                            ),
+                        backgroundImage: new FileImage(_image),
+                        radius: 65.0,
+                      ),
                     ),
                     new FloatingActionButton(
                       foregroundColor: Colors.black,

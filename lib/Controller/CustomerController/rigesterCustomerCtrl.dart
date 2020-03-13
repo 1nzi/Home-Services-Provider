@@ -12,9 +12,12 @@ class CustomerData {
   String subJob;
   int jobCount;
   var subJobFields = new List();
-  dynamic date;
-  dynamic time;
+  String date;
+  String time;
   String workerId;
+  String workerName;
+  String workerContact;
+  String workerImg;
   String password;
   String imagePath;
   dynamic image;
@@ -35,6 +38,9 @@ class CustomerData {
     this.date,
     this.time,
     this.workerId,
+    this.workerName,
+    this.workerContact,
+    this.workerImg,
     this.password,
     this.imagePath,
     this.image,

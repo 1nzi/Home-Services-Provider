@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:home_well/Model/AddJobRequest.dart';
 import 'c_wait_for_response.dart';
-import 'package:home_well/Controller/CustomerController/rigesterCustomer.dart';
-import 'package:home_well/Controller/CustomerController/customerProfile.dart';
+import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
+import 'package:home_well/Controller/CustomerController/customerProfileCtrl.dart';
 
 CustomerDataFromFireStore updateDataFromFireStore =
     new CustomerDataFromFireStore();
@@ -48,6 +48,7 @@ class _MyWorkerPageState extends State<AvailableWorker> {
                 worker.add(Worker(
                   msg.data['Id'],
                   msg.data['Name'],
+                  msg.data['Phone'],
                   msg.data['Rating'],
                   msg.data['Image'],
                 ));
@@ -75,7 +76,7 @@ class _MyWorkerPageState extends State<AvailableWorker> {
         leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
-              Navigator.pop(context);
+                Navigator.pop(context);
             }),
         title: new Text(
           "Available Worker",
@@ -83,16 +84,6 @@ class _MyWorkerPageState extends State<AvailableWorker> {
               fontSize: 20.0, color: Colors.black, fontWeight: FontWeight.bold),
         ),
       ),
-      bottomNavigationBar: new BottomNavigationBar(items: [
-        new BottomNavigationBarItem(
-          icon: new Icon(Icons.home),
-          title: new Text("Home"),
-        ),
-        new BottomNavigationBarItem(
-          icon: new Icon(Icons.search),
-          title: new Text("Search"),
-        )
-      ]),
       body: _buildWorkerList(),
     );
   }
@@ -100,14 +91,16 @@ class _MyWorkerPageState extends State<AvailableWorker> {
 
 class Worker {
   final String workerId;
-  final String title;
-  final int subtitle;
+  final String workerName;
+  final String workerContact;
+  final int rating;
   final String imageUrl;
 
   Worker(
     this.workerId,
-    this.title,
-    this.subtitle,
+    this.workerName,
+    this.workerContact,
+    this.rating,
     this.imageUrl,
   );
 }
@@ -141,7 +134,7 @@ class WorkerCard extends StatelessWidget {
                   ),
                 ),
                 title: Text(
-                  worker.title,
+                  worker.workerName,
                   textAlign: TextAlign.start,
                   style: TextStyle(
                       fontSize: 16.0,
@@ -149,7 +142,7 @@ class WorkerCard extends StatelessWidget {
                       fontWeight: FontWeight.w600),
                 ),
                 subtitle: Row(children: <Widget>[
-                  Text(worker.subtitle.toString(),
+                  Text(worker.rating.toString(),
                       style: TextStyle(
                           fontSize: 14.0,
                           color: Colors.black,
@@ -191,16 +184,30 @@ class RequestButton extends StatelessWidget {
         ),
         onPressed: () {
           userData.workerId = worker.workerId;
+          userData.workerName = worker.workerName;
+          userData.workerImg = worker.imageUrl;
+          userData.workerContact = worker.workerContact;
           _jobRequest.updateCustomerData(userData);
           userData.jobCount += 1;
           updateDataFromFireStore.updateJobCount(
               userData.userId, 'JobCount', (userData.jobCount));
+//clear data for next worker request
+          userData.workerId = null;
+          userData.workerName = null;
+          userData.workerImg = null;
+          userData.workerContact = null;
+          userData.job = null;
+          userData.subJob = null;
+          userData.time = null;
+          userData.date = null;
+          userData.subJobFields = null;
+
           Navigator.pop(context);
           Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) =>
-                      ResponseWait(job: userData.job, worker: worker.title)));
+                      ResponseWait(job: userData.job, worker: worker.workerName)));
         },
       ),
     );

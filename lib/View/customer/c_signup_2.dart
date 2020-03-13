@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:home_well/Controller/CustomerController/rigesterCustomer.dart';
+import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
 import 'package:home_well/Model/RigesterCustomerModel.dart';
 import 'package:home_well/View/customer/c_signup_1.dart';
 import 'c_login.dart';

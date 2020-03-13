@@ -1,23 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
-import 'c_pending_task_details.dart';
+import 'c_history_details.dart';
 
-class CustomerPendingTask extends StatefulWidget {
+class CustomerHistory extends StatefulWidget {
   final String userId;
 
-  const CustomerPendingTask({Key key, this.userId}) : super(key: key);
+  const CustomerHistory({Key key, this.userId}) : super(key: key);
 
-  _PendingTask createState() => _PendingTask(userId);
+  _CustomerHistoryState createState() => _CustomerHistoryState(userId);
 }
 
-
-class _PendingTask extends State<CustomerPendingTask> {
+class _CustomerHistoryState extends State<CustomerHistory> {
   final String userId;
 
-  _PendingTask(this.userId);
+  _CustomerHistoryState(this.userId);
 
   Widget _buildTaskList() {
     return Container(
@@ -25,17 +22,17 @@ class _PendingTask extends State<CustomerPendingTask> {
             stream: Firestore.instance
                 .collection('Customer')
                 .document(userId)
-                .collection('JobRequest')
+                .collection('History')
                 .getDocuments()
                 .asStream(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Text("Loading...");
               } else {
-                List<Task> pendingTask = new List();
+                List<Task> history = new List();
 
                 for (int i = 0; i < snapshot.data.documents.length; i++) {
-                  pendingTask.add(Task(
+                  history.add(Task(
                     snapshot.data.documents[i].documentID,
                     snapshot.data.documents[i].data['WorkerName'],
                     snapshot.data.documents[i].data['WorkerContact'],
@@ -58,7 +55,7 @@ class _PendingTask extends State<CustomerPendingTask> {
                       itemCount: snapshot.data.documents.length,
                       itemBuilder: (BuildContext context, int index) {
                         return TaskCard(
-                            task: pendingTask[index]);
+                            task: history[index]);
                       })
                       : Center(child: Text('This Job has No SubJobs')),
                 );
@@ -119,47 +116,47 @@ class TaskCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
 
-        child: InkWell(
+      child: InkWell(
           onTap: () {
             Navigator.push(
                 context,
                 new MaterialPageRoute(
-                    builder: (context) => PendingTaskDetails(task: task)));
+                    builder: (context) => HistoryDetails(task: task)));
           },
 
           child: Container(
-          decoration: BoxDecoration(color: Colors.black12),
-          child: Column(
-            children: <Widget>[
-              ListTile(
-                leading:Container(
-                  width: 50.0,
-                  height: 100.0,
-                  decoration: new BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: new DecorationImage(fit: BoxFit.fill, image: NetworkImage( task.workerImage))),
-                ),
-
-                title: Text(task.workerName,
-                  textAlign: TextAlign.start,
-                  style: TextStyle(
-                      fontSize: 15.0,
-                      fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.bold,
-                    color: Colors.black
+            decoration: BoxDecoration(color: Colors.black12),
+            child: Column(
+              children: <Widget>[
+                ListTile(
+                  leading:Container(
+                    width: 50.0,
+                    height: 100.0,
+                    decoration: new BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: new DecorationImage(fit: BoxFit.fill, image: NetworkImage( task.workerImage))),
                   ),
-                ),
-                subtitle:
-                  Text(task.job),
-                trailing: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [Text(task.time), Text(task.date)]),
-              )
-            ],
-          ),
 
-        )
-        ),
+                  title: Text(task.workerName,
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                        fontSize: 15.0,
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black
+                    ),
+                  ),
+                  subtitle:
+                  Text(task.job),
+                  trailing: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [Text(task.time), Text(task.date)]),
+                )
+              ],
+            ),
+
+          )
+      ),
     );
   }
 }

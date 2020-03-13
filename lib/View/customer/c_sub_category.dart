@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:home_well/Controller/CustomerController/rigesterCustomer.dart';
+import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
 import 'c_drawer.dart';
 import 'c_select_subCategory.dart';
 
@@ -73,6 +73,7 @@ class _MySubCategoryPageState extends State<SubJobs> {
         leading: new IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
+            user.subJob = null;
             Navigator.pop(context);
           },
         ),
