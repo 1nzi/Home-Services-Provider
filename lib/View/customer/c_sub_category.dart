@@ -73,6 +73,7 @@ class _MySubCategoryPageState extends State<SubJobs> {
         leading: new IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
+            user.subJob = null;
             Navigator.pop(context);
           },
         ),

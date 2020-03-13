@@ -1,7 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
+import 'package:home_well/Model/AddJobRequest.dart';
 
 import 'c_pending_task.dart';
 import 'c_rating_bar.dart';
+
+AddJobRequest _jobRequest = new AddJobRequest();
+CustomerData _customerData = new CustomerData();
 
 class PendingTaskDetails extends StatefulWidget {
   final Task task;
@@ -80,7 +87,7 @@ class _PendingTaskDetailsState extends State<PendingTaskDetails> {
                       ),
                     ),
                     Text(
-                      "Sub Field :  " + task.subJobFields.toString(),
+                      "Sub Fields :  " + task.subJobFields.toString(),
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 16.0,
@@ -108,8 +115,11 @@ class _PendingTaskDetailsState extends State<PendingTaskDetails> {
                     shape: new RoundedRectangleBorder(
                       borderRadius: new BorderRadius.circular(30.0),
                     ),
-                    onPressed: () => Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => RatingBar(task: task))),
+                    onPressed: () async {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => RatingBar(task: task)));
+                      await addToHistory(task);
+                    },
                     child: Text(
                       "Completed",
                       style: TextStyle(color: Colors.white, fontSize: 16),
@@ -119,4 +129,25 @@ class _PendingTaskDetailsState extends State<PendingTaskDetails> {
       )),
     );
   }
+}
+final FirebaseAuth _auth = FirebaseAuth.instance;
+FirebaseUser user;
+addToHistory(Task task) async{
+  user = await _auth.currentUser();
+  _customerData.userId = user.uid;
+  _customerData.workerName = task.workerName;
+  _customerData.workerContact = task.workerContact;
+  _customerData.workerImg = task.workerImage;
+  _customerData.job = task.job;
+  _customerData.subJob = task.subJob;
+  _customerData.subJobFields = task.subJobFields;
+  _customerData.date = task.date;
+  _customerData.time = task.time;
+  _customerData.city = task.city;
+  _customerData.area = task.area;
+  _customerData.address = task.address;
+
+
+  await _jobRequest.movePendingToHistory(task.docId, _customerData);
+
 }

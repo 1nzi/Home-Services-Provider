@@ -16,8 +16,7 @@ class _CustomerHistoryState extends State<CustomerHistory> {
 
   _CustomerHistoryState(this.userId);
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildTaskList() {
     return Container(
         child: StreamBuilder<QuerySnapshot>(
             stream: Firestore.instance
@@ -30,12 +29,20 @@ class _CustomerHistoryState extends State<CustomerHistory> {
               if (!snapshot.hasData) {
                 return Text("Loading...");
               } else {
-                List<HistoryData> hd = new List();
+                List<Task> history = new List();
+
                 for (int i = 0; i < snapshot.data.documents.length; i++) {
-                  hd.add(HistoryData(
+                  history.add(Task(
+                    snapshot.data.documents[i].documentID,
                     snapshot.data.documents[i].data['WorkerName'],
+                    snapshot.data.documents[i].data['WorkerContact'],
                     snapshot.data.documents[i].data['Job'],
+                    snapshot.data.documents[i].data['SubJob'],
+                    List.from(snapshot.data.documents[i].data['SubJobField']),
                     snapshot.data.documents[i].data['WorkerImg'],
+                    snapshot.data.documents[i].data['City'],
+                    snapshot.data.documents[i].data['Area'],
+                    snapshot.data.documents[i].data['Address'],
                     snapshot.data.documents[i].data['Date'],
                     snapshot.data.documents[i].data['Time'],
                   ));
@@ -47,66 +54,108 @@ class _CustomerHistoryState extends State<CustomerHistory> {
                       shrinkWrap: true,
                       itemCount: snapshot.data.documents.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return HistoryCard(
-                            historyData: hd[index]);
+                        return TaskCard(
+                            task: history[index]);
                       })
                       : Center(child: Text('This Job has No SubJobs')),
                 );
               }
             }));
   }
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+
+      appBar: new AppBar(
+        leading:IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
+        title: new Text("Pending Task",
+          style: new TextStyle(
+              fontSize: 20.0, color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+
+      ),
+
+      body: _buildTaskList(),
+
+    );
+
+  }
 }
-
-
-class HistoryData {
-  final String title;
-  final String subtitle;
-  final String imageUrl;
+class Task {
+  final String docId;
+  final String workerName;
+  final String workerContact;
+  final String job;
+  final String subJob;
+  final List<String> subJobFields;
+  final String workerImage;
+  final String city;
+  final String area;
+  final String address;
   final String date;
   final String time;
 
-  HistoryData(this.title, this.subtitle, this.imageUrl, this.date, this.time);
+  Task(this.docId, this.workerName, this.workerContact, this.job, this.subJob, this.subJobFields, this.workerImage, this.city, this.area, this.address, this.date, this.time, );
+
 }
 
-class HistoryCard extends StatelessWidget {
-  final HistoryData historyData;
+class TaskCard extends StatelessWidget {
+  final Task task;
 
-  const HistoryCard({Key key, this.historyData}) : super(key: key);
+  const TaskCard({ this.task});
+
 
   @override
-  Widget build(BuildContext cxt) {
-    return Container(
-      margin: EdgeInsets.all(8.0),
-      child: Card(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8.0))),
-        child: InkWell(
+  Widget build(BuildContext context) {
+    return Card(
+
+      child: InkWell(
           onTap: () {
             Navigator.push(
-                cxt,
+                context,
                 new MaterialPageRoute(
-                    builder: (context) => new HistoryDetails()));
+                    builder: (context) => HistoryDetails(task: task)));
           },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              ClipRRect(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(8.0),
-                  topRight: Radius.circular(8.0),
-                ),
-                child: Image.asset(historyData.imageUrl,
-                    height: 150, fit: BoxFit.fill),
-              ),
-              ListTile(
-                title: Text(
-                  historyData.title,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ],
-          ),
-        ),
+
+          child: Container(
+            decoration: BoxDecoration(color: Colors.black12),
+            child: Column(
+              children: <Widget>[
+                ListTile(
+                  leading:Container(
+                    width: 50.0,
+                    height: 100.0,
+                    decoration: new BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: new DecorationImage(fit: BoxFit.fill, image: NetworkImage( task.workerImage))),
+                  ),
+
+                  title: Text(task.workerName,
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                        fontSize: 15.0,
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black
+                    ),
+                  ),
+                  subtitle:
+                  Text(task.job),
+                  trailing: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [Text(task.time), Text(task.date)]),
+                )
+              ],
+            ),
+
+          )
       ),
     );
   }

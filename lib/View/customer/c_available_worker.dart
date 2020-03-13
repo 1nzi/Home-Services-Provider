@@ -76,7 +76,7 @@ class _MyWorkerPageState extends State<AvailableWorker> {
         leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
-              Navigator.pop(context);
+                Navigator.pop(context);
             }),
         title: new Text(
           "Available Worker",
@@ -191,6 +191,17 @@ class RequestButton extends StatelessWidget {
           userData.jobCount += 1;
           updateDataFromFireStore.updateJobCount(
               userData.userId, 'JobCount', (userData.jobCount));
+//clear data for next worker request
+          userData.workerId = null;
+          userData.workerName = null;
+          userData.workerImg = null;
+          userData.workerContact = null;
+          userData.job = null;
+          userData.subJob = null;
+          userData.time = null;
+          userData.date = null;
+          userData.subJobFields = null;
+
           Navigator.pop(context);
           Navigator.push(
               context,

@@ -30,9 +30,18 @@ class LocationSelection extends State<CustomerLocationSelection> {
     String City = user.city;
     String Area = user.area;
     _StreetAdd.text = user.address;
+
     return Scaffold(
       resizeToAvoidBottomPadding: true,
       appBar: AppBar(
+        leading: new IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            user.date = null;
+            user.time = null;
+            Navigator.pop(context);
+          },
+        ),
         title: Text(
           "Time & Address",
           style: new TextStyle(
@@ -254,15 +263,17 @@ class DateField extends StatelessWidget {
     return Column(children: <Widget>[
       DateTimeField(
         format: format,
-        onShowPicker: (context, currentValue) {
-          userData.date = currentValue.toString().substring(0,10);
-      return showDatePicker(
+        onShowPicker: (context, currentValue) async{
+        final date = await showDatePicker (
               context: context,
               firstDate: DateTime(1900),
               initialDate: currentValue ?? DateTime.now(),
               lastDate: DateTime(2100));
+        userData.date = date.toString().substring(0,10);
+        return date;
         },
       ),
+
     ]);
   }
 }
@@ -276,11 +287,11 @@ class TimeField extends StatelessWidget {
       DateTimeField(
         format: format,
         onShowPicker: (context, currentValue) async {
-          userData.time = currentValue.toString().substring(12,16);
           final time = await showTimePicker(
             context: context,
             initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
           );
+          userData.time = DateTimeField.convert(time).toString().substring(12,16);
           return DateTimeField.convert(time);
         },
       ),

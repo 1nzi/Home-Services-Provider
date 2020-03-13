@@ -11,7 +11,6 @@ class SelectSubCategory extends StatefulWidget {
   const SelectSubCategory({Key key, this.user}) : super(key: key);
   _MySignupPageState createState() => _MySignupPageState(user);
 }
- CustomerData _customerData;
 List _selectedSubJobs = new List();
 
 
@@ -21,7 +20,6 @@ class _MySignupPageState extends State<SelectSubCategory> {
   _MySignupPageState( this.user);
   @override
   void initState() {
-    _customerData = user;
     super.initState();
 
   }
@@ -76,6 +74,7 @@ class _MySignupPageState extends State<SelectSubCategory> {
         leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
+              _selectedSubJobs = new List();
               Navigator.pop(context);
             }),
       ),
@@ -93,7 +92,7 @@ class _MySignupPageState extends State<SelectSubCategory> {
             SizedBox(
               height: 20,
             ),
-            NextButton()
+            NextButton(user: user)
           ],
         ),
       ),
@@ -102,6 +101,10 @@ class _MySignupPageState extends State<SelectSubCategory> {
 }
 
 class NextButton extends StatelessWidget {
+  final CustomerData user;
+
+  const NextButton({Key key, this.user}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -123,12 +126,12 @@ class NextButton extends StatelessWidget {
               fontWeight: FontWeight.bold),
         ),
         onPressed: () {
-          _customerData.subJobFields = _selectedSubJobs;
-          print(_customerData.subJobFields);
+          user.subJobFields = _selectedSubJobs;
+          print(user.subJobFields);
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => CustomerLocationSelection(user: _customerData)));
+                  builder: (context) => CustomerLocationSelection(user: user)));
         }
       ),
     );
