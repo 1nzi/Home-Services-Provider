@@ -78,10 +78,6 @@ class _PlumbingServicesState extends State<PlumbingServices> {
 
             SizedBox(height: 20,),
             Row(
-
-
-
-
               children: <Widget>[
                 Container(
                     width: 130,
