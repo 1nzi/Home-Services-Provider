@@ -2,14 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import 'c_home.dart';
+import 'c_pending_task.dart';
 
 
 class RatingBar extends StatefulWidget {
+  final Task task;
+
+  const RatingBar({Key key, this.task}) : super(key: key);
+
   @override
-  _RatingBarState createState() => _RatingBarState();
+  _RatingBarState createState() => _RatingBarState(task);
 }
 
 class _RatingBarState extends State<RatingBar> {
+  final Task task;
+
+  _RatingBarState(this.task);
+
   @override
   Widget build(BuildContext context) {
     return new AlertDialog(
@@ -33,15 +42,14 @@ class _RatingBarState extends State<RatingBar> {
                       shape: BoxShape.circle,
                       image: new DecorationImage(
                           fit: BoxFit.fill,
-                          image: new AssetImage(
-                              "Images/honted.jpg")
+                          image: NetworkImage(task.workerImage)
                       )
                   )
               ),
               SizedBox(
                 height: 10,
               ),
-              Text('Person Name',
+              Text(task.workerName,
                 style: TextStyle(color: Colors.black, fontSize: 20.0,),
               ),
               FlutterRatingBar(

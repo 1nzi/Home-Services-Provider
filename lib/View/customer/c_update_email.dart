@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:home_well/Controller/CustomerController/customerProfile.dart';
+import 'package:home_well/Controller/CustomerController/customerProfileCtrl.dart';
 
 import 'c_profile.dart';
 

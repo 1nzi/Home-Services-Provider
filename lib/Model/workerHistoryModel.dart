@@ -4,14 +4,13 @@ import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dar
 
 final CollectionReference customerCollection = Firestore.instance.collection('Customer');
 
-class AddJobRequest{
+class AddHistory{
 
-  Future <void> updateCustomerData(CustomerData bundle) async {
+  Future <void> updateHistoryData(CustomerData bundle) async {
 
-    return await customerCollection.document(bundle.userId).collection('JobRequest').document('job'+bundle.jobCount.toString()).setData({
+    return await customerCollection.document(bundle.userId).collection('History').document('WorkDone'+bundle.jobCount.toString()).setData({
       'WorkerId' : bundle.workerId,
       'WorkerName' : bundle.workerName,
-      'WorkerContact' : bundle.workerContact,
       'WorkerImg' : bundle.workerImg,
       'Job': bundle.job,
       'SubJob': bundle.subJob,

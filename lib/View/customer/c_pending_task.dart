@@ -1,28 +1,69 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class CustomerPendingTask extends StatefulWidget {
+import 'c_pending_task_details.dart';
 
-  _PendingTask createState() => _PendingTask();
+class CustomerPendingTask extends StatefulWidget {
+  final String userId;
+
+  const CustomerPendingTask({Key key, this.userId}) : super(key: key);
+
+  _PendingTask createState() => _PendingTask(userId);
 }
 
+
 class _PendingTask extends State<CustomerPendingTask> {
-  final List<Task> task = TaskList.getTask();
+  final String userId;
+
+  _PendingTask(this.userId);
 
   Widget _buildTaskList() {
     return Container(
-      child: task.length > 0
-          ? ListView.builder(
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemCount: task.length,
-          itemBuilder: (BuildContext context, int index) {
-            return TaskCard(task: task[index]);
-          }
-      )
-          : Center(child: Text('No Pending Task')),
-    );
+        child: StreamBuilder<QuerySnapshot>(
+            stream: Firestore.instance
+                .collection('Customer')
+                .document(userId)
+                .collection('JobRequest')
+                .getDocuments()
+                .asStream(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Text("Loading...");
+              } else {
+                List<Task> pendingTask = new List();
+
+                for (int i = 0; i < snapshot.data.documents.length; i++) {
+                  pendingTask.add(Task(
+                    snapshot.data.documents[i].documentID,
+                    snapshot.data.documents[i].data['WorkerName'],
+                    snapshot.data.documents[i].data['WorkerContact'],
+                    snapshot.data.documents[i].data['Job'],
+                    snapshot.data.documents[i].data['SubJob'],
+                    List.from(snapshot.data.documents[i].data['SubJobField']),
+                    snapshot.data.documents[i].data['WorkerImg'],
+                    snapshot.data.documents[i].data['City'],
+                    snapshot.data.documents[i].data['Area'],
+                    snapshot.data.documents[i].data['Address'],
+                    snapshot.data.documents[i].data['Date'],
+                    snapshot.data.documents[i].data['Time'],
+                  ));
+                }
+                return Container(
+                  child: snapshot.data.documents.length > 0
+                      ? ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: snapshot.data.documents.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return TaskCard(
+                            task: pendingTask[index]);
+                      })
+                      : Center(child: Text('This Job has No SubJobs')),
+                );
+              }
+            }));
   }
 
 
@@ -44,44 +85,28 @@ class _PendingTask extends State<CustomerPendingTask> {
 
       ),
 
-      bottomNavigationBar: new BottomNavigationBar(items: [
-        new BottomNavigationBarItem(
-          icon: new Icon(Icons.home),
-          title: new Text("Home"),
-        ),
-        new BottomNavigationBarItem(
-          icon: new Icon(Icons.search),
-          title: new Text("Search"),
-        )
-      ]),
-
-
       body: _buildTaskList(),
-
 
     );
 
   }
 }
 class Task {
-  final String name;
+  final String docId;
+  final String workerName;
+  final String workerContact;
   final String job;
+  final String subJob;
+  final List<String> subJobFields;
+  final String workerImage;
+  final String city;
+  final String area;
+  final String address;
   final String date;
   final String time;
-  final String imageUrl;
 
+  Task(this.docId, this.workerName, this.workerContact, this.job, this.subJob, this.subJobFields, this.workerImage, this.city, this.area, this.address, this.date, this.time, );
 
-  Task(this.name, this.job, this.date, this.time, this.imageUrl);
-
-}
-
-class TaskList {
-  static List<Task> getTask() {
-    return [
-      Task(
-          'Inzamam Asghar', 'Electrician', '12/02/2019', '12:00 pm', 'Images/inzi.jpg' ),
-    ];
-  }
 }
 
 class TaskCard extends StatelessWidget {
@@ -93,21 +118,29 @@ class TaskCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-        child: Container(
-          decoration: BoxDecoration(color: Colors.black12),
 
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+                context,
+                new MaterialPageRoute(
+                    builder: (context) => PendingTaskDetails(task: task)));
+          },
+
+          child: Container(
+          decoration: BoxDecoration(color: Colors.black12),
           child: Column(
             children: <Widget>[
               ListTile(
                 leading:Container(
-                  width: 60.0,
+                  width: 50.0,
                   height: 100.0,
                   decoration: new BoxDecoration(
                       shape: BoxShape.circle,
-                      image: new DecorationImage(fit: BoxFit.fill, image:AssetImage( task.imageUrl))),
+                      image: new DecorationImage(fit: BoxFit.fill, image: NetworkImage( task.workerImage))),
                 ),
 
-                title: Text(task.name,
+                title: Text(task.workerName,
                   textAlign: TextAlign.start,
                   style: TextStyle(
                       fontSize: 15.0,
@@ -119,12 +152,14 @@ class TaskCard extends StatelessWidget {
                 subtitle:
                   Text(task.job),
                 trailing: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [Text(task.date), Text(task.time)]),
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [Text(task.time), Text(task.date)]),
               )
             ],
           ),
+
         )
+        ),
     );
   }
 }

@@ -4,8 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:home_well/Controller/CustomerController/customerProfile.dart';
-import 'package:home_well/Controller/CustomerController/rigesterCustomer.dart';
+import 'package:home_well/Controller/CustomerController/customerProfileCtrl.dart';
+import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
 import 'c_drawer.dart';
 import 'c_sub_category.dart';
 
@@ -42,15 +42,15 @@ class _MyHomePageState extends State<CustomerHome> {
 
   @override
   void initState() {
-    initUser();
     initJobs();
+    initUser();
     super.initState();
 
   }
 
   initUser() async {
     user = await _auth.currentUser();
-    _customerData = customerDataFromFireStore.getCustomerData(user.uid);
+    _customerData = customerDataFromFireStore.getCustomerData(user);
   }
 
   initJobs(){

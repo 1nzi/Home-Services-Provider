@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:home_well/Controller/CustomerController/rigesterCustomer.dart';
+import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
 
 import 'c_location_selection.dart';
 
@@ -26,13 +26,15 @@ class _MySignupPageState extends State<SelectSubCategory> {
 
   }
   Widget _buildSubJobsList() {
+    Size media = MediaQuery.of(context).size;
     return Container(
+        height: media.height*0.7,
         child: StreamBuilder<DocumentSnapshot>(
             stream: Firestore.instance
                 .collection("SubJob")
                     .document(user.subJob).get().asStream(),
             builder: (context, snapshot) {
-              List<String> jobTiltle = new List();
+              List<String> jobTitle = new List();
               List<String> jobRate = new List();
               List<SubJobs> subCategory = new List();
 
@@ -40,12 +42,13 @@ class _MySignupPageState extends State<SelectSubCategory> {
 
                 return Text("Loading...");
               } else {
-                jobTiltle = List.from(snapshot.data['Subcategory']);
+                jobTitle = List.from(snapshot.data['Subcategory']);
                 jobRate = List.from(snapshot.data['jobRate']);
-                for (int i = 0; i < jobTiltle.length; i++) {
-                  subCategory.add(SubJobs(jobTiltle[i], jobRate[i], false));
+                for (int i = 0; i < jobTitle.length; i++) {
+                  subCategory.add(SubJobs(jobTitle[i], jobRate[i], false));
                 }
                 return Container(
+
                   child: subCategory.length > 0
                       ? ListView.builder(
                           scrollDirection: Axis.vertical,

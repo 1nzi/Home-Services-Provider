@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:home_well/Controller/CustomerController/rigesterCustomer.dart';
+import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
 
 CustomerData userData = new CustomerData();
 
@@ -18,16 +18,16 @@ class CustomerDataFromFireStore {
     await db.collection('Customer').document(uid).updateData({title: newVal});
   }
 
-  CustomerData getCustomerData(String uid) {
-    var userQuery = db.collection('Customer').document(uid);
+  CustomerData getCustomerData(FirebaseUser user) {
+    var userQuery = db.collection('Customer').document(user.uid);
     userQuery.get().then((data) {
-      userData.userId = uid;
+      userData.userId = user.uid;
       userData.fname = data['Name'];
       userData.email = data['Email'];
       userData.ph = data['Phone'];
       userData.image = data['Image'];
       userData.city = data['City'];
-      userData.gender = 'male';
+      userData.gender = data['Gender'];
       userData.area = data['Area'];
       userData.address = data['Address'];
       userData.jobCount = data['JobCount'];
