@@ -1,8 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
-import 'package:home_well/Model/AddJobRequest.dart';
+import 'file:///C:/Users/Saad/fyp/lib/Model/CustomerModel/AddJobRequest.dart';
 
 import 'c_pending_task.dart';
 import 'c_rating_bar.dart';
@@ -26,6 +25,13 @@ class _PendingTaskDetailsState extends State<PendingTaskDetails> {
 
   @override
   Widget build(BuildContext context) {
+    currentUser();
+    Color color;
+    if (task.jobStatus == 'Accepted')
+      color = Colors.lightGreen;
+    else
+      color = Colors.red;
+
     return new AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       title: Center(
@@ -64,6 +70,14 @@ class _PendingTaskDetailsState extends State<PendingTaskDetails> {
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold
                 ),
+              ),
+              Text(
+                task.jobStatus,
+                style: TextStyle(
+                    fontSize: 15.0,
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.bold,
+                    color: color),
               ),
               SizedBox(
                 height: 10,
@@ -125,6 +139,23 @@ class _PendingTaskDetailsState extends State<PendingTaskDetails> {
                       style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
               )),
+
+              Container(
+                  child: RaisedButton(
+                    color: Colors.lightGreen,
+                    shape: new RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(30.0),
+                    ),
+                    onPressed: () async {
+                      await _jobRequest.removeFromPending(task.docId, user.uid);
+                      Navigator.pop(context);
+
+                    },
+                    child: Text(
+                      "Cancel Request",
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  )),
             ],
       )),
     );
@@ -132,8 +163,12 @@ class _PendingTaskDetailsState extends State<PendingTaskDetails> {
 }
 final FirebaseAuth _auth = FirebaseAuth.instance;
 FirebaseUser user;
-addToHistory(Task task) async{
+
+currentUser()async{
   user = await _auth.currentUser();
+}
+
+addToHistory(Task task) async{
   _customerData.userId = user.uid;
   _customerData.workerName = task.workerName;
   _customerData.workerContact = task.workerContact;
@@ -148,6 +183,8 @@ addToHistory(Task task) async{
   _customerData.address = task.address;
 
 
-  await _jobRequest.movePendingToHistory(task.docId, _customerData);
+  await _jobRequest.removeFromPending(task.docId, user.uid);
+  await _jobRequest.updateCustomerHistory(task.docId, _customerData);
+
 
 }

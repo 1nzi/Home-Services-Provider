@@ -7,6 +7,8 @@ class WorkerData {
   String email;
   String city;
   String area;
+  double rating;
+  int rater;
   String job;
   var subJobs = new List();
   String password;
@@ -23,6 +25,8 @@ class WorkerData {
     this.email,
     this.city,
     this.area,
+    this.rating,
+    this.rater,
     this.job,
     this.subJobs,
     this.password,

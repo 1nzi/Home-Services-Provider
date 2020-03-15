@@ -2,10 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:home_well/Model/AddJobRequest.dart';
+import 'file:///C:/Users/Saad/fyp/lib/Model/CustomerModel/AddJobRequest.dart';
 import 'c_wait_for_response.dart';
 import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
-import 'package:home_well/Controller/CustomerController/customerProfileCtrl.dart';
+import 'file:///C:/Users/Saad/fyp/lib/Model/CustomerModel/customerProfileModel.dart';
 
 CustomerDataFromFireStore updateDataFromFireStore =
     new CustomerDataFromFireStore();
@@ -76,7 +76,7 @@ class _MyWorkerPageState extends State<AvailableWorker> {
         leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
-                Navigator.pop(context);
+              Navigator.pop(context);
             }),
         title: new Text(
           "Available Worker",
@@ -93,7 +93,7 @@ class Worker {
   final String workerId;
   final String workerName;
   final String workerContact;
-  final int rating;
+  final double rating;
   final String imageUrl;
 
   Worker(
@@ -187,28 +187,20 @@ class RequestButton extends StatelessWidget {
           userData.workerName = worker.workerName;
           userData.workerImg = worker.imageUrl;
           userData.workerContact = worker.workerContact;
-          _jobRequest.updateCustomerData(userData);
-          userData.jobCount += 1;
-          updateDataFromFireStore.updateJobCount(
-              userData.userId, 'JobCount', (userData.jobCount));
-//clear data for next worker request
-          userData.workerId = null;
-          userData.workerName = null;
-          userData.workerImg = null;
-          userData.workerContact = null;
-          userData.job = null;
-          userData.subJob = null;
-          userData.time = null;
-          userData.date = null;
-          userData.subJobFields = null;
 
-          Navigator.pop(context);
+          _jobRequest.updateCustomerData(userData);
+
+          userData.jobCount += 1;
+          updateDataFromFireStore.updateJobCount(userData.userId, 'JobCount', (userData.jobCount));
+
+
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) =>
-                      ResponseWait(job: userData.job, worker: worker.workerName)));
-        },
+                  builder: (context) => ResponseWait(
+                      user: userData)));
+
+         },
       ),
     );
   }

@@ -16,6 +16,7 @@ class AddJobRequest {
       'WorkerContact': bundle.workerContact,
       'WorkerImg': bundle.workerImg,
       'Job': bundle.job,
+      'JobStatus': 'Pending',
       'SubJob': bundle.subJob,
       'SubJobField': FieldValue.arrayUnion(bundle.subJobFields),
       'Date': bundle.date.toString(),
@@ -46,10 +47,9 @@ class AddJobRequest {
     });
   }
 
-  Future<void> movePendingToHistory(String docId, CustomerData bundle) async {
-    updateCustomerHistory(docId, bundle);
+  Future<void> removeFromPending(String docId, String userId) async {
     return await customerCollection
-        .document(bundle.userId)
+        .document(userId)
         .collection('JobRequest')
         .document(docId).delete();
 

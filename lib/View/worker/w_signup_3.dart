@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:home_well/Controller/WorkerController/rigesterWorker.dart';
-import 'package:home_well/Model/RigesterWorkerModel.dart';
+import 'file:///C:/Users/Saad/fyp/lib/Model/WorkerModel/RigesterWorkerModel.dart';
 import 'package:home_well/View/worker/w_signup_1.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
@@ -124,18 +124,18 @@ class _MySignupPageState extends State<WorkerSignup3> {
                   new Center(
                       child: _frontCNIC == null
                           ? new Icon(
-                              Icons.camera_front,
-                              color: Colors.lightGreen[200],
-                              size: 120,
-                            )
+                        Icons.camera_front,
+                        color: Colors.lightGreen[200],
+                        size: 120,
+                      )
                           : new Container(
-                              child: Image(
-                                image: FileImage(_frontCNIC),
-                                width: 200,
-                                height: 130,
-                                fit: BoxFit.fill,
-                              ),
-                            )),
+                        child: Image(
+                          image: FileImage(_frontCNIC),
+                          width: 200,
+                          height: 130,
+                          fit: BoxFit.fill,
+                        ),
+                      )),
                   new RaisedButton(
                     onPressed: getFrontImage,
                     elevation: 6.0,
@@ -159,18 +159,18 @@ class _MySignupPageState extends State<WorkerSignup3> {
                   new Center(
                       child: _backCNIC == null
                           ? new Icon(
-                              Icons.camera_front,
-                              color: Colors.lightGreen[200],
-                              size: 120,
-                            )
+                        Icons.camera_front,
+                        color: Colors.lightGreen[200],
+                        size: 120,
+                      )
                           : new Container(
-                              child: Image(
-                                image: FileImage(_backCNIC),
-                                width: 200,
-                                height: 130,
-                                fit: BoxFit.fill,
-                              ),
-                            )),
+                        child: Image(
+                          image: FileImage(_backCNIC),
+                          width: 200,
+                          height: 130,
+                          fit: BoxFit.fill,
+                        ),
+                      )),
                   new RaisedButton(
                     onPressed: getBackImage,
                     elevation: 6.0,
@@ -319,9 +319,9 @@ Future registerUser(WorkerData bucket) async {
   try {
     AuthResult authResult = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(
-            email: bucket.email, password: bucket.password);
+        email: bucket.email, password: bucket.password);
     FirebaseUser user = authResult.user;
-    //create document for customer with customerId
+    //create document for worker with workerId
     DatabaseService(uid: user.uid).updateWorkerData(bucket);
     return 'Signup Successfully';
   } catch (signUpError) {

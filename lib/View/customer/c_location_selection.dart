@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
-import 'package:home_well/Controller/CustomerController/customerProfileCtrl.dart';
+import 'file:///C:/Users/Saad/fyp/lib/Model/CustomerModel/customerProfileModel.dart';
 import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
 import 'package:intl/intl.dart';
 
@@ -291,7 +291,7 @@ class TimeField extends StatelessWidget {
             context: context,
             initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
           );
-          userData.time = DateTimeField.convert(time).toString().substring(12,16);
+          userData.time = DateTimeField.convert(time).toString().substring(11,16);
           return DateTimeField.convert(time);
         },
       ),

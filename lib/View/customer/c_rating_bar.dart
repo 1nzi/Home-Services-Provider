@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:home_well/Controller/WorkerController/UpdateWorkerCtrl.dart';
+import 'package:home_well/Controller/WorkerController/rigesterWorker.dart';
 
-import 'c_home.dart';
 import 'c_pending_task.dart';
-
 
 class RatingBar extends StatefulWidget {
   final Task task;
@@ -14,6 +14,9 @@ class RatingBar extends StatefulWidget {
   _RatingBarState createState() => _RatingBarState(task);
 }
 
+UpdateWorkerData _updateWorkerData = new UpdateWorkerData();
+final TextEditingController _feedback = new TextEditingController();
+var rating;
 class _RatingBarState extends State<RatingBar> {
   final Task task;
 
@@ -22,35 +25,35 @@ class _RatingBarState extends State<RatingBar> {
   @override
   Widget build(BuildContext context) {
     return new AlertDialog(
-      shape: RoundedRectangleBorder(
-          borderRadius:
-          BorderRadius.circular(20.0)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       title: Center(
-        child: const Text('Rate Worker',
+        child: const Text(
+          'Rate Worker',
           style: TextStyle(
               color: Colors.black, fontSize: 24.0, fontWeight: FontWeight.bold),
         ),
       ),
       content: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              new Container(
-                  width: 120.0,
-                  height: 120.0,
-                  decoration: new BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: new DecorationImage(
-                          fit: BoxFit.fill,
-                          image: NetworkImage(task.workerImage)
-                      )
-                  )
-              ),
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          new Container(
+              width: 120.0,
+              height: 120.0,
+              decoration: new BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: new DecorationImage(
+                      fit: BoxFit.fill,
+                      image: NetworkImage(task.workerImage)))),
               SizedBox(
                 height: 10,
               ),
-              Text(task.workerName,
-                style: TextStyle(color: Colors.black, fontSize: 20.0,),
+              Text(
+                task.workerName,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20.0,
+                ),
               ),
               FlutterRatingBar(
                 initialRating: 3,
@@ -58,14 +61,13 @@ class _RatingBarState extends State<RatingBar> {
                 fillColor: Colors.lightGreen,
                 borderColor: Colors.lightGreen.withAlpha(100),
                 allowHalfRating: true,
-                onRatingUpdate: (rating) {
-                  print(rating);
+                onRatingUpdate: (ratingValue) {
+                  rating = ratingValue;
                 },
               ),
               SizedBox(
                 height: 10,
               ),
-
               Container(
                 height: 180,
                 width: 220,
@@ -73,19 +75,18 @@ class _RatingBarState extends State<RatingBar> {
                   children: <Widget>[
                     TextField(
                       maxLines: 10,
+                      controller: _feedback,
                       decoration: InputDecoration(
                           hintText: "Type Your FeedBack",
                           border: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.black),
-                          )
-                      ),
+                          )),
                     )
                   ],
                 ),
               ),
               Padding(
                 padding: EdgeInsets.all(10.0),
-
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -97,15 +98,18 @@ class _RatingBarState extends State<RatingBar> {
                         shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(30.0),
                         ),
-                        onPressed: () =>
-                            Navigator.push(context, MaterialPageRoute(
-                                builder: (context) => CustomerHome())),
+                        onPressed: () {
+                          var count = 0;
+                          Navigator.popUntil(context, (route) {
+                            return count++ == 3;
+                          });
+                          _updateWorkerData.updateRating(task.workerId, rating);
+                        },
                         child: Text(
                           "Submit",
                           style: TextStyle(color: Colors.white, fontSize: 20),
                         ),
-                      )
-                  ),
+                      )),
                   Container(
                       width: 90,
                       child: RaisedButton(
@@ -113,21 +117,22 @@ class _RatingBarState extends State<RatingBar> {
                           borderRadius: new BorderRadius.circular(30.0),
                         ),
                         color: Colors.lightGreen,
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: () {
+
+                          var count = 0;
+                          Navigator.popUntil(context, (route) {
+                            return count++ == 3;
+                          });
+                        },
                         child: Text(
                           "Skip",
                           style: TextStyle(color: Colors.white, fontSize: 20),
                         ),
-                      )
-                  ),
+                      )),
                 ],
               ),
-
             ],
-          )
-
-      ),
-    );
-  }
-
-}
+          )),
+        );
+      }
+    }

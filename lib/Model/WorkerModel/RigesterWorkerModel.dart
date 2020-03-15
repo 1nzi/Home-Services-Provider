@@ -55,6 +55,7 @@ class DatabaseService {
       'Image': imgUrl,
       'CnicFront': cincFrontUrl,
       'CnicBack': cnicBackUrl,
+      'Rating': 0,
     });
   }
 }

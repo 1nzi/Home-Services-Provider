@@ -1,18 +1,29 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
+import 'file:///C:/Users/Saad/fyp/lib/Model/CustomerModel/AddJobRequest.dart';
 
-import 'c_request_accepted.dart';
+AddJobRequest _jobRequest = new AddJobRequest();
 
 class ResponseWait extends StatelessWidget {
-  final String job;
-  final String worker;
+  final CustomerData user;
 
-  const ResponseWait({Key key, this.job, this.worker}) : super(key: key);
+  const ResponseWait({Key key, this.user}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                var count = 0;
+                Navigator.popUntil(context, (route) {
+                  return count++ == 5;
+                });
+              }),
           title: Text(
             'Wait for Response',
             style: new TextStyle(
@@ -38,7 +49,7 @@ class ResponseWait extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(top: 7),
               ),
-              Text(job,
+              Text(user.job,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20,
@@ -60,7 +71,7 @@ class ResponseWait extends StatelessWidget {
                 padding: EdgeInsets.only(top: 10),
               ),
               Text(
-                worker,
+                user.workerName,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 20,
@@ -89,14 +100,32 @@ class ResponseWait extends StatelessWidget {
                     fontSize: 20,
                   ),
                 ),
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AcceptedRequest()));
-                },
-                //  padding: EdgeInsets.only(top: 20),
+                onPressed: () async {
+
+                  final FirebaseAuth _auth = FirebaseAuth.instance;
+                  FirebaseUser fuser;
+                  fuser = await _auth.currentUser();
+                  int docId = user.jobCount-1;
+                  await _jobRequest.removeFromPending('job' + docId.toString(), fuser.uid);
+
+                  //clear data for next worker request
+                  user.workerId = null;
+                  user.workerName = null;
+                  user.workerImg = null;
+                  user.job = null;
+                  user.workerContact = null;
+                  user.subJob = null;
+                  user.time = null;
+                  user.date = null;
+                  user.subJobFields = null;
+
+                  var count = 0;
+                  Navigator.popUntil(context, (route) {
+                    return count++ == 5;
+                  });
+                }
+
+    //  padding: EdgeInsets.only(top: 20),
               )
             ],
           ),
