@@ -14,8 +14,8 @@ class WorkerDataFromFireStore {
     await db.collection('Worker').document(wid).updateData({title: newVal});
   }
 
-  updateFeedBack(String uid, String title, var newVal) async {
-    await db.collection('Worker').document(uid).updateData({title: newVal});
+  updateFeedBack(String wid, String title, String feedback) async {
+    await db.collection('Worker').document(wid).collection('FeedBack').document('fb').setData({title: feedback});
   }
 
   WorkerData getWorkerData(String workerId) {

@@ -1,4 +1,4 @@
-
+import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,34 +18,31 @@ class HomeScreen extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.lightGreen,
       ),
-
       home: CustomerHome(),
     );
   }
 }
+
 class CustomerHome extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-CustomerDataFromFireStore customerDataFromFireStore = new CustomerDataFromFireStore();
+CustomerDataFromFireStore customerDataFromFireStore =
+    new CustomerDataFromFireStore();
 CustomerData _customerData;
-
 
 class _MyHomePageState extends State<CustomerHome> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseUser user;
   QuerySnapshot jobs;
 
-
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
 
   @override
   void initState() {
     initJobs();
     initUser();
     super.initState();
-
   }
 
   initUser() async {
@@ -53,7 +50,7 @@ class _MyHomePageState extends State<CustomerHome> {
     _customerData = customerDataFromFireStore.getCustomerData(user);
   }
 
-  initJobs(){
+  initJobs() {
     customerDataFromFireStore.getjobs().then((results) {
       setState(() {
         jobs = results;
@@ -63,19 +60,19 @@ class _MyHomePageState extends State<CustomerHome> {
 
   Widget _buildCatogeryList() {
     return Container(
-      child: jobs!=null
+      child: jobs != null
           ? ListView.builder(
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemCount: jobs.documents.length,
-          itemBuilder: (BuildContext context, int index) {
-            List <Category> category = new List();
-            for(int i=0; i<jobs.documents.length; i++){
-              category.add(Category(jobs.documents[i].data['Title'], jobs.documents[i].data['ImgUrl']));
-            }
-            return CategoryCard(category: category[index]);
-          }
-      )
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              itemCount: jobs.documents.length,
+              itemBuilder: (BuildContext context, int index) {
+                List<Category> category = new List();
+                for (int i = 0; i < jobs.documents.length; i++) {
+                  category.add(Category(jobs.documents[i].data['Title'],
+                      jobs.documents[i].data['ImgUrl']));
+                }
+                return CategoryCard(category: category[index]);
+              })
           : Center(child: Text('Loading...')),
     );
   }
@@ -84,8 +81,7 @@ class _MyHomePageState extends State<CustomerHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      drawer: CustomerDrawerOnly(
-          user: _customerData),
+      drawer: CustomerDrawerOnly(user: _customerData),
       appBar: new AppBar(
         leading: new IconButton(
           icon: Icon(Icons.menu),
@@ -109,7 +105,13 @@ class _MyHomePageState extends State<CustomerHome> {
           title: new Text("Search"),
         )
       ]),
-      body: _buildCatogeryList(),
+      body: DoubleBackToCloseApp(
+        snackBar: const SnackBar(
+          content: Text('Tap back again to leave'),
+          backgroundColor: Colors.lightGreen,
+        ),
+        child: _buildCatogeryList(),
+      ),
     );
   }
 }
@@ -132,7 +134,6 @@ class CategoryCard extends StatelessWidget {
         elevation: 8.0,
         margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
         child: Container(
-
             decoration: BoxDecoration(
                 color: Colors.black12,
                 border: Border.all(color: Colors.lightGreen, width: 2.0)),
@@ -154,7 +155,8 @@ class CategoryCard extends StatelessWidget {
                   Navigator.push(
                       context,
                       new MaterialPageRoute(
-                          builder: (context) =>new SubJobs(user: _customerData )));
+                          builder: (context) =>
+                              new SubJobs(user: _customerData)));
                 },
               ),
             )));

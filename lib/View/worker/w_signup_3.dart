@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:home_well/Controller/WorkerController/rigesterWorker.dart';
+import 'package:home_well/View/worker/w_home.dart';
 import 'file:///C:/Users/Saad/fyp/lib/Model/WorkerModel/RigesterWorkerModel.dart';
 import 'package:home_well/View/worker/w_signup_1.dart';
 import 'dart:io';
@@ -299,7 +300,7 @@ class SignupButton extends StatelessWidget {
               ));
               if (result == 'Signup Successfully') {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => HomeScreen()));
+                    MaterialPageRoute(builder: (context) => WorkerHome()));
               }
             }
           }

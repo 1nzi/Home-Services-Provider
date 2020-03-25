@@ -52,7 +52,7 @@ class ProfileState extends State<Profile> {
                 icon: Icon(Icons.edit, color: Colors.lightGreen, size: 24 ),
                 onPressed: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return UpdateName(uid: customerData.userId);
+                    return UpdateName(user: customerData);
                   }));
                 }),
           ),
@@ -122,6 +122,7 @@ class ProfileState extends State<Profile> {
             trailing: IconButton(
                 icon: Icon(Icons.edit, color: Colors.lightGreen, size: 24),
                 onPressed: () {
+                  Navigator.pop(context);
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return Gender(uid: customerData.userId);
                   }));

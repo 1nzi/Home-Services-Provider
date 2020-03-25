@@ -1,3 +1,4 @@
+import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -44,108 +45,109 @@ class _CustomerLoginState extends State<CustomerLogin> {
           ),
           centerTitle: true,
         ),
-        body: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(
-                  height: 10,
-                ),
-                ImageAsset(),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    controller: _email,
-                    keyboardType: TextInputType.emailAddress,
-                    textInputAction: TextInputAction.next,
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      hintText: 'abc@gmail.com',
-                      prefixIcon: Icon(Icons.person),
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: (value) {
-                      if (!value.contains('@') && !value.contains('.')) {
-                        return 'Please enter valid Email.';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    controller: _password,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Please enter valid Password';
-                      }
-                      return null;
-                    },
-                    obscureText: true,
-                    decoration: const InputDecoration(
-                      labelText: 'Password',
-                      prefixIcon: Icon(Icons.lock),
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10,),
-
-                LoginBuuton(),
-
-                new FlatButton(
-                    child: Text(
-                      'Forgot password?',
-                      style: TextStyle(color: Colors.lightBlueAccent),
-                    ),
-                    onPressed: () => _showAlert(context)),
-                Row(children: <Widget>[
-                  Expanded(
-                    child: new Container(
-                        margin: const EdgeInsets.only(left: 10.0, right: 15.0),
-                        child: Divider(
-                          color: Colors.black,
-                          height: 50,
-                        )),
-                  ),
-
-                  Text("OR"),
-
-                  Expanded(
-                    child: new Container(
-                        margin: const EdgeInsets.only(left: 15.0, right: 10.0),
-                        child: Divider(
-                          color: Colors.black,
-                          height: 50,
-                        )),
-                  ),
-                ]),
-                SizedBox(height: 10,),
-
-                FbLoginBuuton(),
-
-                SizedBox(height: 10,),
-
-                GmailLoginBuuton(),
-
-                new FlatButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CustomerSignup1()));
-                  },
-                  child: Text('Not a member? Sign up now',
-                      style: TextStyle(color: Colors.red)),
-                ),
-              ],
+        body: DoubleBackToCloseApp(
+            snackBar: const SnackBar(
+              content: Text('Tap back again to leave'),
+              backgroundColor: Colors.lightGreen,
             ),
-          ),
-        ));
+            child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 10,
+                    ),
+                    ImageAsset(),
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        controller: _email,
+                        keyboardType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.next,
+                        decoration: const InputDecoration(
+                          labelText: 'Email',
+                          hintText: 'abc@gmail.com',
+                          prefixIcon: Icon(Icons.person),
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (!value.contains('@') && !value.contains('.')) {
+                            return 'Please enter valid Email.';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        controller: _password,
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter valid Password';
+                          }
+                          return null;
+                        },
+                        obscureText: true,
+                        decoration: const InputDecoration(
+                          labelText: 'Password',
+                          prefixIcon: Icon(Icons.lock),
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    LoginBuuton(),
+                    new FlatButton(
+                        child: Text(
+                          'Forgot password?',
+                          style: TextStyle(color: Colors.lightBlueAccent),
+                        ),
+                        onPressed: () => _showAlert(context)),
+                    Row(children: <Widget>[
+                      Expanded(
+                        child: new Container(
+                            margin:
+                                const EdgeInsets.only(left: 10.0, right: 15.0),
+                            child: Divider(
+                              color: Colors.black,
+                              height: 50,
+                            )),
+                      ),
+                      Text("OR"),
+                      Expanded(
+                        child: new Container(
+                            margin:
+                                const EdgeInsets.only(left: 15.0, right: 10.0),
+                            child: Divider(
+                              color: Colors.black,
+                              height: 50,
+                            )),
+                      ),
+                    ]),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    FbLoginBuuton(),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    GmailLoginBuuton(),
+                    new FlatButton(
+                      onPressed: () {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => CustomerSignup1()));
+                      },
+                      child: Text('Not a member? Sign up now',
+                          style: TextStyle(color: Colors.red)),
+                    ),
+                  ],
+                ),
+              ),
+            )));
   }
 }
 
@@ -175,13 +177,14 @@ class LoginBuuton extends StatelessWidget {
             dynamic result = await signin();
 
             if (result is FirebaseUser) {
-             // Navigator.pop(context);
-              Navigator.push(context,
+              _email.clear();
+              _password.clear();
+              Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (context) => CustomerHome()));
             } else {
               _scaffoldKey.currentState.showSnackBar(SnackBar(
                 content: Text('Incorrect Email Address or Password'),
-                duration: Duration(seconds: 5),
+                duration: Duration(seconds: 3),
               ));
             }
           }
@@ -295,14 +298,14 @@ void _showAlert(BuildContext context) {
   );
 }
 
-
-Future  signin() async{
+Future signin() async {
   try {
     AuthResult authResult = await FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: _email.text, password: _password.text);
+        .signInWithEmailAndPassword(
+            email: _email.text, password: _password.text);
     FirebaseUser user = authResult.user;
     return user;
-  }catch(signinError) {
+  } catch (signinError) {
     print(signinError.toString());
     return null;
   }

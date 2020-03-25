@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
 import 'file:///C:/Users/Saad/fyp/lib/Model/CustomerModel/customerProfileModel.dart';
 
 import 'c_profile.dart';
@@ -7,20 +8,21 @@ CustomerDataFromFireStore updateDataFromFireStore = new CustomerDataFromFireStor
 final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 final TextEditingController _name = new TextEditingController();
 
-class UpdateName extends StatefulWidget {
-  final String uid;
 
-  const UpdateName({Key key, this.uid}) : super(key: key);
+class UpdateName extends StatefulWidget {
+  final CustomerData user;
+
+  const UpdateName({Key key, this.user}) : super(key: key);
 
   @override
-  _UpdateNameState createState() => _UpdateNameState(uid);
+  _UpdateNameState createState() => _UpdateNameState(user);
 }
 
 
 class _UpdateNameState extends State<UpdateName> {
-  final String uid;
+   CustomerData user;
 
-  _UpdateNameState(this.uid);
+  _UpdateNameState(this.user);
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,7 @@ class _UpdateNameState extends State<UpdateName> {
               icon: Icon(Icons.arrow_back),
               onPressed: () {
                 Navigator.pop(context, MaterialPageRoute(builder: (context) {
-                  return Profile();
+                  return Profile(user: user,);
                 }));
               }),
         ),
@@ -99,13 +101,14 @@ class _UpdateNameState extends State<UpdateName> {
                           fontSize: 20,
                         ),
                       ),
-                      onPressed: () {
+                      onPressed: ()async {
                         if (_formKey.currentState.validate()) {
                           updateDataFromFireStore.updateData(
-                              uid, 'Name', _name.text);
+                              user.userId, 'Name', _name.text);
+                          user.fname = _name.text;
                           Navigator.pop(context,
                               MaterialPageRoute(builder: (context) {
-                            return Profile();
+                            return new Profile(user: user,);
                           }));
                         }
                       },

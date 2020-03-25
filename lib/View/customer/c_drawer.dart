@@ -1,4 +1,5 @@
 import 'file:///C:/Users/Saad/fyp/lib/Model/CustomerModel/customerProfileModel.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
 
 import 'c_history.dart';
@@ -130,11 +131,10 @@ class CustomerDrawerOnly extends StatelessWidget {
                 "Logout",
               ),
               onTap: () {
-                Navigator.push(
-                    context,
-                    new MaterialPageRoute(
-                        builder: (context) => new CustomerLogin()));
-              },
+                _signOut();
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => CustomerLogin()));
+
+                },
             ),
           ],
         ));
@@ -168,4 +168,8 @@ class LeadingIcon extends StatelessWidget {
           image: new DecorationImage(fit: BoxFit.fill, image: assetImage)),
     );
   }
+}
+ _signOut()  async{
+  await FirebaseAuth.instance.signOut();
+
 }

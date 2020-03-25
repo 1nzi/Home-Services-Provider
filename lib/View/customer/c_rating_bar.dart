@@ -104,6 +104,9 @@ class _RatingBarState extends State<RatingBar> {
                             return count++ == 3;
                           });
                           _updateWorkerData.updateRating(task.workerId, rating);
+                          if(_feedback.text!=null){
+                            _updateWorkerData.updateFeedback(task.workerId, _feedback.text);
+                          }
                         },
                         child: Text(
                           "Submit",

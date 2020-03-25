@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../customer/c_login.dart';
 import '../worker/w_login.dart';
 
-class HomeScreen extends StatelessWidget {
+class Home extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -52,9 +52,7 @@ class _HomeScreenState extends State<HomeScreenPage> {
                           borderRadius: new BorderRadius.circular(30.0),),
 
                         onPressed: () {
-                       // Navigator.pop(context);
-                          Navigator.push(context,
-                          new MaterialPageRoute(builder: (context) => new CustomerLogin()));
+                          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => CustomerLogin()));
                   },
                         child: Text(
                           "Login As Customer",
