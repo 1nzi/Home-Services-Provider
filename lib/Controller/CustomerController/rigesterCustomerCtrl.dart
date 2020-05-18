@@ -12,6 +12,7 @@ class CustomerData {
   String subJob;
   int jobCount;
   var subJobFields = new List();
+  var subJobFieldsNum = new List();
   String date;
   String time;
   String workerId;
@@ -33,6 +34,7 @@ class CustomerData {
     this.address,
     this.job,
     this.subJob,
+    this.subJobFieldsNum,
     this.jobCount,
     this.subJobFields,
     this.date,

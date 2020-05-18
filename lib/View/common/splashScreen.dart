@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:home_well/Model/CustomerModel/customerProfileModel.dart';
 import 'package:splashscreen/splashscreen.dart';
 import 'homeScreen.dart';
 import '../customer/c_home.dart';
@@ -16,6 +17,8 @@ class MySplashScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _MySplashScreenState();
 }
+CustomerDataFromFireStore customerDataFromFireStore =
+new CustomerDataFromFireStore();
 
 class _MySplashScreenState extends State<MySplashScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -25,6 +28,7 @@ class _MySplashScreenState extends State<MySplashScreen> {
   @override
   void initState() {
     initUser();
+    initJobs();
     super.initState();
    }
 
@@ -36,13 +40,17 @@ class _MySplashScreenState extends State<MySplashScreen> {
       });
   }
 
+  initJobs() {
+    customerDataFromFireStore.setJobs();
+  }
+
   @override
   Widget build(BuildContext context) {
 
        Size media = MediaQuery.of(context).size;
     return new SplashScreen(
         seconds: 2,
-        navigateAfterSeconds: authStatus == AuthStatus.signedIn ? HomeScreen() : Home(),
+        navigateAfterSeconds: authStatus == AuthStatus.signedIn ? CustomerHomeScreen() : Home(),
         image: new Image.asset('Images/home.jpg'),
         backgroundColor: Colors.white,
         styleTextUnderTheLoader: new TextStyle(),

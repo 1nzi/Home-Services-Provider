@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
 class DatabaseService {
@@ -7,9 +9,14 @@ class DatabaseService {
   DatabaseService({this.uid});
 
   //collection reference
-  final CollectionReference customerCollection =
-      Firestore.instance.collection('Customer');
-
+  final CollectionReference customerCollection = Firestore.instance.collection('Customer');
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  _getToken(){
+    _firebaseMessaging.getToken().then((deviceToken){
+      print("device token: $deviceToken");
+      return deviceToken;
+    });
+  }
   Future <void> updateCustomerData(CustomerData bundle) async {
     String imgUrl;
     //upload image to firebase storage
@@ -32,7 +39,21 @@ class DatabaseService {
       'Password': bundle.password,
       'Image': imgUrl,
       'JobCount': bundle.jobCount,
+      'device_token': _getToken(),
     });
+  }
+
+  Future signin(_email, _password) async {
+    try {
+      AuthResult authResult = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+          email: _email, password: _password);
+      FirebaseUser user = authResult.user;
+      return user;
+    } catch (signinError) {
+      print(signinError.toString());
+      return null;
+    }
   }
 }
 

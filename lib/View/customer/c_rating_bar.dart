@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:home_well/Controller/WorkerController/UpdateWorkerCtrl.dart';
-import 'package:home_well/Controller/WorkerController/rigesterWorker.dart';
 
 import 'c_pending_task.dart';
 

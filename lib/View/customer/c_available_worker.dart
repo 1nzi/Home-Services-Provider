@@ -2,45 +2,75 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'file:///C:/Users/Saad/fyp/lib/Model/CustomerModel/AddJobRequest.dart';
 import 'c_wait_for_response.dart';
-import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
 import 'file:///C:/Users/Saad/fyp/lib/Model/CustomerModel/customerProfileModel.dart';
 
-CustomerDataFromFireStore updateDataFromFireStore =
-    new CustomerDataFromFireStore();
+
 AddJobRequest _jobRequest = new AddJobRequest();
+SharedPreferences sp;
 
 class AvailableWorker extends StatefulWidget {
-  final CustomerData user;
+  //final CustomerData user;
 
-  const AvailableWorker({Key key, this.user}) : super(key: key);
+  //const AvailableWorker({Key key, this.user}) : super(key: key);
 
-  _MyWorkerPageState createState() => _MyWorkerPageState(user);
+  _MyWorkerPageState createState() => _MyWorkerPageState();
 }
 
 CustomerDataFromFireStore customerDataFromFireStore =
     new CustomerDataFromFireStore();
 
 class _MyWorkerPageState extends State<AvailableWorker> {
-  final CustomerData user;
+//  final CustomerData user;
 
-  _MyWorkerPageState(this.user);
+  _MyWorkerPageState();
+  String _city;
+  String _area;
+  String _job;
+  String _subJob;
+  List<String> _subJobs;
 
+  @override
+  void initState() {
+    initSp();
+    super.initState();
+
+  }
+
+  initSp() {
+    customerDataFromFireStore.getSharedPreferences().then((value) {
+      setState(() {
+        sp = value;
+        getInfo();
+      });
+    });
+  }
+  getInfo() async {
+    _city = sp.getString('city');
+    _area = sp.getString('area');
+    _job = sp.getString('job');
+    _subJob = sp.getString('subJob');
+    _subJobs = sp.getStringList('subJobs');
+    print('$_city, $_area, $_job, $_subJob, \n ${_subJobs}');
+  }
   Widget _buildWorkerList() {
     return Container(
       child: StreamBuilder<QuerySnapshot>(
           stream: Firestore.instance
               .collection("Worker")
-              .where("City", isEqualTo: user.city)
-              .where("Area", isEqualTo: user.area)
-              .where("Job", isEqualTo: user.job)
-              .where("SubJobs", arrayContains: user.subJob)
+              .where("City", isEqualTo: _city)
+              .where("Area", isEqualTo: _area)
+              .where("Job", isEqualTo: _job)
+              .where("SubJobs", arrayContains: _subJob)
               .snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
+              print(snapshot.data);
               return Text("Loading...");
             } else {
+              print(snapshot.data);
               final doc = snapshot.data.documents;
               List<Worker> worker = new List();
               int workerCount = snapshot.data.documents.length;
@@ -49,7 +79,7 @@ class _MyWorkerPageState extends State<AvailableWorker> {
                   msg.data['Id'],
                   msg.data['Name'],
                   msg.data['Phone'],
-                  msg.data['Rating'],
+                  msg.data['Rating'].toDouble(),
                   msg.data['Image'],
                 ));
               }
@@ -183,25 +213,47 @@ class RequestButton extends StatelessWidget {
               fontWeight: FontWeight.bold),
         ),
         onPressed: () {
-          userData.workerId = worker.workerId;
-          userData.workerName = worker.workerName;
-          userData.workerImg = worker.imageUrl;
-          userData.workerContact = worker.workerContact;
+          sp.setString('workerId', worker.workerId);
+          sp.setString('workerName', worker.workerName);
+          sp.setString('workerImg', worker.imageUrl);
+          sp.setString('workerContact', worker.workerContact);
+          updateCustomerData(sp);
+          print(sp.getInt('jobCount'));
 
-          _jobRequest.updateCustomerData(userData);
+          customerDataFromFireStore.updateJobCount(sp.getString('userId'), 'JobCount' , sp.getInt('jobCount'));
 
-          userData.jobCount += 1;
-          updateDataFromFireStore.updateJobCount(userData.userId, 'JobCount', (userData.jobCount));
-
-
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => ResponseWait(
-                      user: userData)));
-
+          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => ResponseWait()));
          },
       ),
     );
   }
 }
+
+final CollectionReference customerCollection = Firestore.instance.collection('Customer');
+
+  Future<void> updateCustomerData(SharedPreferences sp) async {
+    customerDataFromFireStore.getSharedPreferences().then((value) {
+      sp = value;
+    });
+    return await customerCollection
+        .document(sp.getString('userId'))
+        .collection('JobRequest')
+        .document('job'+ sp.getInt('jobCount').toString())
+        .setData({
+      'WorkerId': sp.getString('workerId'),
+      'WorkerName': sp.getString('workerName'),
+      'WorkerContact': sp.getString('workerContact'),
+      'WorkerImg': sp.getString('workerImg'),
+      'Job': sp.getString('job'),
+      'JobStatus': 'Pending',
+      'SubJob': sp.getString('subJob'),
+      'SubJobField': FieldValue.arrayUnion(sp.getStringList('subJobFields')),
+      'SubJobFieldCount': FieldValue.arrayUnion(sp.getStringList('subJobsCounter')),
+      'SubJobFieldPrice': FieldValue.arrayUnion(sp.getStringList('subJobsPrice')),
+      'Date': sp.getString('date'),
+      'Time': sp.getString('time'),
+      'City': sp.getString('city'),
+      'Area': sp.getString('area'),
+      'Address': sp.getString('address'),
+    });
+  }

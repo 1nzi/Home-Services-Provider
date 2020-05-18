@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:home_well/Model/CustomerModel/RigesterCustomerModel.dart';
 
 import '../common/authentication.dart';
 import 'c_drawer.dart';
@@ -18,6 +19,7 @@ final TextEditingController _email = new TextEditingController();
 final TextEditingController _password = new TextEditingController();
 final _scaffoldKey = GlobalKey<ScaffoldState>();
 final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+DatabaseService _databaseService = new DatabaseService();
 
 class _CustomerLoginState extends State<CustomerLogin> {
   @override
@@ -174,7 +176,7 @@ class LoginBuuton extends StatelessWidget {
         ),
         onPressed: () async {
           if (_formKey.currentState.validate()) {
-            dynamic result = await signin();
+            dynamic result = await _databaseService.signin(_email.text,_password.text);
 
             if (result is FirebaseUser) {
               _email.clear();
@@ -298,15 +300,4 @@ void _showAlert(BuildContext context) {
   );
 }
 
-Future signin() async {
-  try {
-    AuthResult authResult = await FirebaseAuth.instance
-        .signInWithEmailAndPassword(
-            email: _email.text, password: _password.text);
-    FirebaseUser user = authResult.user;
-    return user;
-  } catch (signinError) {
-    print(signinError.toString());
-    return null;
-  }
-}
+

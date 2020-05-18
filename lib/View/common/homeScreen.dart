@@ -70,10 +70,10 @@ class _HomeScreenState extends State<HomeScreenPage> {
                         shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(30.0),),
 
-                        onPressed: ()  {
-                          Navigator.pop(context);
-                          Navigator.push(context,
-                              new MaterialPageRoute(builder: (context) => new WorkerLogin()));
+                        onPressed: () {
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => WorkerLogin()));
                         },
                         child: Text(
                           "Login As Worker",

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
 import 'file:///C:/Users/Saad/fyp/lib/Model/CustomerModel/customerProfileModel.dart';
 
 import 'c_profile.dart';
@@ -10,21 +9,21 @@ final TextEditingController _name = new TextEditingController();
 
 
 class UpdateName extends StatefulWidget {
-  final CustomerData user;
+  final String uid;
 
-  const UpdateName({Key key, this.user}) : super(key: key);
+  const UpdateName({Key key, this.uid}) : super(key: key);
 
   @override
-  _UpdateNameState createState() => _UpdateNameState(user);
+  _UpdateNameState createState() => _UpdateNameState(uid);
 }
 
 
 class _UpdateNameState extends State<UpdateName> {
-   CustomerData user;
+   String uid;
 
-  _UpdateNameState(this.user);
+  _UpdateNameState(this.uid);
 
-  @override
+    @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
@@ -39,9 +38,8 @@ class _UpdateNameState extends State<UpdateName> {
           leading: IconButton(
               icon: Icon(Icons.arrow_back),
               onPressed: () {
-                Navigator.pop(context, MaterialPageRoute(builder: (context) {
-                  return Profile(user: user,);
-                }));
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => Profile()));
               }),
         ),
         body: Container(
@@ -57,7 +55,6 @@ class _UpdateNameState extends State<UpdateName> {
                       fontSize: 25,
                       color: Colors.black,
                       decoration: TextDecoration.none,
-                      //              fontFamily: 'Raleway',
                     )),
                 Padding(
                   padding: EdgeInsets.only(top: 10),
@@ -104,12 +101,11 @@ class _UpdateNameState extends State<UpdateName> {
                       onPressed: ()async {
                         if (_formKey.currentState.validate()) {
                           updateDataFromFireStore.updateData(
-                              user.userId, 'Name', _name.text);
-                          user.fname = _name.text;
-                          Navigator.pop(context,
-                              MaterialPageRoute(builder: (context) {
-                            return new Profile(user: user,);
-                          }));
+                              uid, 'Name', _name.text);
+                          updateDataFromFireStore.removeValueFromSP('cName');
+                          updateDataFromFireStore.save('cName', _name.text);
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(builder: (context) => Profile()));
                         }
                       },
 

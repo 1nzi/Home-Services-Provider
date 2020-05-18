@@ -119,10 +119,15 @@ class _GenderState extends State<Gender> {
                             if(selectedRadioTile==1){
                               updateDataFromFireStore.updateData(
                                   uid, 'Gender', 'Male');
+                              updateDataFromFireStore.removeValueFromSP('gender');
+                              updateDataFromFireStore.save('gender', 'Male');
                             }
                             else{
                               updateDataFromFireStore.updateData(
-                                  uid, 'Gender', 'Femal');
+                                  uid, 'Gender', 'Female');
+                              updateDataFromFireStore.removeValueFromSP('gender');
+                              updateDataFromFireStore.save('gender', 'Female');
+
                             }
                             Navigator.pop(context,
                                 MaterialPageRoute(builder: (context) {

@@ -288,7 +288,7 @@ class SignupButton extends StatelessWidget {
             String result =await registerUser(bundle);
             Scaffold.of(context).showSnackBar(SnackBar(
               content: Text(result),
-              duration: Duration(seconds: 5),
+              duration: Duration(seconds: 1),
             ));
             if(result=='Signup Successfully'){
               Navigator.pop(context);

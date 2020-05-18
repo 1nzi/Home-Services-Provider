@@ -1,7 +1,7 @@
 
 import 'package:device_preview/device_preview.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:home_well/View/common/notifications.dart';
 
 import 'View/common/splashScreen.dart';
 

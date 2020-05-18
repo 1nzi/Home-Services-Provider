@@ -1,6 +1,5 @@
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -9,8 +8,8 @@ import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dar
 import 'c_drawer.dart';
 import 'c_sub_category.dart';
 
-class HomeScreen extends StatelessWidget {
-  // This widget is the root of your application.
+class CustomerHomeScreen extends StatelessWidget {
+  // This widget is th root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -22,7 +21,12 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-
+final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+_getToken(){
+  _firebaseMessaging.getToken().then((deviceToken){
+    print("device token: $deviceToken");
+  });
+}
 class CustomerHome extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -32,44 +36,45 @@ CustomerDataFromFireStore customerDataFromFireStore =
 CustomerData _customerData;
 
 class _MyHomePageState extends State<CustomerHome> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  FirebaseUser user;
-  QuerySnapshot jobs;
+  List<String> jobsTitle;
+  List<String> jobsImg;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
+    _getToken();
     initJobs();
-    initUser();
+    customerDataFromFireStore.initUser();
     super.initState();
   }
 
-  initUser() async {
-    user = await _auth.currentUser();
-    _customerData = customerDataFromFireStore.getCustomerData(user);
-  }
+
 
   initJobs() {
-    customerDataFromFireStore.getjobs().then((results) {
+    customerDataFromFireStore.getList('JobTitle').then((results) {
       setState(() {
-        jobs = results;
+        jobsTitle = results;
+      });
+    });
+    customerDataFromFireStore.getList('JobImg').then((results) {
+      setState(() {
+        jobsImg = results;
       });
     });
   }
 
   Widget _buildCatogeryList() {
     return Container(
-      child: jobs != null
+      child: jobsTitle != null
           ? ListView.builder(
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
-              itemCount: jobs.documents.length,
+              itemCount: jobsTitle.length,
               itemBuilder: (BuildContext context, int index) {
                 List<Category> category = new List();
-                for (int i = 0; i < jobs.documents.length; i++) {
-                  category.add(Category(jobs.documents[i].data['Title'],
-                      jobs.documents[i].data['ImgUrl']));
+                for (int i = 0; i < jobsTitle.length; i++) {
+                  category.add(Category(jobsTitle[i], jobsImg[i]));
                 }
                 return CategoryCard(category: category[index]);
               })
@@ -151,7 +156,9 @@ class CategoryCard extends StatelessWidget {
               trailing: IconButton(
                 icon: Icon(Icons.arrow_forward_ios, color: Colors.lightGreen),
                 onPressed: () {
-                  _customerData.job = category.title;
+                  //_customerData.job = category.title;
+                  customerDataFromFireStore.save('job', category.title);
+
                   Navigator.push(
                       context,
                       new MaterialPageRoute(

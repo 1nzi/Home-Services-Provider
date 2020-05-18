@@ -6,7 +6,6 @@ WorkerData workerData = new WorkerData();
 
 class WorkerDataFromFireStore {
   final db = Firestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseUser user;
 
 
@@ -41,6 +40,6 @@ class WorkerDataFromFireStore {
   }
 
   getWorker(WorkerData user) async {
-    return await db.collection('Worker').where('City' , isEqualTo: user.city ).where('Area', isEqualTo: user.area).snapshots();
+    return  db.collection('Worker').where('City' , isEqualTo: user.city ).where('Area', isEqualTo: user.area).snapshots();
   }
 }

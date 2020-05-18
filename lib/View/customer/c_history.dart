@@ -75,7 +75,7 @@ class _CustomerHistoryState extends State<CustomerHistory> {
             onPressed: () {
               Navigator.pop(context);
             }),
-        title: new Text("Pending Task",
+        title: new Text("History",
           style: new TextStyle(
               fontSize: 20.0, color: Colors.black, fontWeight: FontWeight.bold),
         ),

@@ -1,16 +1,43 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
 import 'file:///C:/Users/Saad/fyp/lib/Model/CustomerModel/AddJobRequest.dart';
+import 'package:home_well/Model/CustomerModel/customerProfileModel.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 AddJobRequest _jobRequest = new AddJobRequest();
 
-class ResponseWait extends StatelessWidget {
-  final CustomerData user;
+class ResponseWait extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => ResponseWaitState();
+}
 
-  const ResponseWait({Key key, this.user}) : super(key: key);
+CustomerDataFromFireStore customerDataFromFireStore =
+new CustomerDataFromFireStore();
+SharedPreferences sp;
 
+
+class ResponseWaitState extends State<ResponseWait>{
+  String _job;
+  String _worker;
+
+  @override
+  void initState() {
+    initSp();
+    super.initState();
+
+  }
+  initSp() {
+    customerDataFromFireStore.getSharedPreferences().then((value) {
+      setState(() {
+        sp = value;
+        getInfo();
+      });
+    });
+  }
+  getInfo() async {
+    _job = sp.getString('job');
+    _worker = sp.getString('workerName');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +46,7 @@ class ResponseWait extends StatelessWidget {
           leading: IconButton(
               icon: Icon(Icons.arrow_back),
               onPressed: () {
-                var count = 0;
-                Navigator.popUntil(context, (route) {
-                  return count++ == 5;
-                });
+                backToHome();
               }),
           title: Text(
             'Wait for Response',
@@ -34,8 +58,19 @@ class ResponseWait extends StatelessWidget {
           centerTitle: true,
           backgroundColor: Colors.lightGreen,
         ),
+        bottomNavigationBar: new BottomNavigationBar(items: [
+          new BottomNavigationBarItem(
+            icon: new Icon(Icons.home,
+            size: 30,),
+            title: new Text("Home",
+            style: TextStyle(
+              fontSize: 20
+            ),),
+          ),
+        ],
+         onTap: _onItemTapped,
+        ),
         body: Container(
-          padding: EdgeInsets.all(20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -49,7 +84,7 @@ class ResponseWait extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(top: 7),
               ),
-              Text(user.job,
+              Text(_job??'Job',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20,
@@ -71,7 +106,7 @@ class ResponseWait extends StatelessWidget {
                 padding: EdgeInsets.only(top: 10),
               ),
               Text(
-                user.workerName,
+                _worker??'Worker',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 20,
@@ -102,27 +137,12 @@ class ResponseWait extends StatelessWidget {
                 ),
                 onPressed: () async {
 
-                  final FirebaseAuth _auth = FirebaseAuth.instance;
-                  FirebaseUser fuser;
-                  fuser = await _auth.currentUser();
-                  int docId = user.jobCount-1;
-                  await _jobRequest.removeFromPending('job' + docId.toString(), fuser.uid);
+                  sp.setInt('jobCount', sp.getInt('jobCount')-1);
+                  await _jobRequest.removeFromPending('job' + sp.getInt('jobCount').toString(), sp.getString('userId'));
 
                   //clear data for next worker request
-                  user.workerId = null;
-                  user.workerName = null;
-                  user.workerImg = null;
-                  user.job = null;
-                  user.workerContact = null;
-                  user.subJob = null;
-                  user.time = null;
-                  user.date = null;
-                  user.subJobFields = null;
 
-                  var count = 0;
-                  Navigator.popUntil(context, (route) {
-                    return count++ == 5;
-                  });
+                  backToHome();
                 }
 
     //  padding: EdgeInsets.only(top: 20),
@@ -131,4 +151,29 @@ class ResponseWait extends StatelessWidget {
           ),
         ));
   }
+
+backToHome(){
+   sp.remove('workerId');
+  sp.remove('workerName');
+  sp.remove('workerContact');
+  sp.remove('workerImg');
+  sp.remove('job');
+  sp.remove('subJob');
+  sp.remove('subJobFields');
+  sp.remove('subJobsCounter');
+  sp.remove('subJobsPrice');
+  sp.remove('date');
+  sp.remove('time');
+  var count = 0;
+  Navigator.popUntil(context, (route) {
+    return count++ == 4;
+  });
 }
+
+  void _onItemTapped(int index) {
+    setState(() {
+    });
+  backToHome();
+  }
+}
+

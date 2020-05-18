@@ -1,6 +1,7 @@
 import 'file:///C:/Users/Saad/fyp/lib/Model/CustomerModel/customerProfileModel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'c_history.dart';
 import 'c_login.dart';
@@ -12,12 +13,37 @@ import 'c_profile.dart';
 CustomerDataFromFireStore customerDataFromFireStore =
 new CustomerDataFromFireStore();
 
-class CustomerDrawerOnly extends StatelessWidget {
+class CustomerDrawerOnly extends StatefulWidget {
   final CustomerData user;
 
-  const CustomerDrawerOnly({Key key, this.user,}) : super(key: key);
+  const CustomerDrawerOnly({Key key, this.user}) : super(key: key);
+  _MyDrawerPageState createState() => _MyDrawerPageState(user);
+}
+class _MyDrawerPageState extends State<CustomerDrawerOnly> {
+  final CustomerData user;
+  _MyDrawerPageState(this.user);
 
+  String name;
+  String image;
+  SharedPreferences sp;
 
+  @override
+  void initState() {
+    initSp();
+    super.initState();
+  }
+  initSp() {
+    customerDataFromFireStore.getSharedPreferences().then((value) {
+      setState(() {
+        sp = value;
+        getUserInfo();
+      });
+    });
+  }
+  getUserInfo() async {
+     name = sp.getString('cName');
+     image = sp.getString('image');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,13 +61,13 @@ class CustomerDrawerOnly extends StatelessWidget {
                       image: new DecorationImage(
                         fit: BoxFit.cover,
                         image:  NetworkImage(
-                            user.image!=null?user.image
-                                :"https://previews.123rf.com/images/tuktukdesign/tuktukdesign1606/tuktukdesign160600105/59070189-user-icon-man-profile-businessman-avatar-person-icon-in-vector-illustration.jpg"),
+                            image??
+                            "https://previews.123rf.com/images/tuktukdesign/tuktukdesign1606/tuktukdesign160600105/59070189-user-icon-man-profile-businessman-avatar-person-icon-in-vector-illustration.jpg"),
                       ),
                     ),
                   ),
                   Text(
-                    user.fname!=null?user.fname:'Name',
+                    name??'Name',
                     textAlign: TextAlign.center,
                   )
                 ],
@@ -55,7 +81,7 @@ class CustomerDrawerOnly extends StatelessWidget {
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(context,
-                    new MaterialPageRoute(builder: (context) => new Profile(user: user)));
+                    new MaterialPageRoute(builder: (context) => new Profile()));
               },
             ),
     //      new ListTile(
@@ -87,6 +113,7 @@ class CustomerDrawerOnly extends StatelessWidget {
             ),
             new ListTile(
               leading: Icon(Icons.history, color: Colors.lightGreen, size: 24),
+
               title: new Text(
                 "History",
               ),

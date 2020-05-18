@@ -10,8 +10,6 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 
-import '../common/homeScreen.dart';
-
 class WorkerSignup3 extends StatefulWidget {
   final WorkerData bucket;
 

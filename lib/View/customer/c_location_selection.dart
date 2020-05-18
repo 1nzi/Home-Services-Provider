@@ -4,32 +4,45 @@ import 'package:flutter/material.dart';
 import 'file:///C:/Users/Saad/fyp/lib/Model/CustomerModel/customerProfileModel.dart';
 import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'c_available_worker.dart';
 
 class CustomerLocationSelection extends StatefulWidget {
-  final CustomerData user;
 
-  const CustomerLocationSelection({Key key, this.user}) : super(key: key);
 
   State<StatefulWidget> createState() {
-    return LocationSelection(user);
+    return LocationSelection();
   }
 }
-
-final TextEditingController _StreetAdd = new TextEditingController();
+TextEditingController _StreetAdd = new TextEditingController();
 var _myKey = GlobalKey<FormState>();
+ SharedPreferences sp;
 
 class LocationSelection extends State<CustomerLocationSelection> {
-  final CustomerData user;
+  String _city;
+  String _area;
+  void initState() {
+    initSp();
+    super.initState();
 
-  LocationSelection(this.user);
+  }
 
+  initSp() {
+    customerDataFromFireStore.getSharedPreferences().then((value) {
+      setState(() {
+        sp = value;
+        getLocation();
+      });
+    });
+  }
+  getLocation() async {
+     _city = sp.getString('city');
+     _area = sp.getString('area');
+    _StreetAdd.text = sp.getString('address');
+  }
   @override
   Widget build(BuildContext context) {
-    String City = user.city;
-    String Area = user.area;
-    _StreetAdd.text = user.address;
 
     return Scaffold(
       resizeToAvoidBottomPadding: true,
@@ -37,8 +50,8 @@ class LocationSelection extends State<CustomerLocationSelection> {
         leading: new IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            user.date = null;
-            user.time = null;
+            sp.remove('date');
+            sp.remove('time');
             Navigator.pop(context);
           },
         ),
@@ -117,13 +130,13 @@ class LocationSelection extends State<CustomerLocationSelection> {
                             style:
                                 TextStyle(color: Colors.black, fontSize: 18.0),
                             isExpanded: true,
-                            value: City,
+                            value: _city,
                             items: city,
                             onChanged: (String newValue) {
                               setState(() {
-                                City = newValue;
+                                _city = newValue;
                                 //bundle.city = newValue;
-                                Area = null;
+                                _area = null;
                               });
                             },
                           ));
@@ -140,7 +153,7 @@ class LocationSelection extends State<CustomerLocationSelection> {
               StreamBuilder<DocumentSnapshot>(
                   stream: Firestore.instance
                       .collection("City")
-                      .document(City)
+                      .document(_city)
                       .get()
                       .asStream(),
                   builder: (context, snapshot) {
@@ -172,11 +185,12 @@ class LocationSelection extends State<CustomerLocationSelection> {
                             }).toList(),
                             onChanged: (String newValue) {
                               setState(() {
-                                Area = newValue;
+                                _area = newValue;
+                                sp.setString('area', _area);
                                 // bundle.area = newValue;
                               });
                             },
-                            value: Area,
+                            value: _area,
                             validator: (newVal) {
                               if (newVal == null) {
                                 return 'Area is required';
@@ -188,19 +202,26 @@ class LocationSelection extends State<CustomerLocationSelection> {
                   }),
               Padding(
                 padding: EdgeInsets.all(8.0),
-                child: TextField(
+                child: TextFormField(
                   keyboardType: TextInputType.multiline,
                   controller: _StreetAdd,
                   decoration: const InputDecoration(
                     labelText: 'Street Address',
-                    prefixIcon: Icon(Icons.location_city),
+                    prefixIcon: Icon(Icons.location_city, color: Colors.lightGreen,),
                     suffixIcon: IconButton(
                       icon: Icon(Icons.close),
                       onPressed: clearAddress,
                     ),
                     border: OutlineInputBorder(),
                   ),
+                  validator: (newVal) {
+                    if (newVal.isEmpty) {
+                      return 'Street Address is required';
+                    }
+                    return null;
+                  },
                 ),
+
               ),
               SizedBox(
                 height: 10,
@@ -236,15 +257,22 @@ class ProceedButton extends StatelessWidget {
           ),
         ),
         onPressed: () {
-          if (userData.date != null  && userData.date != null ) {
-            print(userData.time);
-            print(userData.date);
+          if(sp.containsKey('date')&& sp.containsKey('time')){
+            if(_myKey.currentState.validate()) {
+              print(userData.time);
+              print(userData.date);
 
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => AvailableWorker(user: userData)));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AvailableWorker()));
           }
+          }else{
+             Scaffold.of(context).showSnackBar(SnackBar(
+               content: Text("Select Date or Time"),
+               duration: Duration(seconds: 3),
+             ));
+           }
         }
       ),
     );
@@ -269,8 +297,10 @@ class DateField extends StatelessWidget {
               firstDate: DateTime(1900),
               initialDate: currentValue ?? DateTime.now(),
               lastDate: DateTime(2100));
-        userData.date = date.toString().substring(0,10);
+        String date1 = date.toString().substring(0,10);
+        sp.setString('date', date1);
         return date;
+
         },
       ),
 
@@ -291,7 +321,8 @@ class TimeField extends StatelessWidget {
             context: context,
             initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
           );
-          userData.time = DateTimeField.convert(time).toString().substring(11,16);
+          String time1 = DateTimeField.convert(time).toString().substring(11,16);
+          sp.setString('time', time1);
           return DateTimeField.convert(time);
         },
       ),

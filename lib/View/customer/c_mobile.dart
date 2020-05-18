@@ -38,9 +38,8 @@ class _MobileState extends State<Mobile> {
           leading: IconButton(
               icon: Icon(Icons.arrow_back),
               onPressed: () {
-                Navigator.pop(context, MaterialPageRoute(builder: (context) {
-                  return Profile();
-                }));
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => Profile()));
               }),
         ),
         body: Container(
@@ -109,10 +108,11 @@ class _MobileState extends State<Mobile> {
                         if (_formKey.currentState.validate()) {
                           updateDataFromFireStore.updateData(
                               uid, 'Phone', _ph.text);
-                          Navigator.pop(context,
-                              MaterialPageRoute(builder: (context) {
-                                return Profile();
-                              }));
+                          updateDataFromFireStore.removeValueFromSP('ph');
+                          updateDataFromFireStore.save('ph', _ph.text);
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(builder: (context) => Profile()));
+
                         }
                       },
 

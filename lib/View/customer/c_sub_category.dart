@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
+import 'package:home_well/Model/CustomerModel/customerProfileModel.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'c_drawer.dart';
 import 'c_select_subCategory.dart';
 
@@ -15,30 +17,49 @@ class SubJobs extends StatefulWidget {
 }
 CustomerData _customerData;
 
+CustomerDataFromFireStore customerDataFromFireStore =
+new CustomerDataFromFireStore();
+
+
 
 class _MySubCategoryPageState extends State<SubJobs> {
   final CustomerData user;
-
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   _MySubCategoryPageState(this.user);
+  SharedPreferences sp;
+  var job;
   @override
   void initState() {
     _customerData = user;
+    initSp();
     super.initState();
 
   }
+
+  initSp() {
+    customerDataFromFireStore.getSharedPreferences().then((value) {
+      setState(() {
+        sp = value;
+        getJobName();
+      });
+    });
+  }
+  getJobName() async {
+    job = sp.getString('job');
+  }
+
   Widget _buildSubCategoryList() {
     return Container(
       child: StreamBuilder<DocumentSnapshot>(
-          stream: Firestore.instance.collection("Jobs").document(user.job).get().asStream(),
+          stream: Firestore.instance.collection("Jobs").document(job).get().asStream(),
           builder: (context, snapshot) {
             List<String> subJob = new List();
             List<String> subJobImg = new List();
             List<SubCategory> subCategory = new List();
 
             if (!snapshot.hasData) {
-              print(snapshot.data);
+              print(job );
 
               return Text("Loading...");
             } else {
@@ -73,7 +94,9 @@ class _MySubCategoryPageState extends State<SubJobs> {
         leading: new IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            user.subJob = null;
+            //user.subJob = null;
+            sp.remove('job');
+            print(sp.containsKey('job').toString());
             Navigator.pop(context);
           },
         ),
@@ -119,7 +142,9 @@ class SubCategoryCard extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(8.0))),
         child: InkWell(
           onTap: () {
-            _customerData.subJob = subCategory.title;
+           // _customerData.subJob = subCategory.title;
+            customerDataFromFireStore.save('subJob', subCategory.title);
+
             Navigator.push(
                 cxt,
                 new MaterialPageRoute(

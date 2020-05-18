@@ -38,8 +38,8 @@ class _UpdateEmailState extends State<UpdateEmail> {
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
-              Navigator.pop(
-                  context, MaterialPageRoute(builder: (context) => Profile()));
+              Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => Profile()));
             },
           ),
         ),
@@ -56,7 +56,6 @@ class _UpdateEmailState extends State<UpdateEmail> {
                       fontSize: 25,
                       color: Colors.black,
                       decoration: TextDecoration.none,
-                      //              fontFamily: 'Raleway',
                     )),
                 Padding(
                   padding: EdgeInsets.only(top: 10),
@@ -108,14 +107,13 @@ class _UpdateEmailState extends State<UpdateEmail> {
                         if (_formKey.currentState.validate()) {
                           updateDataFromFireStore.updateData(
                               uid, 'Email', _email.text);
-                          Navigator.pop(context,
-                              MaterialPageRoute(builder: (context) {
-                            return Profile();
-                          }));
-                        }
-                      },
+                          updateDataFromFireStore.removeValueFromSP('email');
+                          updateDataFromFireStore.save('email', _email.text);
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(builder: (context) => Profile()));
 
-                      //  padding: EdgeInsets.only(top: 20),
+                        }
+                      }, //  padding: EdgeInsets.only(top: 20),
                     )),
               ],
             ),
