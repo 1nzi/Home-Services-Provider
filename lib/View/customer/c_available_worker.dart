@@ -1,14 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'file:///C:/Users/Saad/fyp/lib/Model/CustomerModel/AddJobRequest.dart';
 import 'c_wait_for_response.dart';
 import 'file:///C:/Users/Saad/fyp/lib/Model/CustomerModel/customerProfileModel.dart';
 
 
-AddJobRequest _jobRequest = new AddJobRequest();
 SharedPreferences sp;
 
 class AvailableWorker extends StatefulWidget {
@@ -217,7 +216,10 @@ class RequestButton extends StatelessWidget {
           sp.setString('workerName', worker.workerName);
           sp.setString('workerImg', worker.imageUrl);
           sp.setString('workerContact', worker.workerContact);
-          updateCustomerData(sp);
+          sp.setInt('jobCount', sp.getInt('jobCount')+1);
+          addJobREquest(sp);
+         // CloudFunctions.instance.call(
+          //    functionName: "addUser",
           print(sp.getInt('jobCount'));
 
           customerDataFromFireStore.updateJobCount(sp.getString('userId'), 'JobCount' , sp.getInt('jobCount'));
@@ -230,10 +232,13 @@ class RequestButton extends StatelessWidget {
 }
 
 final CollectionReference customerCollection = Firestore.instance.collection('Customer');
-
-  Future<void> updateCustomerData(SharedPreferences sp) async {
+final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'messageTrigger');
+  Future<void> addJobREquest(SharedPreferences sp) async {
     customerDataFromFireStore.getSharedPreferences().then((value) {
       sp = value;
+    });
+    dynamic resp = await callable.call(<String, dynamic>{
+    'YOUR_PARAMETER_NAME': 'YOUR_PARAMETER_VALUE',
     });
     return await customerCollection
         .document(sp.getString('userId'))
@@ -255,5 +260,6 @@ final CollectionReference customerCollection = Firestore.instance.collection('Cu
       'City': sp.getString('city'),
       'Area': sp.getString('area'),
       'Address': sp.getString('address'),
+      'token': sp.getString('token')
     });
   }

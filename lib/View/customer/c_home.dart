@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'file:///C:/Users/Saad/fyp/lib/Model/CustomerModel/customerProfileModel.dart';
 import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'c_drawer.dart';
 import 'c_sub_category.dart';
 
@@ -25,6 +26,7 @@ final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 _getToken(){
   _firebaseMessaging.getToken().then((deviceToken){
     print("device token: $deviceToken");
+    return deviceToken;
   });
 }
 class CustomerHome extends StatefulWidget {
@@ -34,6 +36,7 @@ class CustomerHome extends StatefulWidget {
 CustomerDataFromFireStore customerDataFromFireStore =
     new CustomerDataFromFireStore();
 CustomerData _customerData;
+SharedPreferences sp;
 
 class _MyHomePageState extends State<CustomerHome> {
   List<String> jobsTitle;
@@ -43,13 +46,23 @@ class _MyHomePageState extends State<CustomerHome> {
 
   @override
   void initState() {
-    _getToken();
     initJobs();
+    initSp();
     customerDataFromFireStore.initUser();
     super.initState();
   }
 
-
+  initSp() {
+    customerDataFromFireStore.getSharedPreferences().then((value) {
+      setState(() {
+        sp = value;
+        setDeviceToken();
+      });
+    });
+  }
+  setDeviceToken() async {
+    sp.setString('token', _getToken());
+  }
 
   initJobs() {
     customerDataFromFireStore.getList('JobTitle').then((results) {
