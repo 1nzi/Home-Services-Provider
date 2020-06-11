@@ -1,4 +1,4 @@
-import 'file:///C:/Users/Saad/fyp/lib/Model/CustomerModel/customerProfileModel.dart';
+import 'package:home_well/Model/CustomerModel/customerProfileModel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
 import 'package:shared_preferences/shared_preferences.dart';

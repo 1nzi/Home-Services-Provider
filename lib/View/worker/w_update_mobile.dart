@@ -2,29 +2,48 @@ import 'package:flutter/material.dart';
 
 import '../../main.dart';
 import 'w_profile.dart';
+import 'package:home_well/Model/WorkerModel/WorkerProfileModel.dart';
+WorkerDataFromFireStore updateDataFromFireStore = new WorkerDataFromFireStore ();
 
-class WorkerMobile extends StatefulWidget {
+final TextEditingController _ph = new TextEditingController();
+final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+class WMobile extends StatefulWidget {
+  final String uid;
+  const WMobile({Key key, this.uid}) : super(key: key);
+
   @override
-  _MobileState createState() => _MobileState();
+  _WMobileState createState() => _WMobileState(uid);
 }
 
-class _MobileState extends State<WorkerMobile> {
+class _WMobileState extends State<WMobile> {
+  final String uid;
+
+  _WMobileState(this.uid);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-          appBar: AppBar(
-            //title: Text('Update Your Name'),
-            backgroundColor: Colors.lightGreen,
-            leading: IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigator.pop(context, MaterialPageRoute(builder: (context) {
-                    return WorkerProfile();
-                  }));
-                }),
+        appBar: AppBar(
+          title: Text(
+            'Update Number',
+            style: new TextStyle(
+                fontSize: 20.0,
+                color: Colors.black,
+                fontWeight: FontWeight.bold),
           ),
-          body: Container(
-            padding: EdgeInsets.all(20),
+          backgroundColor: Colors.lightGreen,
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => WProfile()));
+              }),
+        ),
+        body: Container(
+          padding: EdgeInsets.all(20),
+          child: Form(
+            key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -34,7 +53,7 @@ class _MobileState extends State<WorkerMobile> {
                       fontSize: 25,
                       color: Colors.black,
                       decoration: TextDecoration.none,
-                     // fontFamily: 'Raleway',
+                      // fontFamily: 'Raleway',
                     )),
                 Padding(
                   padding: EdgeInsets.only(top: 10),
@@ -50,19 +69,28 @@ class _MobileState extends State<WorkerMobile> {
                 Padding(
                   padding: EdgeInsets.only(top: 20),
                 ),
-                TextField(
+                TextFormField(
+                  controller: _ph,
+                  keyboardType: TextInputType.number,
                   maxLength: 11,
-                  keyboardType:TextInputType.number,
                   decoration: InputDecoration(
-                    hintText: '+92 301 2345678',
+                    hintText: '0301 2345678',
                   ),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter valid Phone';
+                    }
+                    if (value.length < 11) {
+                      return 'Please enter valid Phone';
+                    }
+                    return null;
+                  },
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 20),
                 ),
                 Container(
                     width: 330,
-
                     child: RaisedButton(
                       shape: RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(18.0),
@@ -75,17 +103,20 @@ class _MobileState extends State<WorkerMobile> {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.pop(context,
-                            MaterialPageRoute(builder: (context) {
-                          return MyApp();
-                        }));
+                        if (_formKey.currentState.validate()) {
+                          updateDataFromFireStore.updateData(
+                              uid, 'Phone', _ph.text);
+                          updateDataFromFireStore.removeValueFromSP('ph');
+                          updateDataFromFireStore.save('ph', _ph.text);
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(builder: (context) => WProfile()));
+                        }
                       },
-
                       //  padding: EdgeInsets.only(top: 20),
                     )),
               ],
             ),
-          )
-    );
+          ),
+        ));
   }
 }

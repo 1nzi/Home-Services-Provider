@@ -1,30 +1,50 @@
 import 'package:flutter/material.dart';
+import 'package:home_well/Model/WorkerModel/WorkerProfileModel.dart';
 
 import '../../main.dart';
 import 'w_profile.dart';
 
-class WorkerUpdateName extends StatefulWidget {
+
+WorkerDataFromFireStore  updateDataFromFireStore = new WorkerDataFromFireStore ();
+final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+final TextEditingController _name = new TextEditingController();
+
+class WUpdateName extends StatefulWidget {
+  final String uid;
+
+  const WUpdateName({Key key, this.uid}) : super(key: key);
+
   @override
-  _UpdateNameState createState() => _UpdateNameState();
+  _WUpdateNameState createState() => _WUpdateNameState(uid);
 }
 
-class _UpdateNameState extends State<WorkerUpdateName> {
+class _WUpdateNameState extends State<WUpdateName> {
+  String uid;
+
+  _WUpdateNameState(this.uid);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-          appBar: AppBar(
-            //title: Text('Update Your Name'),
-            backgroundColor: Colors.lightGreen,
-            leading: IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigator.pop(context, MaterialPageRoute(builder: (context) {
-                    return WorkerProfile();
-                  }));
-                }),
+        appBar: AppBar(
+          title: Text(
+            'Update Your Name',
+            style: new TextStyle(
+                fontSize: 20.0,
+                color: Colors.black,
+                fontWeight: FontWeight.bold),
           ),
-          body: Container(
-              padding: EdgeInsets.all(20),
+          backgroundColor: Colors.lightGreen,
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => WProfile()));
+              }),
+        ),
+        body: Container(
+          padding: EdgeInsets.all(20),
+          child: Form(
+            key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -34,7 +54,6 @@ class _UpdateNameState extends State<WorkerUpdateName> {
                       fontSize: 25,
                       color: Colors.black,
                       decoration: TextDecoration.none,
-        //              fontFamily: 'Raleway',
                     )),
                 Padding(
                   padding: EdgeInsets.only(top: 10),
@@ -51,46 +70,48 @@ class _UpdateNameState extends State<WorkerUpdateName> {
                   padding: EdgeInsets.only(top: 20),
                 ),
                 TextFormField(
-                  maxLength: 17,
-                  validator: (String value){
-                    if(value.isEmpty){
-                      return "Please enter a valid name first";
-                    }
-                    return null;
-                  },
+                  controller: _name,
                   decoration: InputDecoration(
                     hintText: 'Enter your full name',
                   ),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter Name';
+                    }
+                    return null;
+                  },
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 20),
                 ),
-              Container(
-                width: 330,
-                  child:RaisedButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.lightGreen)),
-                    color: Colors.lightGreen,
-                    child: Text(
-                      'Update',
-                      style: TextStyle(
-                        fontSize: 20,
+                Container(
+                    width: 330,
+                    child: RaisedButton(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(18.0),
+                          side: BorderSide(color: Colors.lightGreen)),
+                      color: Colors.lightGreen,
+                      child: Text(
+                        'Update',
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
                       ),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context,
-                          MaterialPageRoute(builder: (context) {
-                            return MyApp();
-                          }));
-                    },
-
-                    //  padding: EdgeInsets.only(top: 20),
-                  )
-              ),
+                      onPressed: () async {
+                        if (_formKey.currentState.validate()) {
+                          updateDataFromFireStore.updateData(
+                              uid, 'Name', _name.text);
+                          updateDataFromFireStore.removeValueFromSP('wName');
+                          updateDataFromFireStore.save('wName', _name.text);
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => WProfile()));
+                        }
+                      }, //  padding: EdgeInsets.only(top: 20),
+                    )),
               ],
             ),
-          )
-    );
+          ),
+        ));
   }
 }

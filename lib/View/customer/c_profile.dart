@@ -12,18 +12,12 @@ CustomerDataFromFireStore customerDataFromFireStore =
 new CustomerDataFromFireStore();
 
 class Profile extends StatefulWidget {
-  //final CustomerData user;
-
-  //const Profile({Key key, this.user}) : super(key: key);
 
   @override
   ProfileState createState() => ProfileState();
 }
 
 class ProfileState extends State<Profile> {
-  //final CustomerData customerData;
-
-  //ProfileState(this.customerData);
 
   SharedPreferences sp;
   String uid;
@@ -101,7 +95,6 @@ class ProfileState extends State<Profile> {
                 onPressed: () {
                   Navigator.of(context).pushReplacement(
                       MaterialPageRoute(builder: (context) => Mobile(uid: uid)));
-
                 }),
           ),
           ListTile(

@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:home_well/Controller/WorkerController/rigesterWorker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 WorkerData workerData = new WorkerData();
 
 class WorkerDataFromFireStore {
   final db = Firestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseUser user;
 
 
@@ -21,18 +23,45 @@ class WorkerDataFromFireStore {
     var userQuery = db.collection('Worker').document(workerId);
     userQuery.get().then((data) {
       workerData.workerId = workerId;
-      workerData.name = data['Name'];
+      save('workerId', workerId);
+      workerData.fname = data['Name'];
+      save('wName', data['Name']);
       workerData.image = data['Image'];
+      save('image', data['Image']);
       workerData.cnic = data['Cnic'];
+      save('cnic', data['Cnic']);
       workerData.email = data['Email'];
+      save('email', data['Email']);
       workerData.ph = data['Phone'];
+      save('ph', data['Phone']);
       workerData.city = data['City'];
+      save('city', data['City']);
       workerData.area = data['Area'];
+      save('area', data['Area']);
       workerData.job = data['Job'];
+      save('job', data['Job']);
       workerData.rating = data['Rating'].toDouble();
+      save('rating', data['Rating']);
       workerData.rater = data['Rater'];
+      save('rater', data['Rater']);
     });
     return workerData;
+  }
+
+  getList(String key) async {
+    final SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
+    List<String> spList = sharedPrefs.getStringList(key);
+    return spList;
+  }
+  Future<SharedPreferences> getSharedPreferences() async {
+    final SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
+    return sharedPrefs;
+  }
+
+  getString(String key) async {
+    final SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
+    String spString = sharedPrefs.getString(key);
+    return spString;
   }
 
   getjobs() async {
@@ -41,5 +70,25 @@ class WorkerDataFromFireStore {
 
   getWorker(WorkerData user) async {
     return  db.collection('Worker').where('City' , isEqualTo: user.city ).where('Area', isEqualTo: user.area).snapshots();
+  }
+
+  save(String key, dynamic value) async {
+    final SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
+    if (value is bool) {
+      sharedPrefs.setBool(key, value);
+    } else if (value is String) {
+      sharedPrefs.setString(key, value);
+    } else if (value is int) {
+      sharedPrefs.setInt(key, value);
+    } else if (value is double) {
+      sharedPrefs.setDouble(key, value);
+    } else if (value is List<String>) {
+      sharedPrefs.setStringList(key, value);
+    }
+  }
+
+  removeValueFromSP(String key) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove(key);
   }
 }

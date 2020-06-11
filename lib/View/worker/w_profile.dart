@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:home_well/Model/WorkerModel/WorkerProfileModel.dart';
 
 import 'w_change_passward.dart';
 import 'w_update_address.dart';
@@ -7,8 +9,48 @@ import 'w_update_email.dart';
 import 'w_update_mobile.dart';
 import 'w_update_name.dart';
 
+WorkerDataFromFireStore workerDataFromFireStore  =
+new  WorkerDataFromFireStore();
 
-class WorkerProfile extends StatelessWidget {
+class WProfile extends StatefulWidget {
+
+  @override
+  WProfileState createState() => WProfileState();
+}
+
+class WProfileState extends State<WProfile> {
+
+  SharedPreferences sp;
+  String uid;
+  String name;
+  String email;
+  String ph;
+  String city;
+  String password;
+
+  @override
+  void initState() {
+    initSp();
+    super.initState();
+  }
+
+  initSp() {
+    workerDataFromFireStore.getSharedPreferences().then((value) {
+      setState(() {
+        sp = value;
+        getUserInfo();
+      });
+    });
+  }
+
+  getUserInfo() async {
+    name = sp.getString('wName');
+    email = sp.getString('email');
+    ph = sp.getString('ph');
+    city = sp.getString('city');
+    password = sp.getString('password');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,78 +62,69 @@ class WorkerProfile extends StatelessWidget {
             Navigator.pop(context);
           }),
         ),
-        body: ListItems(),
+        body: ListView(
+          children: <Widget>[
+            ListTile(
+              leading: Icon(Icons.person,color: Colors.lightGreen,),
+              title: Text('Name'),
+              subtitle: Text(name??'Name'),
+              trailing: IconButton(
+                  icon: Icon(Icons.edit,color: Colors.lightGreen,),
+                  onPressed: () {
+                    Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) => WUpdateName(uid: uid)));
+                  }),
+            ),
+            ListTile(
+              leading: Icon(Icons.phone_android,color: Colors.lightGreen,),
+              title: Text('Mobile Number'),
+              subtitle: Text(ph??'phone No.'),
+              trailing: IconButton(
+                  icon: Icon(Icons.edit,color: Colors.lightGreen,),
+                  onPressed: () {
+                          Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (context) => WMobile(uid: uid)));
+                  }),
+            ),
+            ListTile(
+              leading: Icon(Icons.location_on,color: Colors.lightGreen,),
+              title: Text('Address',style: TextStyle(
+                color: Colors.black,
+              ),),
+              subtitle: Text(city??"city"),
+              trailing: IconButton(
+                  icon: Icon(Icons.edit,color: Colors.lightGreen,),
+                  onPressed: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                   return WUpdateName(uid: uid,);
+                               }));
+                  }),
+            ),
+            ListTile(
+              leading: Icon(Icons.email,color: Colors.lightGreen,),
+              title: Text('email'),
+              subtitle: Text(email??"email"),
+              trailing: IconButton(
+                  icon: Icon(Icons.edit,color: Colors.lightGreen,),
+                  onPressed: () {
+                              Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context) => WUpdateEmail(uid: uid,)));
+                  }),
+            ),
+            ListTile(
+              leading: Icon(Icons.lock,color: Colors.lightGreen,),
+              title: Text('Change Password '),
+              trailing: IconButton(
+                  icon: Icon(Icons.edit,color: Colors.lightGreen,),
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) {
+                      return WorkerChangePassword();
+                    }));
+                  }),
+            ),
+          ],
+        ),
       );
   }
 }
 
-class ListItems extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      children: <Widget>[
-        ListTile(
-          leading: Icon(Icons.person,color: Colors.lightGreen,),
-          title: Text('Name'),
-          subtitle: Text('Arslan Ahmad'),
-          trailing: IconButton(
-              icon: Icon(Icons.edit,color: Colors.lightGreen,),
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return WorkerUpdateName();
-                }));
-              }),
-        ),
-        ListTile(
-          leading: Icon(Icons.phone_android,color: Colors.lightGreen,),
-          title: Text('Mobile Number'),
-          subtitle: Text('03164641478'),
-          trailing: IconButton(
-              icon: Icon(Icons.edit,color: Colors.lightGreen,),
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return WorkerMobile();
-                }));
-              }),
-        ),
-        ListTile(
-          leading: Icon(Icons.location_on,color: Colors.lightGreen,),
-          title: Text('Address',style: TextStyle(
-            color: Colors.black,
-          ),),
-          subtitle: Text('Lahore'),
-          trailing: IconButton(
-              icon: Icon(Icons.edit,color: Colors.lightGreen,),
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return WorkerUpdateAddress();
-                }));
-              }),
-        ),
-        ListTile(
-          leading: Icon(Icons.email,color: Colors.lightGreen,),
-          title: Text('email'),
-          subtitle: Text('bitf16m030@pucit.edu.pk'),
-          trailing: IconButton(
-              icon: Icon(Icons.edit,color: Colors.lightGreen,),
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return WorkerUpdateEmail();
-                }));
-              }),
-        ),
-        ListTile(
-          leading: Icon(Icons.lock,color: Colors.lightGreen,),
-          title: Text('Change Password '),
-          trailing: IconButton(
-              icon: Icon(Icons.edit,color: Colors.lightGreen,),
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return WorkerChangePassword();
-                }));
-              }),
-        ),
-      ],
-    );
-  }
-}
