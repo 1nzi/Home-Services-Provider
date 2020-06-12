@@ -2,35 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:home_well/View/customer/c_select_subCategory.dart';
+import'c_home.dart';
 
 
-class FbLoginBuuton extends StatelessWidget {
+class FbLoginButon extends StatelessWidget {
 
-  FirebaseAuth _auth = FirebaseAuth.instance;
-  bool isLogged = false;
+  Future<FirebaseUser> _loginWithFacebook(BuildContext context) async{
+    final facebookLogin = FacebookLogin();
+    final result = await facebookLogin.logIn(['email', 'public_profile']);
 
-  FirebaseUser myUser;
-
-  Future<FirebaseUser> _loginWithFacebook() async {
-    var facebookLogin = new FacebookLogin();
-
-    final FacebookLoginResult facebookLoginResult = await facebookLogin.logIn(['email', 'public_profile']);
-    FacebookAccessToken facebookAccessToken = facebookLoginResult.accessToken;
-    AuthCredential authCredential = FacebookAuthProvider.getCredential(accessToken: facebookAccessToken.token);
-    FirebaseUser fbUser;
-    return fbUser = (await _auth.signInWithCredential(authCredential)).user;
+    switch (result.status) {
+      case FacebookLoginStatus.loggedIn:
+        //_sendTokenToServer(result.accessToken.token);
+        showLoggedInUI(context);
+        break;
+      case FacebookLoginStatus.cancelledByUser:
+        showCancelledMessage(context);
+        break;
+      case FacebookLoginStatus.error:
+        //_showErrorOnUI(result.errorMessage);
+        break;
+    }
   }
-
-  void _logIn(BuildContext context) {
-    _loginWithFacebook().then((response) {
-      if (response != null) {
-        myUser = response;
-        isLogged = true;
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => SelectSubCategory()));
-      }
-    });
+  showCancelledMessage(BuildContext context){
+    final snackBar = SnackBar(content: Text('You cancle the login'));
+    Scaffold.of(context).showSnackBar(snackBar);
   }
+  showLoggedInUI(BuildContext context) {
+    Navigator.push(
+    context, MaterialPageRoute(builder: (context) => CustomerHomeScreen()));
+    }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -53,7 +54,7 @@ class FbLoginBuuton extends StatelessWidget {
           ),
         ),
         onPressed: () {
-          _logIn(context);
+          _loginWithFacebook(context);
 
         },
       ),

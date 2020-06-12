@@ -5,10 +5,12 @@ import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:home_well/Model/CustomerModel/RigesterCustomerModel.dart';
 
+import 'c_facebook_login.dart';
 import '../common/authentication.dart';
 import 'c_drawer.dart';
 import 'c_home.dart';
 import 'c_signup_1.dart';
+import 'c_gmail_logIn.dart';
 
 class CustomerLogin extends StatefulWidget {
   @override
@@ -134,7 +136,7 @@ class _CustomerLoginState extends State<CustomerLogin> {
                     SizedBox(
                       height: 10,
                     ),
-                    FbLoginBuuton(),
+                    FbLoginButon(),
                     SizedBox(
                       height: 10,
                     ),
@@ -250,8 +252,27 @@ class GmailLoginBuuton extends StatelessWidget {
           ),
         ),
         onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => CustomerHome()));
+          GmailLogin gm=new GmailLogin();
+          gm.signInWithGoogle().whenComplete(() {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                  return CustomerHomeScreen();
+                },
+              ),
+            );
+          });
+          /*if(gm.signInWithGoogle()==true)
+          {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => CustomerHomeScreen()));
+          }
+         if(gm.login()==true)
+           {
+             Navigator.push(
+                 context, MaterialPageRoute(builder: (context) => CustomerHomeScreen()));
+           }*/
+
         },
       ),
     );
