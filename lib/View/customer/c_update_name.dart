@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'file:///C:/Users/Saad/fyp/lib/Model/CustomerModel/customerProfileModel.dart';
+import 'file:///C:/Users/InZi/fyp/lib/Model/CustomerModel/customerProfileModel.dart';
 
 import 'c_profile.dart';
 
@@ -14,7 +14,7 @@ class UpdateName extends StatefulWidget {
   const UpdateName({Key key, this.uid}) : super(key: key);
 
   @override
-  _UpdateNameState createState() => _UpdateNameState(uid);
+  _UpdateNameState createState() => _UpdateNameState(this.uid);
 }
 
 
@@ -23,7 +23,8 @@ class _UpdateNameState extends State<UpdateName> {
 
   _UpdateNameState(this.uid);
 
-    @override
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
@@ -99,9 +100,14 @@ class _UpdateNameState extends State<UpdateName> {
                         ),
                       ),
                       onPressed: ()async {
+
+
+
+                      print("idddddddddddddddddddddddd    :$uid");
                         if (_formKey.currentState.validate()) {
-                          updateDataFromFireStore.updateData(
-                              uid, 'Name', _name.text);
+                         updateDataFromFireStore.updateData(uid, "Name", _name.text);
+
+
                           updateDataFromFireStore.removeValueFromSP('cName');
                           updateDataFromFireStore.save('cName', _name.text);
                           Navigator.of(context).pushReplacement(

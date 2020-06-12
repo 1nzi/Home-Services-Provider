@@ -1,6 +1,7 @@
-import 'file:///C:/Users/Saad/fyp/lib/Model/CustomerModel/customerProfileModel.dart';
+import 'file:///C:/Users/InZi/fyp/lib/Model/CustomerModel/customerProfileModel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
+import 'package:home_well/View/common/AboutUs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'c_history.dart';
@@ -149,7 +150,7 @@ class _MyDrawerPageState extends State<CustomerDrawerOnly> {
                 Navigator.push(
                     context,
                     new MaterialPageRoute(
-                        builder: (context) => new CustomerLogin()));
+                        builder: (context) => new AboutUs()));
               },
             ),
             new ListTile(

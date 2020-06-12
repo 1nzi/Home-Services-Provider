@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'file:///C:/Users/Saad/fyp/lib/Model/CustomerModel/customerProfileModel.dart';
+import 'file:///C:/Users/InZi/fyp/lib/Model/CustomerModel/customerProfileModel.dart';
 
 import 'c_profile.dart';
 
@@ -153,6 +153,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                       ),
                       onPressed: () {
                         if (_formKey.currentState.validate()) {
+                          print("passworddddddd  ");
+                          print(_passw.text);
                           updateDataFromFireStore.updateData(
                               uid, 'Password', _passw.text);
                           updateDataFromFireStore.removeValueFromSP('password');

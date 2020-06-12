@@ -16,19 +16,13 @@ class CustomerDataFromFireStore {
     user = await _auth.currentUser();
     getCustomerData(user);
   }
-
-
   updateData(String uid, String title, String newVal) async {
     await db.collection('Customer').document(uid).updateData({title: newVal});
-
   }
 
   updateJobCount(String uid, String title, int newVal) async {
     await db.collection('Customer').document(uid).updateData({title: newVal});
   }
-
-
-
   getCustomerData(FirebaseUser user) async {
     var userQuery = db.collection('Customer').document(user.uid);
     userQuery.get().then((data) {

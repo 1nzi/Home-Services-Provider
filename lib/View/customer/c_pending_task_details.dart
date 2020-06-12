@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
-import 'file:///C:/Users/Saad/fyp/lib/Model/CustomerModel/AddJobRequest.dart';
+import 'file:///C:/Users/InZi/fyp/lib/Model/CustomerModel/AddJobRequest.dart';
 
 import 'c_pending_task.dart';
 import 'c_rating_bar.dart';

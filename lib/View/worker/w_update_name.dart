@@ -4,6 +4,7 @@ import '../../main.dart';
 import 'w_profile.dart';
 
 class WorkerUpdateName extends StatefulWidget {
+
   @override
   _UpdateNameState createState() => _UpdateNameState();
 }

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
-import 'file:///C:/Users/Saad/fyp/lib/Model/CustomerModel/RigesterCustomerModel.dart';
+import 'file:///C:/Users/InZi/fyp/lib/Model/CustomerModel/RigesterCustomerModel.dart';
 import 'package:home_well/View/customer/c_signup_1.dart';
 import 'c_login.dart';
 
