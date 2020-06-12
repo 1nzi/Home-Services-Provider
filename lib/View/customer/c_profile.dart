@@ -32,8 +32,6 @@ class ProfileState extends State<Profile> {
   String address;
   String gender;
   String password;
-
-
   @override
   void initState() {
     initSp();
