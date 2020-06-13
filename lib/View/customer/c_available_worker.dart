@@ -217,7 +217,8 @@ class RequestButton extends StatelessWidget {
           sp.setString('workerImg', worker.imageUrl);
           sp.setString('workerContact', worker.workerContact);
           sp.setInt('jobCount', sp.getInt('jobCount')+1);
-          addJobREquest(sp);
+          addJobRequestToCustomer(sp);
+          addJobRequestToWorker(sp);
          // CloudFunctions.instance.call(
           //    functionName: "addUser",
           print(sp.getInt('jobCount'));
@@ -232,15 +233,16 @@ class RequestButton extends StatelessWidget {
 }
 
 final CollectionReference customerCollection = Firestore.instance.collection('Customer');
-final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'messageTrigger');
-  Future<void> addJobREquest(SharedPreferences sp) async {
+final CollectionReference workerCollection = Firestore.instance.collection('Worker');
+//final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'messageTrigger');
+  Future<void> addJobRequestToCustomer(SharedPreferences sp) async {
     customerDataFromFireStore.getSharedPreferences().then((value) {
       sp = value;
     });
-    dynamic resp = await callable.call(<String, dynamic>{
+   /* dynamic resp = await callable.call(<String, dynamic>{
     'YOUR_PARAMETER_NAME': 'YOUR_PARAMETER_VALUE',
     });
-    return await customerCollection
+   */ return await customerCollection
         .document(sp.getString('userId'))
         .collection('JobRequest')
         .document('job'+ sp.getInt('jobCount').toString())
@@ -262,4 +264,36 @@ final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(function
       'Address': sp.getString('address'),
       'token': sp.getString('token')
     });
+
   }
+Future<void> addJobRequestToWorker(SharedPreferences sp) async {
+  customerDataFromFireStore.getSharedPreferences().then((value) {
+    sp = value;
+  });
+  /*dynamic resp = await callable.call(<String, dynamic>{
+    'YOUR_PARAMETER_NAME': 'YOUR_PARAMETER_VALUE',
+  });*/
+  return await workerCollection
+      .document(sp.getString('workerId'))
+      .collection('JobRequest')
+      .document('job' + sp.getInt('jobCount').toString())
+      .setData({
+    'CustomerId': sp.getString('userId'),
+    'CustomerName': sp.getString('cName'),
+    'CustomerContact': sp.getString('ph'),
+    'CustomerImg': sp.getString('image'),
+    'Job': sp.getString('job'),
+    'JobStatus': 'Pending',
+    'SubJob': sp.getString('subJob'),
+    'SubJobField': FieldValue.arrayUnion(sp.getStringList('subJobFields')),
+    'SubJobFieldCount': FieldValue.arrayUnion(
+        sp.getStringList('subJobsCounter')),
+    'SubJobFieldPrice': FieldValue.arrayUnion(sp.getStringList('subJobsPrice')),
+    'Date': sp.getString('date'),
+    'Time': sp.getString('time'),
+    'City': sp.getString('city'),
+    'Area': sp.getString('area'),
+    'Address': sp.getString('address'),
+    'token': sp.getString('token')
+  });
+}

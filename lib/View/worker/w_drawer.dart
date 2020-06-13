@@ -1,14 +1,45 @@
 
+import 'package:home_well/Model/WorkerModel/WorkerProfileModel.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'w_login.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'w_pending_task.dart';
 import 'w_profile.dart';
-import 'w_wallet.dart';
 import 'w_worker_history.dart';
 
-class WorkerDrawerOnly extends StatelessWidget {
+WorkerDataFromFireStore _dataFromFireStore = WorkerDataFromFireStore();
+
+class WorkerDrawerOnly extends StatefulWidget {
+  _MyDrawerPageState createState() => _MyDrawerPageState();
+}
+class _MyDrawerPageState extends State<WorkerDrawerOnly> {
+
+  String uid;
+  String name;
+  String image;
+  SharedPreferences sp;
+
+  @override
+  void initState() {
+    initSp();
+    super.initState();
+  }
+  initSp() {
+    _dataFromFireStore.getSharedPreferences().then((value) {
+      sp = value;
+      getUserInfo();
+    });
+  }
+  getUserInfo() async {
+    uid = sp.getString('workerId');
+    name = sp.getString('wName');
+    image = sp.getString('image');
+    print('id: $uid name: $name');
+  }
+
   @override
   Widget build (BuildContext context) {
     return new Drawer(
@@ -20,9 +51,21 @@ class WorkerDrawerOnly extends StatelessWidget {
               child: Column(
                 children: <Widget>[
 
-                  ImageAsset(),
+                  new Container(
+                    width: 100,
+                    height: 100,
+                    decoration: new BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: new DecorationImage(
+                        fit: BoxFit.cover,
+                        image:  NetworkImage(
+                            image??
+                                "https://previews.123rf.com/images/tuktukdesign/tuktukdesign1606/tuktukdesign160600105/59070189-user-icon-man-profile-businessman-avatar-person-icon-in-vector-illustration.jpg"),
+                      ),
+                    ),
+                  ),
                   Text(
-                    'Name',
+                    name?? 'Name',
                     textAlign: TextAlign.center,
                   )
                 ],
@@ -41,7 +84,7 @@ class WorkerDrawerOnly extends StatelessWidget {
                     new MaterialPageRoute(builder: (context) => new WProfile()));
               },
             ),
-            new ListTile(
+           /* new ListTile(
               leading: Icon(Icons.account_balance_wallet, color: Colors.lightGreen, size:24),
               title: new Text("My Wallet",
               ),
@@ -50,7 +93,7 @@ class WorkerDrawerOnly extends StatelessWidget {
                 Navigator.push(context,
                     new MaterialPageRoute(builder: (context) => new Wallet()));
               },
-            ),
+            ),*/
             new ListTile(
               leading: Icon(Icons.assignment, color: Colors.lightGreen, size:24),
               title: new Text("Pending Task",
@@ -58,7 +101,7 @@ class WorkerDrawerOnly extends StatelessWidget {
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(context,
-                    new MaterialPageRoute(builder: (context) => new WorkerPendingTask()));
+                    new MaterialPageRoute(builder: (context) => new WorkerPendingTask(userId: uid,)));
               },
             ),
             new ListTile(
@@ -94,6 +137,8 @@ class WorkerDrawerOnly extends StatelessWidget {
         )
     );
   }
+
+
 }
 
 class ImageAsset extends StatelessWidget {

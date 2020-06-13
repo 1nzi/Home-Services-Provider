@@ -99,7 +99,7 @@ class _MyHomePageState extends State<CustomerHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      drawer: CustomerDrawerOnly(user: _customerData),
+      drawer: CustomerDrawerOnly(),
       appBar: new AppBar(
         leading: new IconButton(
           icon: Icon(Icons.menu),

@@ -10,6 +10,11 @@ class WorkerDataFromFireStore {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseUser user;
 
+  initUser() async {
+    user = await _auth.currentUser();
+    getWorkerData(user);
+  }
+
 
   updateData(String wid, var title, var newVal) async {
     await db.collection('Worker').document(wid).updateData({title: newVal});
@@ -19,11 +24,11 @@ class WorkerDataFromFireStore {
     await db.collection('Worker').document(wid).collection('FeedBack').document('fb').setData({title: feedback});
   }
 
-  WorkerData getWorkerData(String workerId) {
-    var userQuery = db.collection('Worker').document(workerId);
+   getWorkerData(FirebaseUser user) {
+    var userQuery = db.collection('Worker').document(user.uid);
     userQuery.get().then((data) {
-      workerData.workerId = workerId;
-      save('workerId', workerId);
+      workerData.workerId = user.uid;
+      save('workerId', user.uid);
       workerData.fname = data['Name'];
       save('wName', data['Name']);
       workerData.image = data['Image'];
@@ -41,9 +46,9 @@ class WorkerDataFromFireStore {
       workerData.job = data['Job'];
       save('job', data['Job']);
       workerData.rating = data['Rating'].toDouble();
-      save('rating', data['Rating']);
+      save('rating', data['Rating'].toDouble());
       workerData.rater = data['Rater'];
-      save('rater', data['Rater']);
+      save('rater', data['Rater'].toInt());
     });
     return workerData;
   }

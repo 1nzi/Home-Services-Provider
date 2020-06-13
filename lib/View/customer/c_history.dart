@@ -3,18 +3,11 @@ import 'package:flutter/material.dart';
 
 import 'c_history_details.dart';
 
-class CustomerHistory extends StatefulWidget {
+class CustomerHistory extends StatelessWidget {
   final String userId;
 
   const CustomerHistory({Key key, this.userId}) : super(key: key);
 
-  _CustomerHistoryState createState() => _CustomerHistoryState(userId);
-}
-
-class _CustomerHistoryState extends State<CustomerHistory> {
-  final String userId;
-
-  _CustomerHistoryState(this.userId);
 
   Widget _buildTaskList() {
     return Container(

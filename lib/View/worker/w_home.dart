@@ -2,6 +2,8 @@ import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:home_well/Model/WorkerModel/WorkerProfileModel.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'w_drawer.dart';
 import 'w_notification.dart';
@@ -9,10 +11,25 @@ import 'w_notification.dart';
 class WorkerHome extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
-
+WorkerDataFromFireStore _dataFromFireStore = WorkerDataFromFireStore();
 class _MyHomePageState extends State<WorkerHome> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  SharedPreferences sp;
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  @override
+  void initState() {
+    initSp();
+    _dataFromFireStore.initUser();
+    super.initState();
+  }
+
+  initSp() {
+    _dataFromFireStore.getSharedPreferences().then((value) {
+      setState(() {
+        sp = value;
+      });
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

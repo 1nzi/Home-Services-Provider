@@ -15,8 +15,14 @@ class CustomerPendingTask extends StatefulWidget {
 
 class _PendingTask extends State<CustomerPendingTask> {
   final String userId;
-
   _PendingTask(this.userId);
+
+  @override
+  void initState() {
+    super.initState();
+    debugPrint('userId: $userId');
+  }
+
 
   Widget _buildTaskList() {
     return Container(
@@ -54,12 +60,12 @@ class _PendingTask extends State<CustomerPendingTask> {
                 return Container(
                   child: snapshot.data.documents.length > 0
                       ? ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          itemCount: snapshot.data.documents.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return TaskCard(task: pendingTask[index]);
-                          })
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: snapshot.data.documents.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return TaskCard(task: pendingTask[index]);
+                      })
                       : Center(child: Text('This Job has No SubJobs')),
                 );
               }
@@ -103,21 +109,21 @@ class Task {
   final String time;
 
   Task(
-    this.docId,
-    this.workerName,
-    this.workerId,
-    this.workerContact,
-    this.job,
-    this.jobStatus,
-    this.subJob,
-    this.subJobFields,
-    this.workerImage,
-    this.city,
-    this.area,
-    this.address,
-    this.date,
-    this.time,
-  );
+      this.docId,
+      this.workerName,
+      this.workerId,
+      this.workerContact,
+      this.job,
+      this.jobStatus,
+      this.subJob,
+      this.subJobFields,
+      this.workerImage,
+      this.city,
+      this.area,
+      this.address,
+      this.date,
+      this.time,
+      );
 }
 
 class TaskCard extends StatelessWidget {

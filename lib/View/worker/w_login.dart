@@ -166,7 +166,7 @@ class LoginBuuton extends StatelessWidget {
             dynamic result = await signin();
 
             if (result is FirebaseUser) {
-              Navigator.pop(context);
+             // Navigator.pop(context);
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => WorkerHome()));
             } else {
