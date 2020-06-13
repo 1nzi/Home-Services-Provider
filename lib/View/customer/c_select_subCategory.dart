@@ -114,7 +114,7 @@ class _MySignupPageState extends State<SelectSubCategory> {
           icon: new Icon(Icons.info,
           size: 0,
            ),
-          title: new Text("*Price for call, If not mentioned",
+          title: new Text("*Call for Price, If not mentioned",
           style: TextStyle(color: Colors.red,
           ),),
         ),

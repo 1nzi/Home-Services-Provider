@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'file:///C:/Users/InZi/fyp/lib/Model/CustomerModel/customerProfileModel.dart';
+import 'package:home_well/Model/CustomerModel/customerProfileModel.dart';
+
 import 'c_profile.dart';
 
 CustomerDataFromFireStore updateDataFromFireStore =

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:home_well/Controller/WorkerController/rigesterWorker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class DatabaseService {
   final String uid;
@@ -8,8 +9,7 @@ class DatabaseService {
   DatabaseService({this.uid});
 
   //collection reference
-  final CollectionReference workerCollection =
-  Firestore.instance.collection('Worker');
+  final CollectionReference workerCollection = Firestore.instance.collection('Worker');
 
   Future <void> updateWorkerData(WorkerData bundle) async {
     String imgUrl;
@@ -43,7 +43,7 @@ class DatabaseService {
 
     await workerCollection.document(uid).setData({
       'Id': uid,
-      'Name': bundle.name,
+      'Name': bundle.fname,
       'Cnic': bundle.cnic,
       'Phone': bundle.ph,
       'Email': bundle.email,

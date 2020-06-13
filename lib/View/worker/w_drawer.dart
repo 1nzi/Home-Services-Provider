@@ -38,7 +38,7 @@ class WorkerDrawerOnly extends StatelessWidget {
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(context,
-                    new MaterialPageRoute(builder: (context) => new WorkerProfile()));
+                    new MaterialPageRoute(builder: (context) => new WProfile()));
               },
             ),
             new ListTile(

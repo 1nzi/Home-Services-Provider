@@ -1,7 +1,6 @@
-import 'file:///C:/Users/InZi/fyp/lib/Model/CustomerModel/customerProfileModel.dart';
+import 'file:///C:/Users/Saad/fyp/lib/Model/CustomerModel/customerProfileModel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
-import 'package:home_well/View/common/AboutUs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'c_history.dart';
@@ -42,6 +41,7 @@ class _MyDrawerPageState extends State<CustomerDrawerOnly> {
     });
   }
   getUserInfo() async {
+     uid = sp.getString('userId');
      name = sp.getString('cName');
      image = sp.getString('image');
   }
@@ -109,7 +109,7 @@ class _MyDrawerPageState extends State<CustomerDrawerOnly> {
                 Navigator.push(
                     context,
                     new MaterialPageRoute(
-                        builder: (context) => new CustomerPendingTask(userId: user.userId)));
+                        builder: (context) => new CustomerPendingTask(userId: uid)));
               },
             ),
             new ListTile(
@@ -123,7 +123,7 @@ class _MyDrawerPageState extends State<CustomerDrawerOnly> {
                 Navigator.push(
                     context,
                     new MaterialPageRoute(
-                        builder: (context) => new CustomerHistory(userId: user.userId)));
+                        builder: (context) => new CustomerHistory(userId: uid)));
               },
             ),
             new ListTile(

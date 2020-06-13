@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'package:home_well/View/customer/c_select_subCategory.dart';
-import'c_home.dart';
+import'w_home.dart';
 
 
 class FbLoginButon extends StatelessWidget {
@@ -13,14 +12,14 @@ class FbLoginButon extends StatelessWidget {
 
     switch (result.status) {
       case FacebookLoginStatus.loggedIn:
-        //_sendTokenToServer(result.accessToken.token);
+      //_sendTokenToServer(result.accessToken.token);
         showLoggedInUI(context);
         break;
       case FacebookLoginStatus.cancelledByUser:
         showCancelledMessage(context);
         break;
       case FacebookLoginStatus.error:
-        //_showErrorOnUI(result.errorMessage);
+      //_showErrorOnUI(result.errorMessage);
         break;
     }
   }
@@ -30,8 +29,8 @@ class FbLoginButon extends StatelessWidget {
   }
   showLoggedInUI(BuildContext context) {
     Navigator.push(
-    context, MaterialPageRoute(builder: (context) => CustomerHomeScreen()));
-    }
+        context, MaterialPageRoute(builder: (context) => WorkerHome ()));
+  }
   @override
   Widget build(BuildContext context) {
     return Container(

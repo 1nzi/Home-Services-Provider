@@ -18,7 +18,6 @@ class UpdateWorkerData{
      }
 
   updateFeedback(String workerId, String fb){
-
     dataFromFireStore.updateFeedBack(workerId, 'fb'+(_workerData.rater+1).toString(), fb);
   }
 

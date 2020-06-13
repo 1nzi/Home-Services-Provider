@@ -24,7 +24,7 @@ class _UpdateAddressState extends State<WorkerUpdateAddress> {
               icon: Icon(Icons.arrow_back),
               onPressed: () {
                 Navigator.pop(context, MaterialPageRoute(builder: (context) {
-                  return WorkerProfile();
+                  return WProfile();
                 }));
               }),
         ),
@@ -118,7 +118,7 @@ class _UpdateAddressState extends State<WorkerUpdateAddress> {
                     onPressed: () {
                       Navigator.pop(context,
                           MaterialPageRoute(builder: (context) {
-                        return WorkerProfile();
+                        return WProfile();
                       }));
                     },
 

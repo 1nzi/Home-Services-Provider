@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'file:///C:/Users/InZi/fyp/lib/Model/CustomerModel/AddJobRequest.dart';
+import 'package:home_well/Model/CustomerModel/AddJobRequest.dart';
 import 'package:home_well/Model/CustomerModel/customerProfileModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

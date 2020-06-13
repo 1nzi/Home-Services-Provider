@@ -3,7 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'file:///C:/Users/InZi/fyp/lib/Model/CustomerModel/customerProfileModel.dart';
+import 'package:home_well/Model/CustomerModel/customerProfileModel.dart';
 import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'c_drawer.dart';
