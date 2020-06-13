@@ -37,6 +37,7 @@ class _MySubCategoryPageState extends State<SubJobs> {
     initSp();
     super.initState();
 
+
   }
 
   initSp() {
@@ -101,8 +102,6 @@ class _MySubCategoryPageState extends State<SubJobs> {
           onPressed: () {
             //user.subJob = null;
             sp.remove('job');
-            print("Customer Data  : $user");
-            print(sp.containsKey('job').toString());
             Navigator.pop(context);
           },
         ),

@@ -70,9 +70,6 @@ class _MySignupPageState extends State<SelectSubCategory> {
                 print(subJob);
                 jobTitle = List.from(snapshot.data['Subcategory']);
                 jobRate = List.from(snapshot.data['jobRate']);
-                print(jobTitle.length);
-                print("Job rateeeeeee :$jobRate");
-
                 for (int i = 0; i < jobTitle.length; i++) {
                   subCategory.add(SubJobs(jobTitle[i], jobRate[i], 0));
                 }
