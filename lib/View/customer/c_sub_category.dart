@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'c_drawer.dart';
 import 'c_select_subCategory.dart';
 
+
 class SubJobs extends StatefulWidget {
   final CustomerData user;
 //recive Customer data
@@ -32,6 +33,7 @@ class _MySubCategoryPageState extends State<SubJobs> {
   @override
   void initState() {
     _customerData = user;
+
     initSp();
     super.initState();
 
@@ -59,11 +61,13 @@ class _MySubCategoryPageState extends State<SubJobs> {
             List<SubCategory> subCategory = new List();
 
             if (!snapshot.hasData) {
-              print(job );
+
+
 
               return Text("Loading...");
             } else {
               subJob = List.from(snapshot.data["subjob"]);
+
               subJobImg = List.from(snapshot.data['subjobImg']);
               for (int i = 0; i < subJob.length; i++) {
                 subCategory.add(SubCategory(subJob[i], subJobImg[i]));
@@ -74,6 +78,7 @@ class _MySubCategoryPageState extends State<SubJobs> {
                         scrollDirection: Axis.vertical,
                         shrinkWrap: true,
                         itemCount: subJob.length,
+
                         itemBuilder: (BuildContext context, int index) {
                           return SubCategoryCard(
                               subCategory: subCategory[index]);
@@ -96,6 +101,7 @@ class _MySubCategoryPageState extends State<SubJobs> {
           onPressed: () {
             //user.subJob = null;
             sp.remove('job');
+            print("Customer Data  : $user");
             print(sp.containsKey('job').toString());
             Navigator.pop(context);
           },

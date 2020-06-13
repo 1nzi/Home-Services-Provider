@@ -70,6 +70,9 @@ class _MySignupPageState extends State<SelectSubCategory> {
                 print(subJob);
                 jobTitle = List.from(snapshot.data['Subcategory']);
                 jobRate = List.from(snapshot.data['jobRate']);
+                print(jobTitle.length);
+                print("Job rateeeeeee :$jobRate");
+
                 for (int i = 0; i < jobTitle.length; i++) {
                   subCategory.add(SubJobs(jobTitle[i], jobRate[i], 0));
                 }
@@ -109,30 +112,47 @@ class _MySignupPageState extends State<SelectSubCategory> {
               _price.clear();
             }),
       ),
-      bottomNavigationBar: new BottomNavigationBar(items: [
-        new BottomNavigationBarItem(
-          icon: new Icon(Icons.info,
-          size: 0,
-           ),
-          title: new Text("*Call for Price, If not mentioned",
-          style: TextStyle(color: Colors.red,
-          ),),
+//      bottomNavigationBar: new BottomNavigationBar(items: [
+//        new BottomNavigationBarItem(
+//          icon: new Icon(Icons.info,
+//          size: 0,
+//           ),
+//          title: new Text("*Call for Price, If not mentioned",
+//          style: TextStyle(color: Colors.red,
+//          ),),
+//        ),
+//      ],
+//      ),
+
+      bottomNavigationBar: Container(
+        height: 40,
+        color: Colors.white,
+        child: InkWell(
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.center ,
+                crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text('*Call for Price, If not mentioned',
+                    style: TextStyle(color: Colors.red)
+                )
+              ],
+            ),
+
         ),
-      ],
       ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             SizedBox(
-              height: 20,
+              height: 10,
             ),
             Text(
               "Select Sub Jobs",
             ),
             _buildSubJobsList(),
             SizedBox(
-              height: 20,
+              height: 10,
             ),
             NextButton(user: user, sp: sp)
           ],
@@ -151,9 +171,11 @@ class NextButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 200.0,
-      height: 40.0,
+
+      width: 150.0,
+
       child: RaisedButton(
+
           elevation: 5.0,
           textColor: Colors.white,
           color: Colors.lightGreen,
@@ -196,7 +218,6 @@ class SubJobs {
 
 class SubJobsCard extends StatefulWidget {
   final SubJobs subJobs;
-
   const SubJobsCard({this.subJobs, });
 
   @override
