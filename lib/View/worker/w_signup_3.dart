@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:home_well/Controller/WorkerController/rigesterWorker.dart';
 import 'package:home_well/View/worker/w_home.dart';
-import 'file:///C:/Users/Saad/fyp/lib/Model/WorkerModel/RigesterWorkerModel.dart';
+import 'package:home_well/Model/WorkerModel/RigesterWorkerModel.dart';
 import 'package:home_well/View/worker/w_signup_1.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';

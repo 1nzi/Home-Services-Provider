@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'c_wait_for_response.dart';
-import 'file:///C:/Users/Saad/fyp/lib/Model/CustomerModel/customerProfileModel.dart';
+import 'package:home_well/Model/CustomerModel/customerProfileModel.dart';
 
 
 SharedPreferences sp;

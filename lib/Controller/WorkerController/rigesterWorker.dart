@@ -1,7 +1,7 @@
 
 class WorkerData {
   String workerId;
-  String name;
+  String fname;
   String cnic;
   String ph;
   String email;
@@ -19,7 +19,7 @@ class WorkerData {
   String cnicBackPath;
   dynamic cnicBackimage;
 
-  WorkerData({this.name,
+  WorkerData({this.fname,
     this.cnic,
     this.ph,
     this.email,

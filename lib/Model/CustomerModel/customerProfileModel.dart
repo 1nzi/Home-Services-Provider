@@ -27,8 +27,6 @@ class CustomerDataFromFireStore {
     await db.collection('Customer').document(uid).updateData({title: newVal});
   }
 
-
-
   getCustomerData(FirebaseUser user) async {
     var userQuery = db.collection('Customer').document(user.uid);
     userQuery.get().then((data) {

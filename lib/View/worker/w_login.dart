@@ -6,6 +6,8 @@ import '../common/authentication.dart';
 import 'w_drawer.dart';
 import 'w_home.dart';
 import 'w_signup_1.dart';
+import 'w_gmail_logIn.dart';
+import 'w_facebook_login.dart';
 
 class WorkerLogin extends StatefulWidget {
   @override
@@ -115,7 +117,7 @@ class _WorkerLoginState extends State<WorkerLogin> {
 
               SizedBox(height: 10,),
 
-              FbLoginBuuton(),
+              FbLoginButon(),
 
               SizedBox(height: 10,),
 
@@ -234,8 +236,16 @@ class GmailLoginBuuton extends StatelessWidget {
           ),
         ),
         onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => WorkerHome()));
+          GmailLogin gm=new GmailLogin();
+          gm.signInWithGoogle().whenComplete(() {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                  return WorkerHome();
+                },
+              ),
+            );
+          });
         },
       ),
     );

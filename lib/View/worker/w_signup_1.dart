@@ -276,7 +276,7 @@ class NextButton extends StatelessWidget {
           onPressed: () async {
             if (_formKey.currentState.validate()) {
               if (bucket.imagePath != null) {
-                bucket.name = _FirstName.text;
+                bucket.fname = _FirstName.text;
                 bucket.cnic = _Cnic.text;
                 bucket.ph = _Ph.text;
                 bucket.email = _Email.text;
