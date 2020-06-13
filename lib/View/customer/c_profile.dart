@@ -7,7 +7,6 @@ import 'c_mobile.dart';
 import 'c_update_email.dart';
 import 'c_update_name.dart';
 
-
 CustomerDataFromFireStore customerDataFromFireStore =
 new CustomerDataFromFireStore();
 
@@ -27,8 +26,6 @@ class ProfileState extends State<Profile> {
   String address;
   String gender;
   String password;
-
-
   @override
   void initState() {
     initSp();
@@ -44,6 +41,7 @@ class ProfileState extends State<Profile> {
   }
 
   getUserInfo() async {
+    uid=sp.getString('userId');
     name = sp.getString('cName');
     email = sp.getString('email');
     gender = sp.getString('gender');

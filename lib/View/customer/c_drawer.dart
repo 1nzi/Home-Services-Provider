@@ -1,4 +1,4 @@
-import 'file:///C:/Users/Saad/fyp/lib/Model/CustomerModel/customerProfileModel.dart';
+import 'package:home_well/Model/CustomerModel/customerProfileModel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -42,9 +42,9 @@ class _MyDrawerPageState extends State<CustomerDrawerOnly> {
     });
   }
   getUserInfo() async {
-    uid = sp.getString('userId');
-    name = sp.getString('cName');
-    image = sp.getString('image');
+     uid = sp.getString('userId');
+     name = sp.getString('cName');
+     image = sp.getString('image');
   }
 
   @override
@@ -64,7 +64,7 @@ class _MyDrawerPageState extends State<CustomerDrawerOnly> {
                         fit: BoxFit.cover,
                         image:  NetworkImage(
                             image??
-                                "https://previews.123rf.com/images/tuktukdesign/tuktukdesign1606/tuktukdesign160600105/59070189-user-icon-man-profile-businessman-avatar-person-icon-in-vector-illustration.jpg"),
+                            "https://previews.123rf.com/images/tuktukdesign/tuktukdesign1606/tuktukdesign160600105/59070189-user-icon-man-profile-businessman-avatar-person-icon-in-vector-illustration.jpg"),
                       ),
                     ),
                   ),
@@ -86,19 +86,19 @@ class _MyDrawerPageState extends State<CustomerDrawerOnly> {
                     new MaterialPageRoute(builder: (context) => new Profile()));
               },
             ),
-            //      new ListTile(
-            //          leading: Icon(Icons.account_balance_wallet,
-            //      color: Colors.lightGreen, size: 24),
-            //      title: new Text(
-            //          "My Wallet",
-            //        ),
-            //        onTap: () {
-            //          Navigator.pop(context);
-            //          Navigator.push(
-            //              context,
-            //             new MaterialPageRoute(
-            //                builder: (context) => new CustomerLogin()));
-            //        },),
+    //      new ListTile(
+    //          leading: Icon(Icons.account_balance_wallet,
+    //      color: Colors.lightGreen, size: 24),
+    //      title: new Text(
+    //          "My Wallet",
+    //        ),
+    //        onTap: () {
+    //          Navigator.pop(context);
+    //          Navigator.push(
+    //              context,
+    //             new MaterialPageRoute(
+    //                builder: (context) => new CustomerLogin()));
+    //        },),
 
             new ListTile(
               leading: Icon(Icons.assignment, color: Colors.lightGreen, size: 24),
@@ -163,7 +163,7 @@ class _MyDrawerPageState extends State<CustomerDrawerOnly> {
                 _signOut();
                 Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => CustomerLogin()));
 
-              },
+                },
             ),
           ],
         ));
@@ -198,7 +198,7 @@ class LeadingIcon extends StatelessWidget {
     );
   }
 }
-_signOut()  async{
+ _signOut()  async{
   await FirebaseAuth.instance.signOut();
 
 }

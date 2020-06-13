@@ -73,9 +73,15 @@ class CustomerDataFromFireStore {
   setJobs() async {
     await db.collection('Jobs').getDocuments().then((value) {
       jobs = value;
+      print("Jobs    :$jobs");
     });
     List<String> jobsTitle = new List();
     List<String> jobsImg = new List();
+
+    print("JobsTite  : $jobsTitle");
+    print("Jobs image  : $jobsImg");
+
+
     if (jobs != null) {
       for (int i = 0; i < jobs.documents.length; i++) {
         jobsTitle.add(jobs.documents[i].data['Title']);

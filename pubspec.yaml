@@ -96,6 +96,8 @@ flutter:
     - Images/geyser.jpg
     - Images/plumbing.jpg
     - Images/tank.jpg
+    - Images/wallPainting.jpg
+    - Images/wallWriting.jpg
 
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg

@@ -169,8 +169,13 @@ class CategoryCard extends StatelessWidget {
               trailing: IconButton(
                 icon: Icon(Icons.arrow_forward_ios, color: Colors.lightGreen),
                 onPressed: () {
+
+                  
                   //_customerData.job = category.title;
                   customerDataFromFireStore.save('job', category.title);
+
+
+
 
                   Navigator.push(
                       context,
