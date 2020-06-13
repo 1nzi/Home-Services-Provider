@@ -23,6 +23,7 @@ class _MyDrawerPageState extends State<CustomerDrawerOnly> {
   final CustomerData user;
   _MyDrawerPageState(this.user);
 
+  String uid;
   String name;
   String image;
   SharedPreferences sp;
@@ -41,6 +42,7 @@ class _MyDrawerPageState extends State<CustomerDrawerOnly> {
     });
   }
   getUserInfo() async {
+     uid = sp.getString('userId');
      name = sp.getString('cName');
      image = sp.getString('image');
   }
@@ -108,7 +110,7 @@ class _MyDrawerPageState extends State<CustomerDrawerOnly> {
                 Navigator.push(
                     context,
                     new MaterialPageRoute(
-                        builder: (context) => new CustomerPendingTask(userId: user.userId)));
+                        builder: (context) => new CustomerPendingTask(userId: uid)));
               },
             ),
             new ListTile(
@@ -122,7 +124,7 @@ class _MyDrawerPageState extends State<CustomerDrawerOnly> {
                 Navigator.push(
                     context,
                     new MaterialPageRoute(
-                        builder: (context) => new CustomerHistory(userId: user.userId)));
+                        builder: (context) => new CustomerHistory(userId: uid)));
               },
             ),
             new ListTile(
