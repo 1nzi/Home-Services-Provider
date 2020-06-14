@@ -147,7 +147,7 @@ class _PendingTaskDetailsState extends State<PendingTaskDetails> {
                       borderRadius: new BorderRadius.circular(30.0),
                     ),
                     onPressed: () async {
-                      await _jobRequest.removeFromPending(task.docId, user.uid);
+                      await _jobRequest.removeFromPendingCustomer(task.docId, user.uid);
                       Navigator.pop(context);
 
                     },
@@ -183,7 +183,8 @@ addToHistory(Task task) async{
   _customerData.address = task.address;
 
 
-  await _jobRequest.removeFromPending(task.docId, user.uid);
+
+  await _jobRequest.removeFromPendingCustomer(task.docId, user.uid);
   await _jobRequest.updateCustomerHistory(task.docId, _customerData);
 
 

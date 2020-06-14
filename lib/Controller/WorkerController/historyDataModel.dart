@@ -1,5 +1,6 @@
 
 class WorkerHistoryData {
+  String workerId;
   String ph;
   String city;
   String area;
@@ -14,6 +15,7 @@ class WorkerHistoryData {
   String customerImg;
 
   WorkerHistoryData({
+    this.workerId,
     this.ph,
     this.city,
     this.area,

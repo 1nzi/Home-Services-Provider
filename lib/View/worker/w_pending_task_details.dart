@@ -125,7 +125,9 @@ class PendingTaskDetails extends StatelessWidget {
                     onPressed: () async {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => WorkerHome()));
+
                       await addToHistory(task);
+
                     },
                     child: Text(
                       "Completed",
@@ -140,7 +142,7 @@ class PendingTaskDetails extends StatelessWidget {
                       borderRadius: new BorderRadius.circular(30.0),
                     ),
                     onPressed: () async {
-                      await _jobRequest.removeFromPending(task.docId, user.uid);
+                      await _jobRequest.removeFromPendingWorker(task.docId, user.uid);
                       Navigator.pop(context);
 
                     },
@@ -162,6 +164,9 @@ currentUser()async{
 }
 
 addToHistory(Task task) async{
+
+
+  _workerData.workerId=user.uid;
   _workerData.customerId = task.customerId;
   _workerData.customerName = task.customerName;
   _workerData.ph = task.customerContact;
@@ -175,9 +180,15 @@ addToHistory(Task task) async{
   _workerData.area = task.area;
   _workerData.address = task.address;
 
+  print("taskkkkkkkkkk   ");
+  print(task.docId);
+  print(user.uid);
+  print(task.customerId);
+  print("taskkkkkkkkkk   ");
 
-  await _jobRequest.removeFromPending(task.docId, user.uid);
-  //await _jobRequest.updateCustomerHistory(task.docId, _customerData);
+  print(user.uid);
+  //await _jobRequest.removeFromPendingWorker(task.docId, user.uid);
+  await _jobRequest.updateWorkerHistory(task.docId, _workerData);
 
 
 }

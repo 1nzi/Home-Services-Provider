@@ -1,6 +1,8 @@
 
 import 'package:home_well/Model/WorkerModel/WorkerProfileModel.dart';
+import 'package:home_well/View/common/AboutUs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'w_login.dart';
 import 'package:flutter/cupertino.dart';
@@ -121,7 +123,7 @@ class _MyDrawerPageState extends State<WorkerDrawerOnly> {
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(context,
-                    new MaterialPageRoute(builder: (context) => new WorkerLogin()));
+                    new MaterialPageRoute(builder: (context) => new AboutUs()));
               },
             ),
             new ListTile(
@@ -129,8 +131,9 @@ class _MyDrawerPageState extends State<WorkerDrawerOnly> {
               title: new Text("Logout",
               ),
               onTap: () {
-                Navigator.push(context,
-                    new MaterialPageRoute(builder: (context) => new WorkerLogin()));
+                Navigator.pop(context);
+                _signOut();
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => WorkerLogin()));
               },
             ),
           ],
@@ -170,4 +173,7 @@ class LeadingIcon extends StatelessWidget {
   }
 }
 
+_signOut()  async{
+  await FirebaseAuth.instance.signOut();
 
+}

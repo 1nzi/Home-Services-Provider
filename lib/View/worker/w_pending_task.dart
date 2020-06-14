@@ -5,11 +5,16 @@ import 'package:flutter/widgets.dart';
 import 'package:home_well/View/worker/w_pending_task_details.dart';
 
 class WorkerPendingTask extends StatelessWidget {
+
+
 final String userId;
+
 
    WorkerPendingTask({Key key, this.userId}) : super(key: key);
 
+
   Widget _buildTaskList() {
+
     return Container(
         child: StreamBuilder<QuerySnapshot>(
             stream: Firestore.instance
@@ -18,13 +23,17 @@ final String userId;
                 .collection('JobRequest')
                 .getDocuments()
                 .asStream(),
+            
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Text("Loading...");
               } else {
-                List<Task> pendingTask = new List();
 
-                for (int i = 0; i < snapshot.data.documents.length; i++) {
+                List<Task> pendingTask = new List();
+                print(snapshot.data.documents.length);
+                for(int i = 0; i < snapshot.data.documents.length; i++) {
+
+
                   pendingTask.add(Task(
                     snapshot.data.documents[i].documentID,
                     snapshot.data.documents[i].data['CustomerName'],
@@ -78,6 +87,7 @@ Widget build(BuildContext context) {
 }
 
 class Task {
+
   final String docId;
   final String customerName;
   final String customerId;
@@ -130,7 +140,7 @@ class TaskCard extends StatelessWidget {
             Navigator.push(
                 context,
                 new MaterialPageRoute(
-                    builder: (context) => PendingTaskDetails(task: task)));
+                    builder: (context) => PendingTaskDetails (task: task)));
           },
           child: Container(
             decoration: BoxDecoration(color: Colors.black12),
