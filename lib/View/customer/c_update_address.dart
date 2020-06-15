@@ -1,26 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:home_well/Model/WorkerModel/WorkerProfileModel.dart';
+import 'package:home_well/Model/CustomerModel/customerProfileModel.dart';
 
-import 'w_profile.dart';
+import 'c_profile.dart';
 
-
-WorkerDataFromFireStore  updateDataFromFireStore = new WorkerDataFromFireStore ();
+CustomerDataFromFireStore updateDataFromFireStore = new CustomerDataFromFireStore();
 final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 final TextEditingController _address = new TextEditingController();
 
-class WorkerUpdateAddress extends StatefulWidget {
+
+class UpdateAddress extends StatefulWidget {
   final String uid;
 
-  const WorkerUpdateAddress({Key key, this.uid}) : super(key: key);
+  const UpdateAddress({Key key, this.uid}) : super(key: key);
 
   @override
-  _WorkerUpdateAddressState createState() => _WorkerUpdateAddressState(uid);
+  _UpdateAddressState createState() => _UpdateAddressState(uid);
 }
 
-class _WorkerUpdateAddressState extends State<WorkerUpdateAddress> {
+
+class _UpdateAddressState extends State<UpdateAddress> {
   String uid;
 
-  _WorkerUpdateAddressState(this.uid);
+  _UpdateAddressState(this.uid);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +39,7 @@ class _WorkerUpdateAddressState extends State<WorkerUpdateAddress> {
               icon: Icon(Icons.arrow_back),
               onPressed: () {
                 Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => WProfile()));
+                    MaterialPageRoute(builder: (context) => Profile()));
               }),
         ),
         body: Container(
@@ -58,7 +60,7 @@ class _WorkerUpdateAddressState extends State<WorkerUpdateAddress> {
                   padding: EdgeInsets.only(top: 10),
                 ),
                 Text(
-                  'Your name makes it easy for Company to Approach you',
+                  'Your Address makes it easy for Workers to Approach you.',
                   style: TextStyle(
                     fontSize: 12,
                     decoration: TextDecoration.none,
@@ -96,17 +98,18 @@ class _WorkerUpdateAddressState extends State<WorkerUpdateAddress> {
                           fontSize: 20,
                         ),
                       ),
-                      onPressed: () async {
+                      onPressed: ()async {
                         if (_formKey.currentState.validate()) {
                           updateDataFromFireStore.updateData(
-                              uid, 'Area', _address.text);
-                          updateDataFromFireStore.removeValueFromSP('area');
-                          updateDataFromFireStore.save('area', _address.text);
+                              uid, 'Address', _address.text);
+                          updateDataFromFireStore.removeValueFromSP('address');
+                          updateDataFromFireStore.save('address', _address.text);
                           Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (context) => WProfile()));
+                              MaterialPageRoute(builder: (context) => Profile()));
                         }
-                      }, //  padding: EdgeInsets.only(top: 20),
+                      },
+
+                      //  padding: EdgeInsets.only(top: 20),
                     )),
               ],
             ),
