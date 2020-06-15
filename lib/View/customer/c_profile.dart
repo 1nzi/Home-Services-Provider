@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:home_well/Model/CustomerModel/customerProfileModel.dart';
+import 'package:home_well/View/customer/c_update_address.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'c_change_passward.dart';
 import 'c_gender.dart';
@@ -96,14 +97,15 @@ class ProfileState extends State<Profile> {
                 }),
           ),
           ListTile(
-            leading: Icon(Icons.location_on),
+            leading: Icon(Icons.location_on, color: Colors.lightGreen, size:24),
             title: Text('Address'),
             subtitle: Text(address??"address"),
             trailing: IconButton(
-                icon: Icon(Icons.edit),
+                icon: Icon(Icons.edit, color: Colors.lightGreen, size: 24),
+
                 onPressed: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return UpdateName(uid: uid,);
+                    return UpdateAddress(uid: uid,);
                   }));
                 }),
           ),

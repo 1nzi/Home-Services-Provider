@@ -44,6 +44,7 @@ class WProfileState extends State<WProfile> {
   }
 
   getUserInfo() async {
+    uid=   sp.getString("workerId");
     name = sp.getString('wName');
     email = sp.getString('email');
     ph = sp.getString('ph');
@@ -71,7 +72,9 @@ class WProfileState extends State<WProfile> {
               trailing: IconButton(
                   icon: Icon(Icons.edit,color: Colors.lightGreen,),
                   onPressed: () {
+                    print("asdasdasdasdas : $uid");
                     Navigator.of(context).pushReplacement(
+
                         MaterialPageRoute(builder: (context) => WUpdateName(uid: uid)));
                   }),
             ),
@@ -96,7 +99,7 @@ class WProfileState extends State<WProfile> {
                   icon: Icon(Icons.edit,color: Colors.lightGreen,),
                   onPressed: () {
                                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                   return WUpdateName(uid: uid,);
+                                   return WorkerUpdateAddress(uid: uid,);
                                }));
                   }),
             ),
