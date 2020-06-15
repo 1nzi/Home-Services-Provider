@@ -109,7 +109,7 @@ class _RatingBarState extends State<RatingBar> {
                         },
                         child: Text(
                           "Submit",
-                          style: TextStyle(color: Colors.white, fontSize: 20),
+                          style: TextStyle(color: Colors.white, fontSize: 15),
                         ),
                       )),
                   Container(
@@ -128,7 +128,7 @@ class _RatingBarState extends State<RatingBar> {
                         },
                         child: Text(
                           "Skip",
-                          style: TextStyle(color: Colors.white, fontSize: 20),
+                          style: TextStyle(color: Colors.white, fontSize: 15),
                         ),
                       )),
                 ],

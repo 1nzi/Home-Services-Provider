@@ -137,7 +137,7 @@ class ResponseWaitState extends State<ResponseWait>{
                 ),
                 onPressed: () async {
 
-                  await _jobRequest.removeFromPending('job' + sp.getInt('jobCount').toString(), sp.getString('userId'));
+                  await _jobRequest.removeFromPendingCustomer('job' + sp.getInt('jobCount').toString(), sp.getString('userId'));
                   sp.setInt('jobCount', sp.getInt('jobCount')-1);
 
                   //clear data for next worker request

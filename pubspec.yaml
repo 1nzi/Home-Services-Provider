@@ -98,6 +98,10 @@ flutter:
     - Images/tank.jpg
     - Images/wallPainting.jpg
     - Images/wallWriting.jpg
+    - Images/laundary.jpg
+    - Images/generalWashing.jpg
+
+
 
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg

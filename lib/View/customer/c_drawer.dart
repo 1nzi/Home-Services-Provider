@@ -161,6 +161,7 @@ class _MyDrawerPageState extends State<CustomerDrawerOnly> {
                 "Logout",
               ),
               onTap: () {
+
                 _signOut();
                 Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => CustomerLogin()));
 
