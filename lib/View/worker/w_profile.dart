@@ -111,7 +111,7 @@ class WProfileState extends State<WProfile> {
                   icon: Icon(Icons.edit,color: Colors.lightGreen,),
                   onPressed: () {
                               Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(builder: (context) => WUpdateEmail(uid: uid,)));
+                            MaterialPageRoute(builder: (context) => WUpdateEmail(uid: uid, uemail:email,)));
                   }),
             ),
             ListTile(
@@ -121,7 +121,7 @@ class WProfileState extends State<WProfile> {
                   icon: Icon(Icons.edit,color: Colors.lightGreen,),
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) {
-                      return WorkerChangePassword();
+                      return WorkerChangePassword(uid: uid, uPassw: password,);
                     }));
                   }),
             ),

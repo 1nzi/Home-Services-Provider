@@ -100,6 +100,7 @@ class _UpdateNameState extends State<UpdateName> {
                       ),
                       onPressed: ()async {
                         if (_formKey.currentState.validate()) {
+                          print("nameeeeeeeee :$uid");
                           updateDataFromFireStore.updateData(
                               uid, 'Name', _name.text);
                           updateDataFromFireStore.removeValueFromSP('cName');

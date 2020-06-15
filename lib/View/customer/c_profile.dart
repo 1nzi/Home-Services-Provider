@@ -120,7 +120,7 @@ class ProfileState extends State<Profile> {
                 icon: Icon(Icons.edit, color: Colors.lightGreen, size: 24),
                 onPressed: () {
                   Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (context) => UpdateEmail(uid: uid,)));
+                      MaterialPageRoute(builder: (context) => CUpdateEmail(uid: uid, uemail:email,)));
                 }),
           ),
           ListTile(

@@ -1,82 +1,107 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:home_well/Model/CustomerModel/customerProfileModel.dart';
 
 import 'c_profile.dart';
 
-
 CustomerDataFromFireStore updateDataFromFireStore =
 new CustomerDataFromFireStore();
+final TextEditingController _email = new TextEditingController();
 
-class UpdateEmail extends StatefulWidget {
+
+
+class CUpdateEmail extends StatefulWidget {
   final String uid;
+  final String uemail;
 
-  const UpdateEmail({Key key, this.uid}) : super(key: key);
+
+  const CUpdateEmail({Key key, this.uid, this.uemail}) : super(key: key);
+
   @override
-  _UpdateEmailState createState() => _UpdateEmailState(uid);
+  _CUpdateEmailState createState() => _CUpdateEmailState(uid, uemail);
 }
 
-final TextEditingController _email = new TextEditingController();
-final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-class _UpdateEmailState extends State<UpdateEmail> {
+class _CUpdateEmailState extends State<CUpdateEmail> {
   final String uid;
+  final String uemail;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  bool _obscureText = true;
+  final _formKey = GlobalKey<FormState>();
+  bool checkCurrentPasswordValid=true;
 
-  _UpdateEmailState(this.uid);
+
+  _CUpdateEmailState(this.uid, this.uemail);
+  var _currpassw = TextEditingController();
+
+
+  void dispose() {
+    _currpassw.dispose();
+    super.dispose();
+  }
+
+  void _toggle() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text(
-            'Update Email',
+            'Change Your Email',
             style: new TextStyle(
                 fontSize: 20.0,
                 color: Colors.black,
                 fontWeight: FontWeight.bold),
           ),
           backgroundColor: Colors.lightGreen,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
+          leading: new InkWell(
+            borderRadius: BorderRadius.circular(30.0),
+            child: new Icon(
+              Icons.arrow_back,
+              color: Colors.black54,
+            ),
+            onTap: () {
               Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (context) => Profile()));
             },
           ),
+          centerTitle: true,
         ),
-        body: Container(
-          padding: EdgeInsets.all(20),
-          child: Form(
-            key: _formKey,
+        body: Form(
+          key: _formKey,
+          child: Container(
+            padding: EdgeInsets.all(15),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Text('Update your email',
-                    style: TextStyle(
-                      fontSize: 25,
-                      color: Colors.black,
-                      decoration: TextDecoration.none,
-                    )),
-                Padding(
-                  padding: EdgeInsets.only(top: 10),
-                ),
-                Text(
-                  'Receive info about new updates and awesome promos in your inbox',
-                  style: TextStyle(
-                    fontSize: 12,
-                    decoration: TextDecoration.none,
-                    color: Colors.grey,
+                TextFormField(
+                  validator:( value){
+                    if(value.length<6)
+                    {
+                      return  "Incorrect Password";
+                    }
+                    return null;
+                  } ,
+                  decoration: InputDecoration(
+
+                    labelText: "Password",
+                    errorText: checkCurrentPasswordValid
+                        ? null
+                        : "Please double check your current password",
                   ),
+                  controller: _currpassw,
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: 20),
+                  padding: EdgeInsets.only(top: 5),
                 ),
                 TextFormField(
                   controller: _email,
-                  decoration: InputDecoration(
-                    hintText: 'Enter your new email address',
-                    hintStyle: TextStyle(),
-                  ),
+                  obscureText: _obscureText,
                   validator: (value) {
                     if (!value.contains('@')) {
                       return 'Please enter valid Email';
@@ -86,13 +111,39 @@ class _UpdateEmailState extends State<UpdateEmail> {
                     }
                     return null;
                   },
+                  decoration: InputDecoration(
+                    labelText: 'New Email',
+                    suffixIcon: IconButton(
+                        icon: Icon(Icons.remove_red_eye), onPressed: _toggle),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 5),
+                ),
+                TextFormField(
+                  obscureText: _obscureText,
+                  validator: (value) {
+                    if (value != _email.text) {
+                      return 'Email not match';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    labelText: 'Confirm Email',
+                    suffixIcon: IconButton(
+                        icon: Icon(Icons.remove_red_eye), onPressed: _toggle),
+                  ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 20),
                 ),
+
+                Padding(
+                  padding: EdgeInsets.only(top: 20),
+                ),
                 Container(
-                    width: 330,
-                    child: RaisedButton(
+                  width: 330,
+                  child: RaisedButton(
                       shape: RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(18.0),
                           side: BorderSide(color: Colors.lightGreen)),
@@ -103,21 +154,64 @@ class _UpdateEmailState extends State<UpdateEmail> {
                           fontSize: 20,
                         ),
                       ),
-                      onPressed: () {
-                        if (_formKey.currentState.validate()) {
+                      onPressed: () async {
+                        checkCurrentPasswordValid= await validateCurrentPassword(_currpassw.text);
+                        print("iddddddddddddddd: $uid");
+                        print(checkCurrentPasswordValid);
+
+
+                        setState(() {});
+                        if (_formKey.currentState.validate() &&
+                            checkCurrentPasswordValid) {
+                           print("iddddddddddddddd: $uid");
+                          updateUserEmail(_email.text);
                           updateDataFromFireStore.updateData(
                               uid, 'Email', _email.text);
                           updateDataFromFireStore.removeValueFromSP('email');
-                          updateDataFromFireStore.save('email', _email.text);
-                          Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(builder: (context) => Profile()));
+                          updateDataFromFireStore.save('email', _email);
 
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => Profile()));
                         }
-                      }, //  padding: EdgeInsets.only(top: 20),
-                    )),
+                      }),
+
+                  //  padding: EdgeInsets.only(top: 20),
+                ),
               ],
             ),
           ),
         ));
+  }
+
+
+
+  Future<bool> validateCurrentPassword(String passwd)async{
+
+    return await validatePassword(passwd);
+
+  }
+
+
+  Future<bool> validatePassword(String password)async {
+    var  firebaseUser = await _auth.currentUser();
+    var authCredentials=EmailAuthProvider.getCredential(email: firebaseUser.email, password:password );
+    try {
+      var authResult = await firebaseUser
+          .reauthenticateWithCredential(authCredentials);
+      return authResult.user != null;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  void updateUserEmail(String nEmail){
+    updateEmail(nEmail);
+
+  }
+  Future<void> updateEmail(String email) async {
+    var firebaseUser = await _auth.currentUser();
+    firebaseUser.updateEmail(email);
   }
 }

@@ -1,7 +1,6 @@
 
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
-import 'file:///C:/Users/Saad/fyp/lib/View/worker/notifications.dart';
 
 import 'View/common/splashScreen.dart';
 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'package:home_well/View/customer/c_select_subCategory.dart';
 import'c_home.dart';
 
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../main.dart';
 import 'w_profile.dart';
 import 'package:home_well/Model/WorkerModel/WorkerProfileModel.dart';
 WorkerDataFromFireStore updateDataFromFireStore = new WorkerDataFromFireStore ();

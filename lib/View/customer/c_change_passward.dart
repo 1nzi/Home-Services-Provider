@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:home_well/Model/CustomerModel/customerProfileModel.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'c_profile.dart';
 
@@ -7,9 +8,12 @@ CustomerDataFromFireStore updateDataFromFireStore =
     new CustomerDataFromFireStore();
 final TextEditingController _passw = new TextEditingController();
 
+
+
 class ChangePassword extends StatefulWidget {
   final String uid;
   final String uPassw;
+
 
   const ChangePassword({Key key, this.uid, this.uPassw}) : super(key: key);
 
@@ -20,11 +24,19 @@ class ChangePassword extends StatefulWidget {
 class _ChangePasswordState extends State<ChangePassword> {
   final String uid;
   final String uPassw;
-
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   bool _obscureText = true;
   final _formKey = GlobalKey<FormState>();
+  bool checkCurrentPasswordValid=true;
 
   _ChangePasswordState(this.uid, this.uPassw);
+  var _currpassw = TextEditingController();
+
+
+  void dispose() {
+    _currpassw.dispose();
+    super.dispose();
+  }
 
   void _toggle() {
     setState(() {
@@ -67,21 +79,21 @@ class _ChangePasswordState extends State<ChangePassword> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 TextFormField(
-                  obscureText: _obscureText,
-                  validator: (value) {
-                    if (value.length < 6) {
-                      return 'Current Password is Incorrect';
-                    }
-                    if (value != uPassw) {
-                      return 'Current Password is Incorrect';
+                  validator:( value){
+                    if(value.length<6)
+                    {
+                      return  "Incorrect Password";
                     }
                     return null;
-                  },
+                  } ,
+
                   decoration: InputDecoration(
-                    labelText: 'Current password',
-                    suffixIcon: IconButton(
-                        icon: Icon(Icons.remove_red_eye), onPressed: _toggle),
+                    labelText: "Password",
+                    errorText: checkCurrentPasswordValid
+                        ? null
+                        : "Please double check your current password",
                   ),
+                  controller: _currpassw,
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 5),
@@ -151,8 +163,16 @@ class _ChangePasswordState extends State<ChangePassword> {
                           fontSize: 20,
                         ),
                       ),
-                      onPressed: () {
-                        if (_formKey.currentState.validate()) {
+                      onPressed: () async {
+                        checkCurrentPasswordValid= await validateCurrentPassword(_currpassw.text);
+
+                        setState(() {});
+                        if (_formKey.currentState.validate() &&
+                            checkCurrentPasswordValid) {
+
+                          print(checkCurrentPasswordValid);
+                          print("idddddddddddddddd:$uid");
+                          updateUserPassword(_passw.text);
                           updateDataFromFireStore.updateData(
                               uid, 'Password', _passw.text);
                           updateDataFromFireStore.removeValueFromSP('password');
@@ -161,7 +181,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
                                   builder: (context) => Profile()));
-                        }
+                       }
                       }),
 
                   //  padding: EdgeInsets.only(top: 20),
@@ -170,5 +190,35 @@ class _ChangePasswordState extends State<ChangePassword> {
             ),
           ),
         ));
+  }
+
+
+
+  Future<bool> validateCurrentPassword(String passwd)async{
+
+    return await validatePassword(passwd);
+
+  }
+
+
+  Future<bool> validatePassword(String password)async {
+      var  firebaseUser = await _auth.currentUser();
+      var authCredentials=EmailAuthProvider.getCredential(email: firebaseUser.email, password:password );
+      try {
+        var authResult = await firebaseUser
+            .reauthenticateWithCredential(authCredentials);
+        return authResult.user != null;
+      } catch (e) {
+        print(e);
+        return false;
+      }
+  }
+void updateUserPassword(String npass){
+  updatePassword(npass);
+
+}
+  Future<void> updatePassword(String password) async {
+    var firebaseUser = await _auth.currentUser();
+    firebaseUser.updatePassword(password);
   }
 }
