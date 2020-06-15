@@ -1,13 +1,19 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
+import 'package:home_well/Controller/WorkerController/historyDataModel.dart';
 import 'package:home_well/Model/CustomerModel/AddJobRequest.dart';
+import 'package:home_well/Model/WorkerModel/WorkerProfileModel.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'c_pending_task.dart';
 import 'c_rating_bar.dart';
 
 AddJobRequest _jobRequest = new AddJobRequest();
 CustomerData _customerData = new CustomerData();
+WorkerHistoryData _workerData = new WorkerHistoryData();
+WorkerDataFromFireStore _dataFromFireStore = WorkerDataFromFireStore();
+SharedPreferences sp;
 
 class PendingTaskDetails extends StatefulWidget {
   final Task task;
@@ -132,8 +138,8 @@ class _PendingTaskDetailsState extends State<PendingTaskDetails> {
                     onPressed: () async {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => RatingBar(task: task)));
-                      await addToHistory(task);
-                    },
+                      await addToWorkerHistory(task);
+                      await addToCustomerHistory(task);                    },
                     child: Text(
                       "Completed",
                       style: TextStyle(color: Colors.white, fontSize: 16),
@@ -148,6 +154,7 @@ class _PendingTaskDetailsState extends State<PendingTaskDetails> {
                     ),
                     onPressed: () async {
                       await _jobRequest.removeFromPendingCustomer(task.docId, user.uid);
+                      await _jobRequest.removeFromPendingWorker(task.docId, task.workerId);
                       Navigator.pop(context);
 
                     },
@@ -168,7 +175,7 @@ currentUser()async{
   user = await _auth.currentUser();
 }
 
-addToHistory(Task task) async{
+addToCustomerHistory(Task task) async{
   _customerData.userId = user.uid;
   _customerData.workerName = task.workerName;
   _customerData.workerContact = task.workerContact;
@@ -187,5 +194,31 @@ addToHistory(Task task) async{
   await _jobRequest.removeFromPendingCustomer(task.docId, user.uid);
   await _jobRequest.updateCustomerHistory(task.docId, _customerData);
 
+
+}
+
+addToWorkerHistory(Task task) async{
+
+  currentUser();
+  _dataFromFireStore.getSharedPreferences().then((value) {
+    sp = value;
+  });
+  _workerData.workerId=task.workerId;
+  _workerData.customerId = user.uid;
+  _workerData.customerName = sp.getString('cName');
+  _workerData.ph = sp.getString('ph');
+  _workerData.customerImg = sp.getString('image');
+  _workerData.job = task.job;
+  _workerData.subJob = task.subJob;
+  _workerData.subJobFields = task.subJobFields;
+  _workerData.date = task.date;
+  _workerData.time = task.time;
+  _workerData.city = task.city;
+  _workerData.area = task.area;
+  _workerData.address = task.address;
+
+
+  await _jobRequest.removeFromPendingWorker(task.docId, task.workerId);
+  await _jobRequest.updateWorkerHistory(task.docId, _workerData);
 
 }

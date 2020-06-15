@@ -97,7 +97,7 @@ class Task {
   final String jobStatus;
   final String subJob;
   final List<String> subJobFields;
-  final String workerImage;
+  final String customerImage;
   final String city;
   final String area;
   final String address;
@@ -113,7 +113,7 @@ class Task {
       this.jobStatus,
       this.subJob,
       this.subJobFields,
-      this.workerImage,
+      this.customerImage,
       this.city,
       this.area,
       this.address,
@@ -155,7 +155,7 @@ class TaskCard extends StatelessWidget {
                         shape: BoxShape.circle,
                         image: new DecorationImage(
                             fit: BoxFit.fill,
-                            image: NetworkImage(task.workerImage??
+                            image: NetworkImage(task.customerImage??
                                 "https://previews.123rf.com/images/tuktukdesign/tuktukdesign1606/tuktukdesign160600105/59070189-user-icon-man-profile-businessman-avatar-person-icon-in-vector-illustration.jpg"
                         ))),
                   ),

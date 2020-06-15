@@ -1,19 +1,24 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
 import 'package:home_well/Controller/WorkerController/historyDataModel.dart';
 import 'package:home_well/Model/CustomerModel/AddJobRequest.dart';
+import 'package:home_well/Model/WorkerModel/WorkerProfileModel.dart';
 import 'package:home_well/View/worker/w_home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'w_pending_task.dart';
 
 AddJobRequest _jobRequest = new AddJobRequest();
 WorkerHistoryData _workerData = new WorkerHistoryData();
+CustomerData _customerData = new CustomerData();
+WorkerDataFromFireStore _dataFromFireStore = WorkerDataFromFireStore();
+SharedPreferences sp;
 
 class PendingTaskDetails extends StatelessWidget {
   final Task task;
 
   const PendingTaskDetails({Key key, this.task}) : super(key: key);
-
 
 
   @override
@@ -47,7 +52,7 @@ class PendingTaskDetails extends StatelessWidget {
                       shape: BoxShape.circle,
                       image: new DecorationImage(
                           fit: BoxFit.fill,
-                          image: NetworkImage(task.workerImage)))),
+                          image: NetworkImage(task.customerImage)))),
               Text(
                 task.customerName,
                 style: TextStyle(
@@ -126,7 +131,8 @@ class PendingTaskDetails extends StatelessWidget {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => WorkerHome()));
 
-                      await addToHistory(task);
+                      await addToWorkerHistory(task);
+                      await addToCustomerHistory(task);
 
                     },
                     child: Text(
@@ -143,6 +149,7 @@ class PendingTaskDetails extends StatelessWidget {
                     ),
                     onPressed: () async {
                       await _jobRequest.removeFromPendingWorker(task.docId, user.uid);
+                      await _jobRequest.removeFromPendingCustomer(task.docId, task.customerId);
                       Navigator.pop(context);
 
                     },
@@ -163,14 +170,14 @@ currentUser()async{
   user = await _auth.currentUser();
 }
 
-addToHistory(Task task) async{
+addToWorkerHistory(Task task) async{
 
-
+  currentUser();
   _workerData.workerId=user.uid;
   _workerData.customerId = task.customerId;
   _workerData.customerName = task.customerName;
   _workerData.ph = task.customerContact;
-  _workerData.customerImg = task.workerImage;
+  _workerData.customerImg = task.customerImage;
   _workerData.job = task.job;
   _workerData.subJob = task.subJob;
   _workerData.subJobFields = task.subJobFields;
@@ -180,15 +187,30 @@ addToHistory(Task task) async{
   _workerData.area = task.area;
   _workerData.address = task.address;
 
-  print("taskkkkkkkkkk   ");
-  print(task.docId);
-  print(user.uid);
-  print(task.customerId);
-  print("taskkkkkkkkkk   ");
 
-  print(user.uid);
-  //await _jobRequest.removeFromPendingWorker(task.docId, user.uid);
+  await _jobRequest.removeFromPendingWorker(task.docId, user.uid);
   await _jobRequest.updateWorkerHistory(task.docId, _workerData);
 
+}
+
+addToCustomerHistory(Task task) async {
+  _dataFromFireStore.getSharedPreferences().then((value) {
+    sp = value;
+  });
+  _customerData.userId = task.customerId;
+  _customerData.workerName = sp.getString('wName');
+  _customerData.workerContact = sp.getString('ph');
+  _customerData.workerImg = task.customerImage;
+  _customerData.job = task.job;
+  _customerData.subJob = task.subJob;
+  _customerData.subJobFields = task.subJobFields;
+  _customerData.date = task.date;
+  _customerData.time = task.time;
+  _customerData.city = task.city;
+  _customerData.area = task.area;
+  _customerData.address = task.address;
+
+  await _jobRequest.removeFromPendingCustomer(task.docId, task.customerId);
+  await _jobRequest.updateCustomerHistory(task.docId, _customerData);
 
 }
