@@ -149,6 +149,7 @@ class _MyDrawerPageState extends State<CustomerDrawerOnly> {
               ),
               onTap: () {
                 Navigator.pop(context);
+
                 Navigator.push(
                     context,
                     new MaterialPageRoute(
