@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:home_well/Model/WorkerModel/WorkerProfileModel.dart';
+import 'package:home_well/View/worker/notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'w_drawer.dart';
@@ -63,7 +64,7 @@ class _MyHomePageState extends State<WorkerHome> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => MyNotificationScreen()));
+                        builder: (context) => FirebaseNotifications()));
               }),
         ],
         centerTitle: true,

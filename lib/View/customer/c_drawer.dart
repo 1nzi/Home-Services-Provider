@@ -163,6 +163,7 @@ class _MyDrawerPageState extends State<CustomerDrawerOnly> {
               onTap: () {
 
                 _signOut();
+                sp.remove('userId');
                 Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => CustomerLogin()));
 
                 },

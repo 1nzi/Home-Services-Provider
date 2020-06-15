@@ -10,6 +10,7 @@ class FirebaseNotifications extends StatefulWidget{
   }
 
 List<Message> _message;
+
 class FirebaseNotificationState extends State<FirebaseNotifications> {
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();

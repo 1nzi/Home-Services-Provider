@@ -133,6 +133,7 @@ class _MyDrawerPageState extends State<WorkerDrawerOnly> {
               onTap: () {
                 Navigator.pop(context);
                 _signOut();
+                sp.remove('workerId');
                 Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => WorkerLogin()));
               },
             ),

@@ -129,9 +129,9 @@ class LocationSelection extends State<CustomerLocationSelection> {
                             ),
                             style:
                                 TextStyle(color: Colors.black, fontSize: 18.0),
-                            isExpanded: true,
+                            isExpanded: false,
                             value: _city,
-                            items: city,
+                            //items: city,
                             onChanged: (String newValue) {
                               setState(() {
                                 _city = newValue;
