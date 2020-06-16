@@ -90,6 +90,7 @@ class _WorkerChangePasswordState extends State<WorkerChangePassword> {
                       }
                     return null;
                   } ,
+                  obscureText: _obscureText,
                   decoration: InputDecoration(
 
                     labelText: "Password",

@@ -87,8 +87,8 @@ class _CUpdateEmailState extends State<CUpdateEmail> {
                     }
                     return null;
                   } ,
+                  obscureText: _obscureText,
                   decoration: InputDecoration(
-
                     labelText: "Password",
                     errorText: checkCurrentPasswordValid
                         ? null
@@ -101,7 +101,7 @@ class _CUpdateEmailState extends State<CUpdateEmail> {
                 ),
                 TextFormField(
                   controller: _email,
-                  obscureText: _obscureText,
+
                   validator: (value) {
                     if (!value.contains('@')) {
                       return 'Please enter valid Email';
@@ -113,15 +113,13 @@ class _CUpdateEmailState extends State<CUpdateEmail> {
                   },
                   decoration: InputDecoration(
                     labelText: 'New Email',
-                    suffixIcon: IconButton(
-                        icon: Icon(Icons.remove_red_eye), onPressed: _toggle),
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 5),
                 ),
                 TextFormField(
-                  obscureText: _obscureText,
+
                   validator: (value) {
                     if (value != _email.text) {
                       return 'Email not match';
@@ -130,8 +128,6 @@ class _CUpdateEmailState extends State<CUpdateEmail> {
                   },
                   decoration: InputDecoration(
                     labelText: 'Confirm Email',
-                    suffixIcon: IconButton(
-                        icon: Icon(Icons.remove_red_eye), onPressed: _toggle),
                   ),
                 ),
                 Padding(

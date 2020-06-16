@@ -86,7 +86,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     }
                     return null;
                   } ,
-
+                  obscureText: _obscureText,
                   decoration: InputDecoration(
                     labelText: "Password",
                     errorText: checkCurrentPasswordValid
@@ -171,7 +171,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                             checkCurrentPasswordValid) {
 
                           print(checkCurrentPasswordValid);
-                          print("idddddddddddddddd:$uid");
+                          ;
                           updateUserPassword(_passw.text);
                           updateDataFromFireStore.updateData(
                               uid, 'Password', _passw.text);
