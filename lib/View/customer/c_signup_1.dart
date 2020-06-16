@@ -27,7 +27,8 @@ class _MySignupPageState extends State<CustomerSignup1> {
   File _image ;
   String profilePath;
   static const List<String> gender = const ['Male', 'Female'];
-  String Gender = gender[0];
+
+  String gender1 = gender[0];
 
   @override
   void initState() {
@@ -200,24 +201,24 @@ class _MySignupPageState extends State<CustomerSignup1> {
                     ),
                     child: DropdownButton<String>(
                       hint: Text(' Select Gender'),
-                      value: Gender,
+                      value: gender1,
                       icon: Icon(Icons.person,
                           color: Colors.lightGreen, size: 24),
                       isExpanded: true,
                       style: TextStyle(color: Colors.black, fontSize: 18.0),
                       onChanged: (String newValue) {
                         setState(() {
-                          Gender = newValue;
+
                           bundle.gender = newValue;
                         });
                       },
-                      items: gender.map((string) {
-                        return new DropdownMenuItem(
+                      items: gender.map<DropdownMenuItem<String>>((String value1) {
+                        return DropdownMenuItem<String>(
                           child: new Text(
-                            string,
+                            value1,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          value: string,
+                          value: value1,
                         );
                       }).toList(),
                     )),

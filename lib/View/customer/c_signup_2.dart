@@ -27,10 +27,10 @@ final FocusNode _confirmpasswordFocus = FocusNode();
 final FocusNode _SignupButtonFocus = FocusNode();
 final _formKey = GlobalKey<FormState>();
 
-// ignore: non_constant_identifier_names
+
 String City = 'Lahore';
 
-// ignore: non_constant_identifier_names
+
 String Area ;
 
 class _MySignupPageState extends State<CustomerSignup2> {
@@ -55,7 +55,8 @@ class _MySignupPageState extends State<CustomerSignup2> {
               fontSize: 20.0, color: Colors.black, fontWeight: FontWeight.bold),
         ),
       ),
-      body: Form(
+      body: SizedBox(
+      child:Form(
         key: _formKey,
         child: SingleChildScrollView(
           child: Column(
@@ -249,6 +250,7 @@ class _MySignupPageState extends State<CustomerSignup2> {
             ],
           ),
         ),
+      ),
       ),
     );
   }
