@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:home_well/Controller/CustomerController/rigesterCustomerCtrl.dart';
 import 'dart:io';
+
 import 'package:image_picker/image_picker.dart';
 import 'c_signup_2.dart';
 import 'package:path/path.dart';
