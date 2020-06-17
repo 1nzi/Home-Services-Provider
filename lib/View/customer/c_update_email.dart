@@ -152,14 +152,9 @@ class _CUpdateEmailState extends State<CUpdateEmail> {
                       ),
                       onPressed: () async {
                         checkCurrentPasswordValid= await validateCurrentPassword(_currpassw.text);
-                        print("iddddddddddddddd: $uid");
-                        print(checkCurrentPasswordValid);
-
-
                         setState(() {});
                         if (_formKey.currentState.validate() &&
                             checkCurrentPasswordValid) {
-                           print("iddddddddddddddd: $uid");
                           updateUserEmail(_email.text);
                           updateDataFromFireStore.updateData(
                               uid, 'Email', _email.text);

@@ -1,36 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:home_well/Model/WorkerModel/WorkerProfileModel.dart';
+import 'package:home_well/Model/AdminModel/adminProfileModel.dart';
 
-import 'w_profile.dart';
+import 'a_profile.dart';
 
-WorkerDataFromFireStore updateDataFromFireStore =
-new WorkerDataFromFireStore();
-final TextEditingController _passw = new TextEditingController();
+AdminDataFromFireStore updateDataFromFireStore =
+new AdminDataFromFireStore();
+final TextEditingController _email = new TextEditingController();
 
 
 
-class WorkerChangePassword extends StatefulWidget {
+class AUpdateEmail extends StatefulWidget {
   final String uid;
-  final String uPassw;
+  final String uemail;
 
 
-  const WorkerChangePassword({Key key, this.uid, this.uPassw}) : super(key: key);
+  const AUpdateEmail({Key key, this.uid, this.uemail}) : super(key: key);
 
   @override
-  _WorkerChangePasswordState createState() => _WorkerChangePasswordState(uid, uPassw);
+  _AUpdateEmailState createState() => _AUpdateEmailState(uid, uemail);
 }
 
-class _WorkerChangePasswordState extends State<WorkerChangePassword> {
+class _AUpdateEmailState extends State<AUpdateEmail> {
   final String uid;
-  final String uPassw;
+  final String uemail;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool _obscureText = true;
   final _formKey = GlobalKey<FormState>();
   bool checkCurrentPasswordValid=true;
 
 
-  _WorkerChangePasswordState(this.uid, this.uPassw);
+  _AUpdateEmailState(this.uid, this.uemail);
   var _currpassw = TextEditingController();
 
 
@@ -51,7 +51,7 @@ class _WorkerChangePasswordState extends State<WorkerChangePassword> {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text(
-            'Change Your Password',
+            'Change Your Email',
             style: new TextStyle(
                 fontSize: 20.0,
                 color: Colors.black,
@@ -66,7 +66,7 @@ class _WorkerChangePasswordState extends State<WorkerChangePassword> {
             ),
             onTap: () {
               Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => WProfile()));
+                  MaterialPageRoute(builder: (context) => Profile()));
             },
           ),
           centerTitle: true,
@@ -81,18 +81,14 @@ class _WorkerChangePasswordState extends State<WorkerChangePassword> {
               children: <Widget>[
                 TextFormField(
                   validator:( value){
-                    if (value.isEmpty) {
-                      return 'Please enter some text';
-                    }
                     if(value.length<6)
-                      {
-                        return  "Incorrect Password";
-                      }
+                    {
+                      return  "Incorrect Password";
+                    }
                     return null;
                   } ,
                   obscureText: _obscureText,
                   decoration: InputDecoration(
-
                     labelText: "Password",
                     errorText: checkCurrentPasswordValid
                         ? null
@@ -104,60 +100,40 @@ class _WorkerChangePasswordState extends State<WorkerChangePassword> {
                   padding: EdgeInsets.only(top: 5),
                 ),
                 TextFormField(
-                  controller: _passw,
-                  obscureText: _obscureText,
+                  controller: _email,
+
                   validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter some text';
+                    if (!value.contains('@')) {
+                      return 'Please enter valid Email';
                     }
-                    if (value.length < 6) {
-                      return 'Password should have atleast 6 digits';
+                    if (!value.contains('.')) {
+                      return 'Please enter valid Email';
                     }
                     return null;
                   },
                   decoration: InputDecoration(
-                    labelText: 'New password',
-                    suffixIcon: IconButton(
-                        icon: Icon(Icons.remove_red_eye), onPressed: _toggle),
+                    labelText: 'New Email',
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 5),
                 ),
                 TextFormField(
-                  obscureText: _obscureText,
+
                   validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    if (value != _passw.text) {
-                      return 'Password not match';
+                    if (value != _email.text) {
+                      return 'Email not match';
                     }
                     return null;
                   },
                   decoration: InputDecoration(
-                    labelText: 'Confirm password',
-                    suffixIcon: IconButton(
-                        icon: Icon(Icons.remove_red_eye), onPressed: _toggle),
+                    labelText: 'Confirm Email',
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 20),
                 ),
-                Container(
-                  width: 330,
-                  height: 150,
-                  child: Text(
-                    'For security reasons,  your password needs at least 6 characters, consisting of:'
-                        ' upper and lower casse latters'
-                        ' numbers ',
-                    style: TextStyle(
-                      fontSize: 12,
-                      decoration: TextDecoration.none,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ),
+
                 Padding(
                   padding: EdgeInsets.only(top: 20),
                 ),
@@ -177,20 +153,22 @@ class _WorkerChangePasswordState extends State<WorkerChangePassword> {
                       onPressed: () async {
                         checkCurrentPasswordValid= await validateCurrentPassword(_currpassw.text);
 
+
+
                         setState(() {});
                         if (_formKey.currentState.validate() &&
                             checkCurrentPasswordValid) {
 
-                          updateUserPassword(_passw.text);
+                          updateUserEmail(_email.text);
                           updateDataFromFireStore.updateData(
-                              uid, 'Password', _passw.text);
-                          updateDataFromFireStore.removeValueFromSP('password');
-                          updateDataFromFireStore.save('password', _passw);
+                              uid, 'Email', _email.text);
+                          updateDataFromFireStore.removeValueFromSP('email');
+                          updateDataFromFireStore.save('email', _email);
 
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
-                                  builder: (context) => WProfile()));
-                       }
+                                  builder: (context) => Profile()));
+                        }
                       }),
 
                   //  padding: EdgeInsets.only(top: 20),
@@ -222,12 +200,13 @@ class _WorkerChangePasswordState extends State<WorkerChangePassword> {
       return false;
     }
   }
-  void updateUserPassword(String npass){
-    updatePassword(npass);
+
+  void updateUserEmail(String nEmail){
+    updateEmail(nEmail);
 
   }
-  Future<void> updatePassword(String password) async {
+  Future<void> updateEmail(String email) async {
     var firebaseUser = await _auth.currentUser();
-    firebaseUser.updatePassword(password);
+    firebaseUser.updateEmail(email);
   }
 }

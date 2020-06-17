@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:home_well/Model/WorkerModel/WorkerProfileModel.dart';
+import 'package:home_well/Model/AdminModel/adminProfileModel.dart';
 
-import 'w_profile.dart';
+import 'a_profile.dart';
 
-WorkerDataFromFireStore updateDataFromFireStore =
-new WorkerDataFromFireStore();
+AdminDataFromFireStore updateDataFromFireStore =
+new AdminDataFromFireStore();
 final TextEditingController _passw = new TextEditingController();
 
 
 
-class WorkerChangePassword extends StatefulWidget {
+class ChangePassword extends StatefulWidget {
   final String uid;
   final String uPassw;
 
 
-  const WorkerChangePassword({Key key, this.uid, this.uPassw}) : super(key: key);
+  const ChangePassword({Key key, this.uid, this.uPassw}) : super(key: key);
 
   @override
-  _WorkerChangePasswordState createState() => _WorkerChangePasswordState(uid, uPassw);
+  _ChangePasswordState createState() => _ChangePasswordState(uid, uPassw);
 }
 
-class _WorkerChangePasswordState extends State<WorkerChangePassword> {
+class _ChangePasswordState extends State<ChangePassword> {
   final String uid;
   final String uPassw;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -29,8 +29,7 @@ class _WorkerChangePasswordState extends State<WorkerChangePassword> {
   final _formKey = GlobalKey<FormState>();
   bool checkCurrentPasswordValid=true;
 
-
-  _WorkerChangePasswordState(this.uid, this.uPassw);
+  _ChangePasswordState(this.uid, this.uPassw);
   var _currpassw = TextEditingController();
 
 
@@ -66,7 +65,7 @@ class _WorkerChangePasswordState extends State<WorkerChangePassword> {
             ),
             onTap: () {
               Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => WProfile()));
+                  MaterialPageRoute(builder: (context) => Profile()));
             },
           ),
           centerTitle: true,
@@ -81,18 +80,14 @@ class _WorkerChangePasswordState extends State<WorkerChangePassword> {
               children: <Widget>[
                 TextFormField(
                   validator:( value){
-                    if (value.isEmpty) {
-                      return 'Please enter some text';
-                    }
                     if(value.length<6)
-                      {
-                        return  "Incorrect Password";
-                      }
+                    {
+                      return  "Incorrect Password";
+                    }
                     return null;
                   } ,
                   obscureText: _obscureText,
                   decoration: InputDecoration(
-
                     labelText: "Password",
                     errorText: checkCurrentPasswordValid
                         ? null
@@ -107,9 +102,6 @@ class _WorkerChangePasswordState extends State<WorkerChangePassword> {
                   controller: _passw,
                   obscureText: _obscureText,
                   validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter some text';
-                    }
                     if (value.length < 6) {
                       return 'Password should have atleast 6 digits';
                     }
@@ -127,9 +119,6 @@ class _WorkerChangePasswordState extends State<WorkerChangePassword> {
                 TextFormField(
                   obscureText: _obscureText,
                   validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter some text';
-                    }
                     if (value != _passw.text) {
                       return 'Password not match';
                     }
@@ -181,6 +170,8 @@ class _WorkerChangePasswordState extends State<WorkerChangePassword> {
                         if (_formKey.currentState.validate() &&
                             checkCurrentPasswordValid) {
 
+                          print(checkCurrentPasswordValid);
+                          ;
                           updateUserPassword(_passw.text);
                           updateDataFromFireStore.updateData(
                               uid, 'Password', _passw.text);
@@ -189,8 +180,8 @@ class _WorkerChangePasswordState extends State<WorkerChangePassword> {
 
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
-                                  builder: (context) => WProfile()));
-                       }
+                                  builder: (context) => Profile()));
+                        }
                       }),
 
                   //  padding: EdgeInsets.only(top: 20),

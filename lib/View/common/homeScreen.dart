@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:home_well/View/Admin/a_login.dart';
 
 import '../customer/c_login.dart';
 import '../worker/w_login.dart';
@@ -43,6 +44,26 @@ class _HomeScreenState extends State<HomeScreenPage> {
                     height: 20,
                   ),
                   Image.asset('Images/home.jpg'),
+
+                  Container(
+                      width: media.width*0.60,
+                      child:RaisedButton(
+                        color: Colors.lightGreen,
+                        shape: new RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(30.0),),
+
+                        onPressed: () {
+                          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => AdminLogin()));
+                        },
+                        child: Text(
+                          "Login As Admin",
+                          style: TextStyle(color: Colors.black, fontSize: 20),
+                        ),
+                      )
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(10.0),
+                  ),
 
                   Container(
                       width: media.width*0.60,

@@ -1,0 +1,121 @@
+import 'package:flutter/material.dart';
+import 'package:home_well/Model/AdminModel/adminProfileModel.dart';
+
+import 'a_profile.dart';
+AdminDataFromFireStore updateDataFromFireStore = new AdminDataFromFireStore ();
+
+final TextEditingController _ph = new TextEditingController();
+final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+class AMobile extends StatefulWidget {
+  final String uid;
+  const AMobile({Key key, this.uid}) : super(key: key);
+
+  @override
+  _AMobileState createState() => _AMobileState(uid);
+}
+
+class _AMobileState extends State<AMobile> {
+  final String uid;
+
+  _AMobileState(this.uid);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Update Number',
+            style: new TextStyle(
+                fontSize: 20.0,
+                color: Colors.black,
+                fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: Colors.lightGreen,
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => Profile()));
+              }),
+        ),
+        body: Container(
+          padding: EdgeInsets.all(20),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text('Update your mobile number',
+                    style: TextStyle(
+                      fontSize: 25,
+                      color: Colors.black,
+                      decoration: TextDecoration.none,
+                      // fontFamily: 'Raleway',
+                    )),
+                Padding(
+                  padding: EdgeInsets.only(top: 10),
+                ),
+                Text(
+                  'We will send a code to your new mobile numebr to verify your account',
+                  style: TextStyle(
+                    fontSize: 12,
+                    decoration: TextDecoration.none,
+                    color: Colors.grey,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 20),
+                ),
+                TextFormField(
+                  controller: _ph,
+                  keyboardType: TextInputType.number,
+                  maxLength: 11,
+                  decoration: InputDecoration(
+                    hintText: '0301 2345678',
+                  ),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter valid Phone';
+                    }
+                    if (value.length < 11) {
+                      return 'Please enter valid Phone';
+                    }
+                    return null;
+                  },
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 20),
+                ),
+                Container(
+                    width: 330,
+                    child: RaisedButton(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(18.0),
+                          side: BorderSide(color: Colors.lightGreen)),
+                      color: Colors.lightGreen,
+                      child: Text(
+                        'Update',
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
+                      onPressed: () {
+                        if (_formKey.currentState.validate()) {
+                          updateDataFromFireStore.updateData(
+                              uid, 'Phone', _ph.text);
+                          updateDataFromFireStore.removeValueFromSP('ph');
+                          updateDataFromFireStore.save('ph', _ph.text);
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(builder: (context) => Profile()));
+                        }
+                      },
+                      //  padding: EdgeInsets.only(top: 20),
+                    )),
+              ],
+            ),
+          ),
+        ));
+  }
+}
