@@ -58,17 +58,26 @@ class ResponseWaitState extends State<ResponseWait>{
           centerTitle: true,
           backgroundColor: Colors.lightGreen,
         ),
-        bottomNavigationBar: new BottomNavigationBar(items: [
-          new BottomNavigationBarItem(
-            icon: new Icon(Icons.home,
-            size: 30,),
-            title: new Text("Home",
-            style: TextStyle(
-              fontSize: 20
-            ),),
+        bottomNavigationBar: Container(
+          height: 40,
+          color: Colors.white,
+          child: InkWell(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center ,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                IconButton(
+
+                    icon: Icon(Icons.home, color: Colors.lightGreen,size: 25.0
+                    ),
+                    onPressed: () {
+                      backToHome();
+                    }),
+//
+              ],
+            ),
+
           ),
-        ],
-         onTap: _onItemTapped,
         ),
         body: Container(
           child: Column(
@@ -170,10 +179,10 @@ backToHome(){
   });
 }
 
-  void _onItemTapped(int index) {
-    setState(() {
-    });
-  backToHome();
-  }
+//  void _onItemTapped(int index) {
+//    setState(() {
+//    });
+//  backToHome();
+//  }
 }
 
