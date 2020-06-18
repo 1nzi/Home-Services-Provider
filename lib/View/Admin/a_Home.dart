@@ -8,6 +8,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'a_drawer.dart';
 
 class AdminHome extends StatefulWidget {
+  final String adminId;
+
+  const AdminHome({Key key, this.adminId}) : super(key: key);
   _MyHomePageState createState() => _MyHomePageState();
 }
 AdminDataFromFireStore _dataFromFireStore = AdminDataFromFireStore();
@@ -17,8 +20,8 @@ class _MyHomePageState extends State<AdminHome> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
   void initState() {
+    _dataFromFireStore.getAdminData(widget.adminId);
     initSp();
-    _dataFromFireStore.initUser();
     super.initState();
   }
 

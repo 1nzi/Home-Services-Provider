@@ -3,19 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:home_well/Controller/AdminController/RegisterAdminCtrl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-QuerySnapshot jobs;
 
 AdminData userData = new AdminData();
 
 class AdminDataFromFireStore {
   final db = Firestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  FirebaseUser user;
 
-  initUser() async {
-    user = await _auth.currentUser();
-    getCustomerData(user);
-  }
 
 
   updateData(String uid, String title, String newVal) async {
@@ -23,17 +16,13 @@ class AdminDataFromFireStore {
 
   }
 
-  updateJobCount(String uid, String title, int newVal) async {
-    await db.collection('Admin').document(uid).updateData({title: newVal});
-  }
 
-  getCustomerData(FirebaseUser user) async {
-    var userQuery = db.collection('Admin').document(user.uid);
-    userQuery.get().then((data) {
-      userData.userId = user.uid;
-      save('userId', user.uid);
+  getAdminData(String uid) async {
+    db.collection('Admin').document(uid).get().then((data) {
+      userData.userId = uid;
+      save('adminId', uid);
       userData.fname = data['Name'];
-      save('cName', data['Name']);
+      save('Name', data['Name']);
       userData.email = data['Email'];
       save('email', data['Email']);
       userData.ph = data['Phone'];
@@ -53,11 +42,7 @@ class AdminDataFromFireStore {
     });
   }
 
-  getList(String key) async {
-    final SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
-    List<String> spList = sharedPrefs.getStringList(key);
-    return spList;
-  }
+
   Future<SharedPreferences> getSharedPreferences() async {
     final SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
     return sharedPrefs;

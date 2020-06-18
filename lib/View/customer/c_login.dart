@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:home_well/Model/CustomerModel/RigesterCustomerModel.dart';
+import 'package:home_well/View/Admin/a_Home.dart';
 
 import 'c_facebook_login.dart';
 import '../common/authentication.dart';
@@ -17,6 +18,7 @@ class CustomerLogin extends StatefulWidget {
   _CustomerLoginState createState() => _CustomerLoginState();
 }
 
+final String admin = 'B8muuBHlKYcEuuwOJpwZP8yyRqc2';
 final TextEditingController _email = new TextEditingController();
 final TextEditingController _password = new TextEditingController();
 final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -143,7 +145,8 @@ class _CustomerLoginState extends State<CustomerLogin> {
                     GmailLoginBuuton(),
                     new FlatButton(
                       onPressed: () {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => CustomerSignup1()));
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) => CustomerSignup1()));
                       },
                       child: Text('Not a member? Sign up now',
                           style: TextStyle(color: Colors.red)),
@@ -178,13 +181,19 @@ class LoginBuuton extends StatelessWidget {
         ),
         onPressed: () async {
           if (_formKey.currentState.validate()) {
-            dynamic result = await _databaseService.signin(_email.text,_password.text);
+            dynamic result =
+                await _databaseService.signin(_email.text, _password.text);
 
             if (result is FirebaseUser) {
               _email.clear();
               _password.clear();
-              Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => CustomerHome()));
+              if (result.uid == admin) {
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => AdminHome(adminId: admin,)));
+              } else {
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => CustomerHome()));
+              }
             } else {
               _scaffoldKey.currentState.showSnackBar(SnackBar(
                 content: Text('Incorrect Email Address or Password'),
@@ -252,7 +261,7 @@ class GmailLoginBuuton extends StatelessWidget {
           ),
         ),
         onPressed: () {
-          GmailLogin gm=new GmailLogin();
+          GmailLogin gm = new GmailLogin();
           gm.signInWithGoogle().whenComplete(() {
             Navigator.of(context).push(
               MaterialPageRoute(
@@ -272,7 +281,6 @@ class GmailLoginBuuton extends StatelessWidget {
              Navigator.push(
                  context, MaterialPageRoute(builder: (context) => CustomerHomeScreen()));
            }*/
-
         },
       ),
     );
@@ -320,5 +328,3 @@ void _showAlert(BuildContext context) {
     },
   );
 }
-
-

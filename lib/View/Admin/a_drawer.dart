@@ -1,10 +1,10 @@
 import 'package:home_well/Controller/AdminController/RegisterAdminCtrl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:home_well/Model/AdminModel/adminProfileModel.dart';
-import 'package:home_well/View/Admin/a_login.dart';
 import 'package:home_well/View/Admin/a_profile.dart';
 import 'package:home_well/View/Admin/a_workersData.dart';
 import 'package:home_well/View/common/AboutUs.dart';
+import 'package:home_well/View/customer/c_login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -44,8 +44,8 @@ class _MyDrawerPageState extends State<AdminDrawerOnly> {
     });
   }
   getUserInfo() async {
-    uid = sp.getString('userId');
-    name = sp.getString('cName');
+    uid = sp.getString('adminId');
+    name = sp.getString('Name');
     image = sp.getString('image');
 
 
@@ -68,13 +68,11 @@ class _MyDrawerPageState extends State<AdminDrawerOnly> {
                       image: new DecorationImage(
                         fit: BoxFit.cover,
                         image:  NetworkImage(
-                            image??
-                                "https://previews.123rf.com/images/tuktukdesign/tuktukdesign1606/tuktukdesign160600105/59070189-user-icon-man-profile-businessman-avatar-person-icon-in-vector-illustration.jpg"),
-                      ),
+                            'https://firebasestorage.googleapis.com/v0/b/well-home.appspot.com/o/Screenshot_2020-06-18-22-28-59-47_e2548cf0aa8cf131ef8237bace1f9509.png?alt=media&token=b782fbb7-abe8-46db-9c47-3e173f4a902e')),
                     ),
                   ),
                   Text(
-                    name??'Name',
+                    name??'Admin',
                     textAlign: TextAlign.center,
                   )
                 ],
@@ -127,8 +125,8 @@ class _MyDrawerPageState extends State<AdminDrawerOnly> {
               onTap: () {
 
                 _signOut();
-                sp.remove('userId');
-                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => AdminLogin()));
+                sp.remove('adminId');
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => CustomerLogin()));
 
               },
             ),

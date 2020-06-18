@@ -6,7 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'c_wait_for_response.dart';
 import 'package:home_well/Model/CustomerModel/customerProfileModel.dart';
 
-
 SharedPreferences sp;
 
 class AvailableWorker extends StatefulWidget {
@@ -24,6 +23,7 @@ class _MyWorkerPageState extends State<AvailableWorker> {
 //  final CustomerData user;
 
   _MyWorkerPageState();
+
   String _city;
   String _area;
   String _job;
@@ -34,7 +34,6 @@ class _MyWorkerPageState extends State<AvailableWorker> {
   void initState() {
     initSp();
     super.initState();
-
   }
 
   initSp() {
@@ -45,6 +44,7 @@ class _MyWorkerPageState extends State<AvailableWorker> {
       });
     });
   }
+
   getInfo() async {
     _city = sp.getString('city');
     _area = sp.getString('area');
@@ -53,6 +53,7 @@ class _MyWorkerPageState extends State<AvailableWorker> {
     _subJobs = sp.getStringList('subJobs');
     print('$_city, $_area, $_job, $_subJob, \n ${_subJobs}');
   }
+
   Widget _buildWorkerList() {
     return Container(
       child: StreamBuilder<QuerySnapshot>(
@@ -79,6 +80,8 @@ class _MyWorkerPageState extends State<AvailableWorker> {
                   msg.data['Phone'],
                   msg.data['Rating'].toDouble(),
                   msg.data['Image'],
+                  msg.data['StartDate'],
+                  msg.data['StartTime'],
                 ));
               }
               return Container(
@@ -123,14 +126,11 @@ class Worker {
   final String workerContact;
   final double rating;
   final String imageUrl;
+  final String startDate;
+  final String startTime;
 
-  Worker(
-    this.workerId,
-    this.workerName,
-    this.workerContact,
-    this.rating,
-    this.imageUrl,
-  );
+  Worker(this.workerId, this.workerName, this.workerContact, this.rating,
+      this.imageUrl, this.startDate, this.startTime);
 }
 
 class WorkerCard extends StatelessWidget {
@@ -169,16 +169,39 @@ class WorkerCard extends StatelessWidget {
                       color: Colors.black,
                       fontWeight: FontWeight.w600),
                 ),
-                subtitle: Row(children: <Widget>[
-                  Text(worker.rating.toString(),
+                subtitle: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                  Row(children: <Widget>[
+                    Text(worker.rating.toString(),
+                        style: TextStyle(
+                            fontSize: 14.0,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600)),
+                    Icon(
+                      Icons.star,
+                      size: 15,
+                    )
+                  ]),
+                  Text('Available At :',
                       style: TextStyle(
                           fontSize: 14.0,
                           color: Colors.black,
                           fontWeight: FontWeight.w600)),
-                  Icon(
-                    Icons.star,
-                    size: 15,
-                  )
+                  Row(children: <Widget>[
+                       Text(worker.startTime + ' ',
+                        style: TextStyle(
+                            fontSize: 12.0,
+                            color: Colors.lightBlue,
+                            fontWeight: FontWeight.w600)),
+                    Text(worker.startDate,
+                        style: TextStyle(
+                            fontSize: 12.0,
+                            color: Colors.lightBlue,
+                            fontWeight: FontWeight.w600)),
+
+                  ]),
                 ]),
                 trailing: RequestButton(worker: worker),
               )
@@ -215,56 +238,62 @@ class RequestButton extends StatelessWidget {
           sp.setString('workerName', worker.workerName);
           sp.setString('workerImg', worker.imageUrl);
           sp.setString('workerContact', worker.workerContact);
-          sp.setInt('jobCount', sp.getInt('jobCount')+1);
+          sp.setInt('jobCount', sp.getInt('jobCount') + 1);
           addJobRequestToCustomer(sp);
           addJobRequestToWorker(sp);
-         // CloudFunctions.instance.call(
+          // CloudFunctions.instance.call(
           //    functionName: "addUser",
           print(sp.getInt('jobCount'));
 
-          customerDataFromFireStore.updateJobCount(sp.getString('userId'), 'JobCount' , sp.getInt('jobCount'));
+          customerDataFromFireStore.updateJobCount(
+              sp.getString('userId'), 'JobCount', sp.getInt('jobCount'));
 
-          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => ResponseWait()));
-         },
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => ResponseWait()));
+        },
       ),
     );
   }
 }
 
-final CollectionReference customerCollection = Firestore.instance.collection('Customer');
-final CollectionReference workerCollection = Firestore.instance.collection('Worker');
+final CollectionReference customerCollection =
+    Firestore.instance.collection('Customer');
+final CollectionReference workerCollection =
+    Firestore.instance.collection('Worker');
 //final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'messageTrigger');
-  Future<void> addJobRequestToCustomer(SharedPreferences sp) async {
-    customerDataFromFireStore.getSharedPreferences().then((value) {
-      sp = value;
-    });
-   /* dynamic resp = await callable.call(<String, dynamic>{
+Future<void> addJobRequestToCustomer(SharedPreferences sp) async {
+  customerDataFromFireStore.getSharedPreferences().then((value) {
+    sp = value;
+  });
+  /* dynamic resp = await callable.call(<String, dynamic>{
     'YOUR_PARAMETER_NAME': 'YOUR_PARAMETER_VALUE',
     });
-   */ return await customerCollection
-        .document(sp.getString('userId'))
-        .collection('JobRequest')
-        .document('job'+ sp.getInt('jobCount').toString())
-        .setData({
-      'WorkerId': sp.getString('workerId'),
-      'WorkerName': sp.getString('workerName'),
-      'WorkerContact': sp.getString('workerContact'),
-      'WorkerImg': sp.getString('workerImg'),
-      'Job': sp.getString('job'),
-      'JobStatus': 'Pending',
-      'SubJob': sp.getString('subJob'),
-      'SubJobField': FieldValue.arrayUnion(sp.getStringList('subJobFields')),
-      'SubJobFieldCount': FieldValue.arrayUnion(sp.getStringList('subJobsCounter')),
-      'SubJobFieldPrice': FieldValue.arrayUnion(sp.getStringList('subJobsPrice')),
-      'Date': sp.getString('date'),
-      'Time': sp.getString('time'),
-      'City': sp.getString('city'),
-      'Area': sp.getString('area'),
-      'Address': sp.getString('address'),
-      'token': sp.getString('token')
-    });
+   */
+  return await customerCollection
+      .document(sp.getString('userId'))
+      .collection('JobRequest')
+      .document('job' + sp.getInt('jobCount').toString())
+      .setData({
+    'WorkerId': sp.getString('workerId'),
+    'WorkerName': sp.getString('workerName'),
+    'WorkerContact': sp.getString('workerContact'),
+    'WorkerImg': sp.getString('workerImg'),
+    'Job': sp.getString('job'),
+    'JobStatus': 'Pending',
+    'SubJob': sp.getString('subJob'),
+    'SubJobField': FieldValue.arrayUnion(sp.getStringList('subJobFields')),
+    'SubJobFieldCount':
+        FieldValue.arrayUnion(sp.getStringList('subJobsCounter')),
+    'SubJobFieldPrice': FieldValue.arrayUnion(sp.getStringList('subJobsPrice')),
+    'Date': sp.getString('date'),
+    'Time': sp.getString('time'),
+    'City': sp.getString('city'),
+    'Area': sp.getString('area'),
+    'Address': sp.getString('address'),
+    'token': sp.getString('token')
+  });
+}
 
-  }
 Future<void> addJobRequestToWorker(SharedPreferences sp) async {
   customerDataFromFireStore.getSharedPreferences().then((value) {
     sp = value;
@@ -285,8 +314,8 @@ Future<void> addJobRequestToWorker(SharedPreferences sp) async {
     'JobStatus': 'Pending',
     'SubJob': sp.getString('subJob'),
     'SubJobField': FieldValue.arrayUnion(sp.getStringList('subJobFields')),
-    'SubJobFieldCount': FieldValue.arrayUnion(
-        sp.getStringList('subJobsCounter')),
+    'SubJobFieldCount':
+        FieldValue.arrayUnion(sp.getStringList('subJobsCounter')),
     'SubJobFieldPrice': FieldValue.arrayUnion(sp.getStringList('subJobsPrice')),
     'Date': sp.getString('date'),
     'Time': sp.getString('time'),
