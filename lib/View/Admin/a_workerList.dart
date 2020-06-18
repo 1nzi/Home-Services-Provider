@@ -32,7 +32,6 @@ class _MyWorkerPageState extends State<TopWorker> {
   initSp() {
   }
 
-
   Widget _buildWorkerList() {
     return Container(
       child: StreamBuilder<QuerySnapshot>(
