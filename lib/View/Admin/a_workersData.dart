@@ -4,61 +4,37 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:home_well/View/Admin/a_login.dart';
 
-
-
+import 'a_workerList.dart';
 
 class WorkerData extends StatefulWidget {
   final String uid;
-
 
   const WorkerData({Key key, this.uid}) : super(key: key);
 
   _WorkerDataState createState() => _WorkerDataState();
 }
+
 final FocusNode _SignupButtonFocus = FocusNode();
 final _formKey = GlobalKey<FormState>();
 String City = 'Lahore';
 
-String Job='Electrical';
-int _radioValue = 0;
-String Area ;
-
-
-
+String Job = 'Electrical';
+String Area;
 
 class _WorkerDataState extends State<WorkerData> {
-
-
-  void _handleRadioValueChange(int value) {
-
-    _radioValue = value;
-    setState(() {
-      switch (_radioValue) {
-        case 0:
-          print(_radioValue);
-          break;
-        case 1:
-          print(_radioValue);
-          break;
-        case 2:
-          print(_radioValue);
-          break;
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomPadding: true,
       appBar: AppBar(
-        title: Text( " Filter Workers Data",
+        title: Text(
+          " Filter Workers Data",
           style: new TextStyle(
               fontSize: 20.0, color: Colors.black, fontWeight: FontWeight.bold),
         ),
       ),
       body: SizedBox(
-        child:Form(
+        child: Form(
           key: _formKey,
           child: SingleChildScrollView(
             child: Column(
@@ -77,7 +53,9 @@ class _WorkerDataState extends State<WorkerData> {
                       if (!snapshot.hasData) {
                         return Text("No City Found");
                       } else {
-                        for (int i = 0; i < snapshot.data.documents.length; i++) {
+                        for (int i = 0;
+                            i < snapshot.data.documents.length;
+                            i++) {
                           DocumentSnapshot snap = snapshot.data.documents[i];
                           city.add(
                             DropdownMenuItem(
@@ -95,8 +73,8 @@ class _WorkerDataState extends State<WorkerData> {
                                 // ignore: missing_return
                                 size: 24,
                               ),
-                              style:
-                              TextStyle(color: Colors.black, fontSize: 18.0),
+                              style: TextStyle(
+                                  color: Colors.black, fontSize: 18.0),
                               isExpanded: true,
                               value: City,
                               items: city,
@@ -137,8 +115,8 @@ class _WorkerDataState extends State<WorkerData> {
                                 // ignore: missing_return
                                 size: 24,
                               ),
-                              style:
-                              TextStyle(color: Colors.black, fontSize: 18.0),
+                              style: TextStyle(
+                                  color: Colors.black, fontSize: 18.0),
                               isExpanded: true,
                               hint: new Text("Select Area"),
                               items: area
@@ -151,7 +129,6 @@ class _WorkerDataState extends State<WorkerData> {
                               onChanged: (String newValue) {
                                 setState(() {
                                   Area = newValue;
-
                                 });
                               },
                               validator: (newVal) {
@@ -180,7 +157,9 @@ class _WorkerDataState extends State<WorkerData> {
                       if (!snapshot.hasData) {
                         return Text("No Job Found");
                       } else {
-                        for (int i = 0; i < snapshot.data.documents.length; i++) {
+                        for (int i = 0;
+                            i < snapshot.data.documents.length;
+                            i++) {
                           DocumentSnapshot snap = snapshot.data.documents[i];
                           job.add(
                             DropdownMenuItem(
@@ -198,8 +177,8 @@ class _WorkerDataState extends State<WorkerData> {
                                 // ignore: missing_return
                                 size: 24,
                               ),
-                              style:
-                              TextStyle(color: Colors.black, fontSize: 18.0),
+                              style: TextStyle(
+                                  color: Colors.black, fontSize: 18.0),
                               isExpanded: true,
                               value: Job,
                               items: job,
@@ -213,42 +192,11 @@ class _WorkerDataState extends State<WorkerData> {
                       }
                     }),
 
-
-                Row(
-                      children: <Widget>[
-                        new Radio(
-                          value: 0,
-                          groupValue: _radioValue,
-                          onChanged: _handleRadioValueChange,
-                        ),
-                        new Text('City'),
-                        new Radio(
-                          value: 1,
-                          groupValue: _radioValue,
-                          onChanged: _handleRadioValueChange,
-                        ),
-                        new Text('Area'),
-                        new Radio(
-                          value: 2,
-                          groupValue: _radioValue,
-                          onChanged: _handleRadioValueChange,
-                        ),
-                        new Text('Job'),
-                      ],
-
-
-                ),
-
-
                 SizedBox(
                   height: 60,
                 ),
                 SearchButton()
-
-
               ],
-
-
             ),
           ),
         ),
@@ -258,63 +206,44 @@ class _WorkerDataState extends State<WorkerData> {
 }
 
 class SearchButton extends StatelessWidget {
-
-
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 180.0,
       height: 35.0,
       child: RaisedButton(
-        focusNode: _SignupButtonFocus,
-
-        elevation: 6.0,
-        textColor: Colors.white,
-        color: Colors.lightGreen,
-        shape: new RoundedRectangleBorder(
-          borderRadius: new BorderRadius.circular(30.0),
-        ),
-        child: Text(
-          "Search",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 16.0,
-            fontStyle: FontStyle.italic,
+          focusNode: _SignupButtonFocus,
+          elevation: 6.0,
+          textColor: Colors.white,
+          color: Colors.lightGreen,
+          shape: new RoundedRectangleBorder(
+            borderRadius: new BorderRadius.circular(30.0),
           ),
-        ),
-        onPressed: () async {
-          if (_formKey.currentState.validate()) {
+          child: Text(
+            "Search",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16.0,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+          onPressed: () async {
+            if (_formKey.currentState.validate()) {
+              print("Area : $Area");
+              print("Area : $City");
+              print("Area : $Job");
 
-            print("Area : $Area");
-            print("Area : $City");
-            print("Area : $Job");
-
-            print("Area : $_radioValue");
-
-
-
-
-
-
-
-//              Navigator.pop(context);
-//              Navigator.push(context,
-//                  MaterialPageRoute(builder: (context) => AdminLogin()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => TopWorker(city: City, area: Area, job: Job,)));
             }
-
-        },
-      ),
+            ;
+          }),
     );
   }
 }
-
-
-
-
 
 void _fieldFocusChange(
     BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
   currentFocus.unfocus();
   FocusScope.of(context).requestFocus(nextFocus);
 }
-

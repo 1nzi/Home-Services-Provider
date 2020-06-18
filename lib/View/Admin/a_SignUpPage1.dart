@@ -2,12 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:home_well/Controller/AdminController/RegisterAdminCtrl.dart';
-import 'package:home_well/View/Admin/a_SignUpPage%202.dart';
 import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
 
 import 'package:path/path.dart';
+
 
 class AdminSignup1 extends StatefulWidget {
   _AdminSignup1State createState() => _AdminSignup1State();
@@ -265,11 +265,12 @@ class NextButton extends StatelessWidget {
             bundle.ph = _Ph.text;
             bundle.email = _Email.text;
 
-            Navigator.push(
+          /*  Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => AdminSignup2(bundle: bundle)));
-          }
+        */
+           }
         },
       ),
     );
