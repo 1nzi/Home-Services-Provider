@@ -18,7 +18,8 @@ class WorkerData extends StatefulWidget {
 final FocusNode _SignupButtonFocus = FocusNode();
 final _formKey = GlobalKey<FormState>();
 String City = 'Lahore';
-var Rating ;
+
+String Job='Electrical';
 int _radioValue = 0;
 String Area ;
 
@@ -168,38 +169,49 @@ class _WorkerDataState extends State<WorkerData> {
                 SizedBox(
                   height: 10,
                 ),
+                ////
                 Text(
-                  "By Rating",
+                  "Select By City ",
                 ),
-
-                Padding(
-                  padding: EdgeInsets.fromLTRB(10, 0, 18, 40),
-                  child: DropdownButtonFormField<int>(
-                    icon: Icon(
-                      Icons.location_city,
-                      color: Colors.lightGreen,
-                      // ignore: missing_return
-                      size: 24,
-                    ),
-                    style:
-                    TextStyle(color: Colors.black, fontSize: 18.0),
-                    isExpanded: true,
-                    hint: new Text("Select Rating"),
-                    value: Rating,
-                    items: [1, 2, 3, 4, 5]
-                        .map((label) => DropdownMenuItem(
-                      child: Text(label.toString()),
-                      value: label,
-                    ))
-                        .toList(),
-
-                    onChanged: (value) {
-                      setState(() {
-                        Rating = value;
-                      });
-                    },
-                  ),
-                ),
+                StreamBuilder<QuerySnapshot>(
+                    stream: Firestore.instance.collection("Jobs").snapshots(),
+                    builder: (context, snapshot) {
+                      List<DropdownMenuItem<String>> job = new List();
+                      if (!snapshot.hasData) {
+                        return Text("No Job Found");
+                      } else {
+                        for (int i = 0; i < snapshot.data.documents.length; i++) {
+                          DocumentSnapshot snap = snapshot.data.documents[i];
+                          job.add(
+                            DropdownMenuItem(
+                              child: Text(snap.documentID),
+                              value: "${snap.documentID}",
+                            ),
+                          );
+                        }
+                        return Padding(
+                            padding: EdgeInsets.fromLTRB(18, 0, 18, 10),
+                            child: DropdownButton<String>(
+                              icon: Icon(
+                                Icons.location_city,
+                                color: Colors.lightGreen,
+                                // ignore: missing_return
+                                size: 24,
+                              ),
+                              style:
+                              TextStyle(color: Colors.black, fontSize: 18.0),
+                              isExpanded: true,
+                              value: Job,
+                              items: job,
+                              onChanged: (String newValue) {
+                                setState(() {
+                                  Job = newValue;
+                                  Area = null;
+                                });
+                              },
+                            ));
+                      }
+                    }),
 
 
                 Row(
@@ -221,7 +233,7 @@ class _WorkerDataState extends State<WorkerData> {
                           groupValue: _radioValue,
                           onChanged: _handleRadioValueChange,
                         ),
-                        new Text('Rating'),
+                        new Text('Job'),
                       ],
 
 
@@ -229,7 +241,7 @@ class _WorkerDataState extends State<WorkerData> {
 
 
                 SizedBox(
-                  height: 10,
+                  height: 60,
                 ),
                 SearchButton()
 
@@ -275,6 +287,8 @@ class SearchButton extends StatelessWidget {
 
             print("Area : $Area");
             print("Area : $City");
+            print("Area : $Job");
+
             print("Area : $_radioValue");
 
 
