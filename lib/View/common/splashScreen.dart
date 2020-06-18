@@ -30,12 +30,12 @@ class _MySplashScreenState extends State<MySplashScreen> {
 
   @override
   void initState() {
-    initUser();
     customerDataFromFireStore.getSharedPreferences().then((value) {
       setState(() {
         sp = value;
       });
     });
+    initUser();
     super.initState();
    }
 
