@@ -176,21 +176,21 @@ class LoginBuuton extends StatelessWidget {
           ),
         ),
         onPressed: () async {
-          if (_formKey.currentState.validate()) {
-            dynamic result = await _databaseService.signin(_email.text,_password.text);
-
-            if (result is FirebaseUser) {
-              _email.clear();
-              _password.clear();
+         // if (_formKey.currentState.validate()) {
+//            dynamic result = await _databaseService.signin(_email.text,_password.text);
+//
+//            if (result is FirebaseUser) {
+//              _email.clear();
+//              _password.clear();
               Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (context) => AdminHome()));
-            } else {
-              _scaffoldKey.currentState.showSnackBar(SnackBar(
-                content: Text('Incorrect Email Address or Password'),
-                duration: Duration(seconds: 3),
-              ));
-            }
-          }
+//            } else {
+//              _scaffoldKey.currentState.showSnackBar(SnackBar(
+//                content: Text('Incorrect Email Address or Password'),
+//                duration: Duration(seconds: 3),
+//              ));
+//            }
+         // }
         },
       ),
     );

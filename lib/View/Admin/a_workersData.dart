@@ -19,10 +19,33 @@ final FocusNode _SignupButtonFocus = FocusNode();
 final _formKey = GlobalKey<FormState>();
 String City = 'Lahore';
 var Rating ;
-
+int _radioValue = 0;
 String Area ;
 
+
+
+
 class _WorkerDataState extends State<WorkerData> {
+
+
+  void _handleRadioValueChange(int value) {
+
+    _radioValue = value;
+    setState(() {
+      switch (_radioValue) {
+        case 0:
+          print(_radioValue);
+          break;
+        case 1:
+          print(_radioValue);
+          break;
+        case 2:
+          print(_radioValue);
+          break;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,7 +109,7 @@ class _WorkerDataState extends State<WorkerData> {
                       }
                     }),
                 SizedBox(
-                  height: 30,
+                  height: 10,
                 ),
                 Text(
                   "By Area",
@@ -143,7 +166,7 @@ class _WorkerDataState extends State<WorkerData> {
 
                 //////////////////////
                 SizedBox(
-                  height: 30,
+                  height: 10,
                 ),
                 Text(
                   "By Rating",
@@ -179,11 +202,41 @@ class _WorkerDataState extends State<WorkerData> {
                 ),
 
 
+                Row(
+                      children: <Widget>[
+                        new Radio(
+                          value: 0,
+                          groupValue: _radioValue,
+                          onChanged: _handleRadioValueChange,
+                        ),
+                        new Text('City'),
+                        new Radio(
+                          value: 1,
+                          groupValue: _radioValue,
+                          onChanged: _handleRadioValueChange,
+                        ),
+                        new Text('Area'),
+                        new Radio(
+                          value: 2,
+                          groupValue: _radioValue,
+                          onChanged: _handleRadioValueChange,
+                        ),
+                        new Text('Rating'),
+                      ],
+
+
+                ),
+
+
                 SizedBox(
-                  height: 40,
+                  height: 10,
                 ),
                 SearchButton()
+
+
               ],
+
+
             ),
           ),
         ),
@@ -193,6 +246,7 @@ class _WorkerDataState extends State<WorkerData> {
 }
 
 class SearchButton extends StatelessWidget {
+
 
   @override
   Widget build(BuildContext context) {
@@ -219,9 +273,19 @@ class SearchButton extends StatelessWidget {
         onPressed: () async {
           if (_formKey.currentState.validate()) {
 
-              Navigator.pop(context);
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => AdminLogin()));
+            print("Area : $Area");
+            print("Area : $City");
+            print("Area : $_radioValue");
+
+
+
+
+
+
+
+//              Navigator.pop(context);
+//              Navigator.push(context,
+//                  MaterialPageRoute(builder: (context) => AdminLogin()));
             }
 
         },
@@ -229,6 +293,8 @@ class SearchButton extends StatelessWidget {
     );
   }
 }
+
+
 
 
 
