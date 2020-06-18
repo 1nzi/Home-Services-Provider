@@ -171,7 +171,7 @@ class _WorkerDataState extends State<WorkerData> {
                 ),
                 ////
                 Text(
-                  "Select By City ",
+                  "Select By Job ",
                 ),
                 StreamBuilder<QuerySnapshot>(
                     stream: Firestore.instance.collection("Jobs").snapshots(),
