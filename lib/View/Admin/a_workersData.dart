@@ -232,8 +232,14 @@ class SearchButton extends StatelessWidget {
               print("Area : $City");
               print("Area : $Job");
 
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => TopWorker(city: City, area: Area, job: Job,)));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => TopWorker(
+                            city: City,
+                            area: Area,
+                            job: Job,
+                          )));
             }
             ;
           }),
