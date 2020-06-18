@@ -1,6 +1,7 @@
 
 import 'package:home_well/Model/WorkerModel/WorkerProfileModel.dart';
 import 'package:home_well/View/common/AboutUs.dart';
+import 'package:home_well/View/worker/UpdateWorkStatus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -114,6 +115,17 @@ class _MyDrawerPageState extends State<WorkerDrawerOnly> {
                 Navigator.pop(context);
                 Navigator.push(context,
                     new MaterialPageRoute(builder: (context) => new WorkerHistory()));
+              },
+            ),
+
+            new ListTile(
+              leading: Icon(Icons.history, color: Colors.lightGreen, size:24),
+              title: new Text("Update Work Status",
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context,
+                    new MaterialPageRoute(builder: (context) => new WUpdateStatus(uid: uid,)));
               },
             ),
 

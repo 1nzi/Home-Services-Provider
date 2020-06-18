@@ -7,6 +7,11 @@ class WorkerData {
   String email;
   String city;
   String area;
+  String sdate;
+  String edate;
+  String stime;
+  String etime;
+
   double rating;
   int rater;
   String job;

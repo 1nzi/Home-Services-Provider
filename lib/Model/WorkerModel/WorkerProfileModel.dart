@@ -32,6 +32,18 @@ class WorkerDataFromFireStore {
       workerData.fname = data['Name'];
       save('wName', data['Name']);
       workerData.image = data['Image'];
+
+
+      workerData.sdate = data['StartDate'];
+      save('sdate', data['StartDate']);
+      workerData.edate = data['EndDate'];
+      save('edate', data['EndDate']);
+      workerData.stime = data['StartTime'];
+      save('stime', data['StartTime']);
+      workerData.etime = data['EndTime'];
+      save('etime', data['EndTime']);
+
+
       save('image', data['Image']);
       workerData.cnic = data['Cnic'];
       save('cnic', data['Cnic']);
@@ -58,6 +70,8 @@ class WorkerDataFromFireStore {
     List<String> spList = sharedPrefs.getStringList(key);
     return spList;
   }
+
+
   Future<SharedPreferences> getSharedPreferences() async {
     final SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
     return sharedPrefs;
