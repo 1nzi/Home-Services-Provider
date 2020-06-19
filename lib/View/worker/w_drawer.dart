@@ -18,6 +18,7 @@ WorkerDataFromFireStore _dataFromFireStore = WorkerDataFromFireStore();
 class WorkerDrawerOnly extends StatefulWidget {
   _MyDrawerPageState createState() => _MyDrawerPageState();
 }
+
 class _MyDrawerPageState extends State<WorkerDrawerOnly> {
 
   String uid;
@@ -41,7 +42,9 @@ class _MyDrawerPageState extends State<WorkerDrawerOnly> {
     name = sp.getString('wName');
     image = sp.getString('image');
     print('id: $uid name: $name');
+    print(image);
   }
+
 
   @override
   Widget build (BuildContext context) {
@@ -50,10 +53,10 @@ class _MyDrawerPageState extends State<WorkerDrawerOnly> {
         child: new ListView(
 
           children: <Widget>[
+
             new DrawerHeader(
               child: Column(
                 children: <Widget>[
-
                   new Container(
                     width: 100,
                     height: 100,
@@ -67,9 +70,11 @@ class _MyDrawerPageState extends State<WorkerDrawerOnly> {
                       ),
                     ),
                   ),
-                  Text(
-                    name?? 'Name',
-                    textAlign: TextAlign.center,
+                  Container(
+                    child: Text(
+                      name?? 'Name',
+                      textAlign: TextAlign.center,
+                    ),
                   )
                 ],
               ),
@@ -78,6 +83,7 @@ class _MyDrawerPageState extends State<WorkerDrawerOnly> {
               ),
             ),
             new ListTile(
+
               leading: Icon(Icons.person_outline, color: Colors.lightGreen, size:24),
               title: new Text("My Profile",
               ),
@@ -87,16 +93,7 @@ class _MyDrawerPageState extends State<WorkerDrawerOnly> {
                     new MaterialPageRoute(builder: (context) => new WProfile()));
               },
             ),
-           /* new ListTile(
-              leading: Icon(Icons.account_balance_wallet, color: Colors.lightGreen, size:24),
-              title: new Text("My Wallet",
-              ),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(context,
-                    new MaterialPageRoute(builder: (context) => new Wallet()));
-              },
-            ),*/
+
             new ListTile(
               leading: Icon(Icons.assignment, color: Colors.lightGreen, size:24),
               title: new Text("Pending Task",
